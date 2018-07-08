@@ -1,7 +1,15 @@
 <template>
   <div>
     <demo-header></demo-header>
-    <left-tree></left-tree>
+    <el-container>
+
+    <el-aside width="500px">
+      <left-tree v-on:listenToNodeClick="showMsgFromChild"></left-tree>
+    </el-aside>
+    <el-main>
+      <p> {{ pnodedata }} </p>
+    </el-main>
+  </el-container>
   </div>
 </template>
 
@@ -17,6 +25,18 @@ export default {
     DemoHeader,
     LeftTree
   },
+  data() {
+    return {
+      pnodedata: {}
+    }
+  },
+  methods:{
+    showMsgFromChild:function(data){
+      console.log(data);
+      this.pnodedata = data;
+    }
+  }
+
 }
 
 </script>
@@ -36,11 +56,26 @@ export default {
   line-height: 200px;
 }
 
-.el-main {
-  background-color: #E9EEF3;
-  color: #333;
-  text-align: center;
-  line-height: 160px;
-} */
 
+/* .el-aside {
+   background-color: #D3DCE6;
+   color: #333;
+   text-align: center;
+   line-height: 200px;
+   width:800px;
+ } */
+
+ /* .el-main {
+   background-color: #E9EEF3;
+   color: #333;
+   text-align: center;
+   line-height: 160px;
+ }
+.el-aside {
+    background-color: #D3DCE6;
+    color: #333;
+    text-align: center;
+    line-height: 200px;
+    width:800px;
+  } */
 </style>

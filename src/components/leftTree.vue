@@ -1,7 +1,16 @@
 <template>
   <div>
-    <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick">
-      asd
+    <el-tree
+    :data="data"
+    default-expand-all
+    node-key="id"
+    ref="tree"
+    :props="defaultProps"
+    @node-click="handleNodeClick">
+      <span class="custom-tree-node" slot-scope="{ node, data }">
+        <span>{{ node.label }}</span>
+        <span>{{ node.id }}</span>
+      </span>
     </el-tree>
   </div>
 </template>
@@ -9,10 +18,11 @@
 
 <script>
 export default {
+  // props: ["nodedata"],
   data () {
       return {
         data: [],
-        defaultProps: {}
+        defaultProps: {},
       }
   },
   created () {   /* 这个是vue的钩子函数，当new Vue()实例创建完毕后执行的函数 */
@@ -25,8 +35,10 @@ export default {
       })
   },
   methods: {
-      handleNodeClick(data) {
-        console.log(data);
+      handleNodeClick(data, node) {
+        console.log(node);
+        console.log(node.id);
+        this.$emit("listenToNodeClick", {"id":node.id});
       }
   }
 }
