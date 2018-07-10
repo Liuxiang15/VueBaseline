@@ -37,7 +37,6 @@ export default {
   methods: {
       handleNodeClick(data, node) {
         console.log(node);
-        console.log(node.id);
         this.$emit("listenToNodeClick", {"id":node.id});
       }
   }
