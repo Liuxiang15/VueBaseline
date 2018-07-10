@@ -1,77 +1,127 @@
-<template lang="html">
-  <li class="goods-list">
-    <router-link to="/detail"  class="goods-list-link">  <!--  这个是用来跳转页面的，可以理解为a标签 -->
-      <div class="goods-list-pic">
-          <img :src="img" alt="">
-      </div>
-      <div class="goods-list-desc">
-        <p class="goods-list-name">{{ title }}</p>
-        <p class="goods-list-price">{{ price|dTofixed|dCurrency }}</p>  <!-- 这里用到了过滤器货币形式和保留两位小数 -->
-      </div>
-    </router-link>
-  </li>
+<template>
+  <p> {{pnodedata}}对应的text</p>
+  <div id="test">
+    <el-input
+      type="textarea"
+      id="textarea"
+      placeholder="请输入内容"
+      v-model="textarea"
+      v-bind:disabled= "disableFlag"
+      >
+    </el-input>
+    <el-button type="primary" v-on:click='handleEditText' >修改</el-button>
+    <el-button type="success" v-on:click='SaveText' >保存</el-button>
+  </div>
+
+  <p> {{pnodedata}}对应的SNL语句</p>
+  <!--用于展示规则的列表-->
+  <div>
+    <el-table
+    :data="tableData"
+    style="width: 100%">
+
+    <el-table-column
+      label="SNL语句">
+      <template slot-scope="scope">
+        <el-popover trigger="hover" placement="top">
+          <p>snl语句: {{ scope.row.snl }}</p>
+          <div slot="reference" class="name-wrapper">
+            <el-tag size="medium">{{ scope.row.snl }}</el-tag>
+          </div>
+        </el-popover>
+      </template>
+    </el-table-column>
+
+    <el-table-column label="操作">
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+      </template>
+    </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
+
+import LeftTree from '../components/leftTree'
+
 export default {
-  props: ['price', 'title', 'img']   /*  props是子组件获取父组件数据用的 */
+  name: 'layout',
+  components:{
+    DemoHeader,
+    LeftTree
+    //list needs imported
+  },
+  data() {
+    return {
+      disableFlag:true,
+      pnodedata: {},
+      tableData: [],
+      textarea:""
+    }
+  },
+  methods:{
+    showMsgFromChild:function(data){
+      this.pnodedata = data;
+      var snlData = require("../../ruleObjects.json");
+      var strId = this.pnodedata["id"].toString();
+      var tempTable = [];       //用来存储 tableData的值
+      if(!(strId in snlData["data"])){
+          console.log("there are no snl sentences for id "+ strId);
+      }
+      else{
+          this.textarea = [snlData["data"][strId]["text"]];
+          var tempTable = [];
+          var snls = snlData["data"][strId]["snl"];
+          for(var i = 0; i < snls.length; i++){
+            var dict = {};
+            dict.snl = snls[i]; //字典或者对象
+            tempTable.push(dict);
+        }
+        this.tableData = tempTable;
+        console.log(tableData);
+      }
+    },
+    handleEditText(){
+      this.disableFlag = false;
+    },
+    SaveText(){
+      console.log("用户输入的text是"+this.textarea);
+      //var jsonFile = new File([""], "newruleObjects.json", { type: "text/plain;charset=utf-8" });
+      //saveAs(jsonFile);
+      //console.log("enter saveText 函数");
+      var newInfo = {};   //存储新增的｛text,snls｝对象
+      var strId = this.pnodedata["id"].toString();
+      newInfo[strId] = {};
+      newInfo[strId].text = this.textarea;
+      var snlData = require("../../ruleObjects.json");
+      newInfo[strId].snl = snlData["data"][strId]["snl"];
+      console.log("newInfo is "+newInfo);
+      console.log(newInfo[strId]);
+      console.log(newInfo[strId]["text"]);
+    },
+
+  }
 }
 </script>
 
-<style lang="css" scoped>
-  .goods-list {
-    width: 50%;
-    float: left;
-    box-sizing: border-box;
-    margin-bottom: 0.2rem;
-  }
-  .goods-list:nth-of-type(odd) {
-    border-right: 0.15rem solid #ccc;
-  }
-  .goods-list:nth-of-type(even) {
-    border-left: 0.15rem solid #ccc;
-  }
-  .goods-list-link {
-    display: block;
-    padding: 0.5rem 0;
-    margin: 0 0.3rem;
-    text-align: center;
-    background-color: #fff;
-  }
-  .goods-list:nth-of-type(even) .goods-list-link{
-    margin-left: 0;
-  }
-  .goods-list:nth-of-type(odd) .goods-list-link{
-    margin-right: 0;
-  }
-  .goods-list-pic {
-    padding: 0.5rem;
-  }
-  .goods-list-pic > img {
-    width: auto;
-    height: 4rem;
-  }
-  .goods-list-desc {
-    padding: 0 0.5rem;
-  }
-  .goods-list-desc:after {
-    display: block;
-    content: '';
-    clear: both;
-  }
-  .goods-list-name,.goods-list-price {
-    width: 50%;
-    height: 1.2rem;
-    line-height: 1.2rem;
-    font-size: 0.8rem;
-    color: #333;
-    float: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .goods-list-price {
-    color: #ff8000;
-    float: right;
-  }
+<style>
+.el-tag {
+    white-space: inherit !important;
+}
+
+.el-tag--medium {
+    height: 100%;
+}
+
+.el-textarea.is-disabled .el-textarea__inner {
+    color: black;
+}
+
 </style>
