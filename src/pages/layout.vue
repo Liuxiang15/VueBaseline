@@ -17,8 +17,8 @@
           v-bind:disabled= "disableFlag"
           >
         </el-input>
-        <el-button type="primary" v-on:click='handleEditText' >修改</el-button>
-        <el-button type="success" v-on:click='SaveText' >保存</el-button>
+        <el-button type="primary" v-on:click='handleEditText()' >修改</el-button>
+        <el-button type="success" v-on:click='SaveText()' >保存</el-button>
       </div>
 
       <p> {{pnodedata}}对应的SNL语句</p>
@@ -53,25 +53,7 @@
         </el-table-column>
         </el-table>
       </div>
-
-      <!--修改SNL语句弹出对话框-->
-      <div>
-        <el-button type="text" @click="dialogFormVisible = true">SNL编辑页面</el-button>
-        <el-dialog title="弹出对话框" :visible.sync="dialogFormVisible">
-          <el-form :model="form">
-            <el-form-item label="新的SNL语句" :label-width="formLabelWidth">
-              <el-input v-model="form.name" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="Label等其他属性" :label-width="formLabelWidth">
-              <el-input v-model="form.name" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-          </div>
-        </el-dialog>
-      </div>
+      <edit-dialogue>这里是对话框</edit-dialogue>
 
     </el-main>
   </el-container>
@@ -82,14 +64,17 @@
 <script>
 
 import DemoHeader from '../components/demoHeader'
+
 import LeftTree from '../components/leftTree'
 import saveAs from "../../FileSaver.js"
+import editDialogue from "../components/editDialogue.vue"
 
 export default {
   name: 'layout',
   components:{
     DemoHeader,
-    LeftTree
+    LeftTree,
+    editDialogue
     //list needs imported
   },
   data() {
@@ -97,62 +82,80 @@ export default {
       disableFlag:true,
       pnodedata: {},
       tableData: [],
-      textarea:"",
-      //以下属性是为了弹出对话框而设置的
-      dialogTableVisible: false,
-        dialogFormVisible: false,
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        },
-        formLabelWidth: '120px'
+      textarea:""
     }
   },
   methods:{
     showMsgFromChild:function(data){
+      console.log("enter showMsgFromChild函数");
       this.pnodedata = data;
-      var snlData = require("../../ruleObjects.json");
+      var nodedata_file = require("../../get_nodedata.json");
+      var node_datas = nodedata_file["data"]["data"];
+      console.log("node_datas是"+node_datas);
       var strId = this.pnodedata["id"].toString();
       var tempTable = [];       //用来存储 tableData的值
-      if(!(strId in snlData["data"])){
-          console.log("there are no snl sentences for id "+ strId);
+      //便历数组来查询 id = "strId"的字典
+      for(var node_data of node_datas){
+          // console.log("node_data是"+node_data);
+          // console.log("node_data的id是"+node_data.id);
+          // console.log("node_data的snl_spl_pairs是"+node_data.snl_spl_pairs);
+          // console.log("node_data的snl_spl_pairs[0].snl是"+node_data.snl_spl_pairs[0].snl);
+          // //console.log("node_data的snl_spl_pairs[1].snl是"+node_data.snl_spl_pairs[1].snl);
+          // console.log("node_data.id是"+node_data.id);
+          // console.log("strId是"+strId);
+          // console.log(node_data.id == strId);
+          if(node_data.id == strId){
+            console.log(node_data.id);
+            console.log(strId);
+            var snl_spl_pairs = node_data["snl_spl_pairs"];
+            console.log("snl_spl_pairs是"+snl_spl_pairs);
+            console.log("snl_spl_pairs[0].snl是:"+snl_spl_pairs[0].snl);
+            console.log("snl_spl_pairs的length是"+snl_spl_pairs.length);
+            for(var snl_spl of snl_spl_pairs){
+                console.log("enter the for loop");
+                var dict = {};
+                dict.snl = snl_spl.snl; //字典或者对象
+                console.log("node_data的snl_spl_pairs[0].snl是"+node_data.snl_spl_pairs[0].snl);
+                tempTable.push(dict);
+                console.log(tempTable);
+            }
+            this.tableData = tempTable;
+            console.log("this.table 是 " + this.tableData);
+            break;
+          }
       }
-      else{
-          this.textarea = [snlData["data"][strId]["text"]];
-          var tempTable = [];
-          var snls = snlData["data"][strId]["snl"];
-          for(var i = 0; i < snls.length; i++){
-            var dict = {};
-            dict.snl = snls[i]; //字典或者对象
-            tempTable.push(dict);
-        }
-        this.tableData = tempTable;
-        console.log(tableData);
-      }
     },
-    handleEditText(){
-      this.disableFlag = false;
-    },
-    SaveText(){
-      console.log("用户输入的text是"+this.textarea);
-      //var jsonFile = new File([""], "newruleObjects.json", { type: "text/plain;charset=utf-8" });
-      //saveAs(jsonFile);
-      //console.log("enter saveText 函数");
-      var newInfo = {};   //存储新增的｛text,snls｝对象
-      var strId = this.pnodedata["id"].toString();
-      newInfo[strId] = {};
-      newInfo[strId].text = this.textarea;
-      var snlData = require("../../ruleObjects.json");
-      newInfo[strId].snl = snlData["data"][strId]["snl"];
-    },
-
-  }
+        // if(!(strId in node_datas)){
+        //     console.log("there are no snl sentences for id "+ strId);
+        // }
+        // else{
+        //     this.textarea = [snlData["data"][strId]["text"]];
+        //     var tempTable = [];
+        //     var snls = snlData["data"][strId]["snl"];
+        //     for(var i = 0; i < snls.length; i++){
+        //       var dict = {};
+        //       dict.snl = snls[i]; //字典或者对象
+        //       tempTable.push(dict);
+        //   }
+        //   this.tableData = tempTable;
+        //   console.log(tableData);
+        // }
+      },
+      handleEditText(){
+        this.disableFlag = false;
+      },
+      SaveText(){
+        console.log("用户输入的text是"+this.textarea);
+        //var jsonFile = new File([""], "newruleObjects.json", { type: "text/plain;charset=utf-8" });
+        //saveAs(jsonFile);
+        //console.log("enter saveText 函数");
+        var newInfo = {};   //存储新增的｛text,snls｝对象
+        var strId = this.pnodedata["id"].toString();
+        newInfo[strId] = {};
+        newInfo[strId].text = this.textarea;
+        var snlData = require("../../ruleObjects.json");
+        newInfo[strId].snl = snlData["data"][strId]["snl"];
+      },
 }
 </script>
 
@@ -169,40 +172,4 @@ export default {
     color: black;
 }
 
-/* .el-header, .el-footer {
-  background-color: #B3C0D1;
-  color: #333;
-  text-align: center;
-  line-height: 60px;
-}
-
-.el-aside {
-  background-color: #D3DCE6;
-  color: #333;
-  text-align: center;
-  line-height: 200px;
-}
-
-
-/* .el-aside {
-   background-color: #D3DCE6;
-   color: #333;
-   text-align: center;
-   line-height: 200px;
-   width:800px;
- } */
-
- /* .el-main {
-   background-color: #E9EEF3;
-   color: #333;
-   text-align: center;
-   line-height: 160px;
- }
-.el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
-    width:800px;
-  } */
 </style>

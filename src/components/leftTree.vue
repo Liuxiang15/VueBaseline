@@ -9,7 +9,7 @@
     @node-click="handleNodeClick">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
-        <span>{{ node.id }}</span>
+        <span>{{ node.text }}</span>
       </span>
     </el-tree>
   </div>
@@ -22,7 +22,10 @@ export default {
   data () {
       return {
         data: [],
-        defaultProps: {},
+        "defaultProps": {
+          "children": "children",
+          "label": "order"
+        }
       }
   },
   created () {   /* 这个是vue的钩子函数，当new Vue()实例创建完毕后执行的函数 */
@@ -32,12 +35,14 @@ export default {
       this.data = data.body.treedata;
       this.defaultProps = data.body.treeprops;
 
+
       })
   },
   methods: {
       handleNodeClick(data, node) {
         console.log(node);
         this.$emit("listenToNodeClick", {"id":node.id});
+        console.log("node.id = "+ node.id);
       }
   }
 }

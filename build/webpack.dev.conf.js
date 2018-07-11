@@ -20,8 +20,9 @@ var treename = appData1.name
 var appData2 = require('../goods.json')
 var goods = appData2.goods
 
-var appData3 = require('../treeStructure.json')
-var data3 = appData3.data
+//var appData3 = require('../treeStructure.json')
+var appData3 = require('../get_metadata.json');
+var data3 = appData3.data.data
 
 var defaultProps = appData3.defaultProps
 
