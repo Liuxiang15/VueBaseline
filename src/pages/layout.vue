@@ -8,6 +8,7 @@
     <el-main>
       <list :node_data="node_data" ref="snlLists"></list>
     </el-main>
+     <router-link to="/index">fuck</router-link>
   </el-container>
   </div>
 </template>
@@ -41,6 +42,7 @@ export default {
     this.$ajax({
       method:'POST',
       url:'http://101.5.82.179:8099/data/get_data',
+      //101.5.82.179:8099/data/index
       data: {"_id":"5b470ba5fc6a38858a673ec8"},
     }).then(response=>{
       console.log(response.data);
