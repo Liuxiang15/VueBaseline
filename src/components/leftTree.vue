@@ -9,7 +9,7 @@
     @node-click="handleNodeClick">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
-        <span>{{ node.text }}</span>
+        <span>{{ node.data.text }} </span>
       </span>
     </el-tree>
   </div>
@@ -17,6 +17,9 @@
 
 
 <script>
+//try to communicate between leftTree and list
+//import layout from '../pages/layout.vue'
+
 export default {
   // props: ["nodedata"],
   data () {
@@ -40,9 +43,38 @@ export default {
   },
   methods: {
       handleNodeClick(data, node) {
-        console.log(node);
-        this.$emit("listenToNodeClick", {"id":node.id});
-        console.log("node.id = "+ node.id);
+        //what is node
+        // var str="";
+        // for (var item in node){
+        //     str +=item+":"+node[item]+"\n";
+        // }
+        //
+        // console.log("node==:\n"+str);
+        console.log("node.description=" + node.data.description);
+        var node_data = {};
+        node_data.id = node.id;
+        node_data.description = node.data.description;
+        //this.$emit("listenToNodeClick", {"id":node.id, "description":node.description});
+        this.$emit("listenToNodeClick", node_data);
+        console.log("node_data.description=" + node_data.description);
+
+        //向站点发送post请求
+        // var data = {key:"5b470ba5fc6a38858a673ec8"};
+        // var url = "101.5.82.179:8099/data/get_data";
+        // $.post(url, data).success(
+        //   function(result){
+        //     console.log("result是" + result);
+        //   }
+        // );
+        this.$ajax({
+          method:'POST',
+          url:'101.5.82.179:8099/data/get_data',
+          data: {"_id":"5b470ba5fc6a38858a673ec8"},
+        }).then(response=>{
+          alert('asdasda');
+        }).catch(function(err){
+          console.log(err)
+        });
       }
   }
 }
