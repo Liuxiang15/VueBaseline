@@ -1,0 +1,72 @@
+{
+  "data":
+  [
+    {
+      "label": "3 基本规定",
+      "id": 1,
+      "children":
+      [
+        {
+          "label": "3.1 一般规定",
+          "id": 2,
+          "children":
+          [
+            {
+              "label": "3.1.1", "id":3
+            },
+            {
+              "label": "3.2.1", "id":4
+            }
+          ]
+        },
+        {
+          "label": "3.2 系统形式的选择和设计要求",
+          "id": 5,
+          "children":
+          [
+            {
+              "label": "3.2.1", "id":6
+            },
+            {
+              "label": "3.2.2", "id":7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "4 消防联动控制设计",
+      "id": 8,
+      "children":
+      [
+        {
+          "label": "4.1 一般规定",
+          "id": 9,
+          "children":
+          [
+            {
+              "label": "4.1.1", "id": 10
+            },
+            {
+              "label": "4.1.2", "id": 11
+            }
+          ]
+        },
+        {
+          "label": "4.2 自动喷水灭火系统的联动控制设计",
+          "id": 12,
+          "children":
+          [
+            {
+              "label": "4.2.1", "id":13
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "defaultProps": {
+    "children": "children",
+    "label": "label"
+  }
+}

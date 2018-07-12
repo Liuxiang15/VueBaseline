@@ -3,10 +3,10 @@
     <demo-header></demo-header>
     <el-container>
     <el-aside width="500px">
-      <left-tree v-on:listenToNodeClick="showMsgFromChild"></left-tree>
+      <left-tree :meta="meta" v-on:listenToNodeClick="showMsgFromChild"></left-tree>
     </el-aside>
     <el-main>
-      <list ref="snlLists"></list>
+      <list :node_data="node_data" ref="snlLists"></list>
     </el-main>
   </el-container>
   </div>
@@ -32,25 +32,30 @@ export default {
   data() {
     return {
       pnodedata: {},
+      meta: {},
+      node_data: {},
+      data:{}
     }
   },
   created(){
-    var response_data = {};
     this.$ajax({
       method:'POST',
       url:'http://101.5.82.179:8099/data/get_data',
-      data: {
-      "_id":"5b470ba5fc6a38858a673ec8",
-      },
+      data: {"_id":"5b470ba5fc6a38858a673ec8"},
     }).then(response=>{
-      response_data = response.data;
       console.log(response.data);
+
+      this.meta = response.data.metadata;
+      this.node_data = response.data.nodedata;
+      console.log(this.meta);
+
+
     }).catch(function(err){
       console.log(err);
     });
-    var meta_data = response_data.metadata;
-    var node_data = response_data.nodedata;
-
+    // this.meta_data = response_data.metadata;
+    // this.node_data = response_data.nodedata;
+    // console.log("in layout this.meta_data是" + this.meta_data);
 
   },
   methods:{
