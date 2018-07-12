@@ -67,66 +67,41 @@ export default {
   },
   methods:{
     handleEditText(){
+      console.log("enter handleEditText函数");
       this.disableFlag = false;
     },
     SaveText(){
-      console.log("用户输入的text是"+this.textarea);
-      //var jsonFile = new File([""], "newruleObjects.json", { type: "text/plain;charset=utf-8" });
-      //saveAs(jsonFile);
-      //console.log("enter saveText 函数");
+      // console.log("用户输入的text是"+this.textarea);
+      console.log("enter saveText 函数");
       var newInfo = {};   //存储新增的｛text,snls｝对象
       var strId = this.list_data["id"].toString();
       newInfo[strId] = {};
       newInfo[strId].text = this.textarea;
-      var snlData = require("../../ruleObjects.json");
+      var snlData = require("../../get_nodedata.json");
       newInfo[strId].snl = snlData["data"][strId]["snl"];
     },
     show_list(data){
-      console.log("进入show_list函数");
+      // console.log("进入show_list函数");
       this.list_data = data;`
-
       //先将"description"赋值给text`
-      console.log("this.list_data.description是" + this.list_data.description);
-      console.log("this.list_data.id是" + this.list_data.id);
       this.textarea = this.list_data.description;
-
-
       var nodedata_file = require("../../get_nodedata.json");
       var node_datas = nodedata_file["data"]["data"];
-      console.log("node_datas是"+node_datas);
       var strId = data["id"].toString();
-
+      //保存当前list的id属性
       this.strId = strId;
-
-
       var tempTable = [];       //用来存储 tableData的值
       //便历数组来查询 id = "strId"的字典
       for(var node_data of node_datas){
-          // console.log("node_data是"+node_data);
-          // console.log("node_data的id是"+node_data.id);
-          // console.log("node_data的snl_spl_pairs是"+node_data.snl_spl_pairs);
-          // console.log("node_data的snl_spl_pairs[0].snl是"+node_data.snl_spl_pairs[0].snl);
-          // //console.log("node_data的snl_spl_pairs[1].snl是"+node_data.snl_spl_pairs[1].snl);
-          // console.log("node_data.id是"+node_data.id);
-          // console.log("strId是"+strId);
-          // console.log(node_data.id == strId);
           if(node_data.id == strId){
-            console.log(node_data.id);
-            console.log(strId);
             var snl_spl_pairs = node_data["snl_spl_pairs"];
-            console.log("snl_spl_pairs是"+snl_spl_pairs);
-            console.log("snl_spl_pairs[0].snl是:"+snl_spl_pairs[0].snl);
-            console.log("snl_spl_pairs的length是"+snl_spl_pairs.length);
             for(var snl_spl of snl_spl_pairs){
-                console.log("enter the for loop");
+                // console.log("enter the for loop");
                 var dict = {};
                 dict.snl = snl_spl.snl; //字典或者对象
-                console.log("node_data的snl_spl_pairs[0].snl是"+node_data.snl_spl_pairs[0].snl);
                 tempTable.push(dict);
-                console.log(tempTable);
             }
             this.tableData = tempTable;
-            console.log("this.table 是 " + this.tableData);
             break;
           }
         }

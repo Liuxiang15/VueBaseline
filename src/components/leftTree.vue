@@ -37,8 +37,6 @@ export default {
       // this.name = data.body.name
       this.data = data.body.treedata;
       this.defaultProps = data.body.treeprops;
-
-
       })
   },
   methods: {
@@ -57,24 +55,6 @@ export default {
         //this.$emit("listenToNodeClick", {"id":node.id, "description":node.description});
         this.$emit("listenToNodeClick", node_data);
         console.log("node_data.description=" + node_data.description);
-
-        //向站点发送post请求
-        // var data = {key:"5b470ba5fc6a38858a673ec8"};
-        // var url = "101.5.82.179:8099/data/get_data";
-        // $.post(url, data).success(
-        //   function(result){
-        //     console.log("result是" + result);
-        //   }
-        // );
-        this.$ajax({
-          method:'POST',
-          url:'101.5.82.179:8099/data/get_data',
-          data: {"_id":"5b470ba5fc6a38858a673ec8"},
-        }).then(response=>{
-          alert('asdasda');
-        }).catch(function(err){
-          console.log(err)
-        });
       }
   }
 }

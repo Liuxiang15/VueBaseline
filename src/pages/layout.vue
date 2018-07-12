@@ -31,11 +31,27 @@ export default {
   },
   data() {
     return {
-      // disableFlag:true,
       pnodedata: {},
-      // tableData: [],
-      // textarea:""
     }
+  },
+  created(){
+    var response_data = {};
+    this.$ajax({
+      method:'POST',
+      url:'http://101.5.82.179:8099/data/get_data',
+      data: {
+      "_id":"5b470ba5fc6a38858a673ec8",
+      },
+    }).then(response=>{
+      response_data = response.data;
+      console.log(response.data);
+    }).catch(function(err){
+      console.log(err);
+    });
+    var meta_data = response_data.metadata;
+    var node_data = response_data.nodedata;
+
+
   },
   methods:{
     showMsgFromChild:function(data){
