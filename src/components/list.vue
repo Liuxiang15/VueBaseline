@@ -53,6 +53,9 @@
 //import layout from '../pages/layout.vue'
 import LeftTree from '../components/leftTree'
 export default {
+  props: {
+    node_data: {}
+  },
   components:{
     LeftTree
   },
@@ -70,6 +73,8 @@ export default {
       console.log("enter handleEditText函数");
       this.disableFlag = false;
     },
+
+
     SaveText(){
       // console.log("用户输入的text是"+this.textarea);
       console.log("enter saveText 函数");
@@ -77,23 +82,29 @@ export default {
       var strId = this.list_data["id"].toString();
       newInfo[strId] = {};
       newInfo[strId].text = this.textarea;
-      var snlData = require("../../get_nodedata.json");
-      newInfo[strId].snl = snlData["data"][strId]["snl"];
+
+      var node_datas = this.node_data.data;
+      newInfo[strId].snl = node_datas[strId]["snl"];
     },
+
+
     show_list(data){
-      // console.log("进入show_list函数");
+      console.log("进入show_list函数");
       this.list_data = data;`
       //先将"description"赋值给text`
       this.textarea = this.list_data.description;
-      var nodedata_file = require("../../get_nodedata.json");
-      var node_datas = nodedata_file["data"]["data"];
+
+      //读入nodedata
+      var node_datas = this.node_data.data;
+      console.log("in list nodedata_file is " + node_datas);
+
       var strId = data["id"].toString();
       //保存当前list的id属性
       this.strId = strId;
       var tempTable = [];       //用来存储 tableData的值
       //便历数组来查询 id = "strId"的字典
       for(var node_data of node_datas){
-          if(node_data.id == strId){
+          if(node_data.this_id == strId){
             var snl_spl_pairs = node_data["snl_spl_pairs"];
             for(var snl_spl of snl_spl_pairs){
                 // console.log("enter the for loop");

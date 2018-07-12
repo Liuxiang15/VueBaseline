@@ -21,23 +21,23 @@
 //import layout from '../pages/layout.vue'
 
 export default {
-  // props: ["nodedata"],
+  props: {
+    meta: {}
+  },
   data () {
       return {
         data: [],
-        "defaultProps": {
+        config: [],
+        group: [],
+        defaultProps: {
           "children": "children",
           "label": "order"
         }
       }
   },
-  created () {   /* 这个是vue的钩子函数，当new Vue()实例创建完毕后执行的函数 */
-      this.$http.get('/api/mytree').then((data) => {   /* 调用vue的ajax来请求数据，promise语法，并用es6的箭头函数 */
-      // this.tree = data.body.datatree;
-      // this.name = data.body.name
-      this.data = data.body.treedata;
-      this.defaultProps = data.body.treeprops;
-      })
+  created () {
+    // this.data = this.meta.data;
+      // console.log("in leftTree this.meta =" + this.meta);
   },
   methods: {
       handleNodeClick(data, node) {
@@ -55,7 +55,17 @@ export default {
         //this.$emit("listenToNodeClick", {"id":node.id, "description":node.description});
         this.$emit("listenToNodeClick", node_data);
         console.log("node_data.description=" + node_data.description);
+      },
+      getData(){
+        this.data = this.meta.data;
+        this.config = this.meta.config;
+        this.group = this.meta.group;
       }
+  },
+  watch:{
+    meta(){
+      this.getData();
+    }
   }
 }
 </script>
