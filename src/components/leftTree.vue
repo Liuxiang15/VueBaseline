@@ -36,10 +36,13 @@ export default {
       }
   },
   created () {
+<<<<<<< HEAD
     console.log("enter leftTree的create函数");
     this.data = this.meta.data;
     this.config = this.meta.config;
     this.group = this.meta.group;
+=======
+>>>>>>> 87cadcf503a23a7d1d144e0f302993586ce29a16
     // this.data = this.meta.data;
       // console.log("in leftTree this.meta =" + this.meta);
   },
@@ -52,6 +55,7 @@ export default {
         // }
         //
         // console.log("node==:\n"+str);
+<<<<<<< HEAD
         // console.log("node.description=" + node.data.description);
         var node_data = {};
         node_data.id = node.data.this_id;
@@ -68,6 +72,15 @@ export default {
         }
 
         console.log("this.data==:\n"+str);
+=======
+        console.log("node.description=" + node.data.description);
+        var node_data = {};
+        node_data.id = node.id;
+        node_data.description = node.data.description;
+        //this.$emit("listenToNodeClick", {"id":node.id, "description":node.description});
+        this.$emit("listenToNodeClick", node_data);
+        console.log("node_data.description=" + node_data.description);
+>>>>>>> 87cadcf503a23a7d1d144e0f302993586ce29a16
       },
       getData(){
         this.data = this.meta.data;

@@ -1,13 +1,19 @@
 <template>
 <div>
+<<<<<<< HEAD
   <div id="test">
     <p>description</p>
+=======
+  <p> id= {{this.strId}}对应的text</p>
+  <div id="test">
+>>>>>>> 87cadcf503a23a7d1d144e0f302993586ce29a16
     <el-input
       type="textarea"
       id="textarea"
       placeholder="请输入内容"
       v-model="textarea"
       v-bind:disabled= "disableFlag"
+<<<<<<< HEAD
     >
     </el-input>
     <p></p>
@@ -19,6 +25,15 @@
   </div>
 
   <p>SNL语句</p>
+=======
+      >
+    </el-input>
+    <el-button type="primary" v-on:click='handleEditText()' >修改</el-button>
+    <el-button type="success" v-on:click='SaveText()' >保存</el-button>
+  </div>
+
+  <p>id= {{this.strId}}对应的SNL语句</p>
+>>>>>>> 87cadcf503a23a7d1d144e0f302993586ce29a16
   <!--用于展示规则的列表-->
   <div>
     <el-table
@@ -91,6 +106,7 @@ export default {
       newInfo[strId].snl = node_datas[strId]["snl"];
     },
 
+<<<<<<< HEAD
     handleEdit(index, row){
       //触发父组件对话框弹出
       console.log("enter handleEdit 函数");
@@ -100,6 +116,8 @@ export default {
     handleDelete(index, row){
 
     },
+=======
+>>>>>>> 87cadcf503a23a7d1d144e0f302993586ce29a16
 
     show_list(data){
       console.log("进入show_list函数");
@@ -129,6 +147,7 @@ export default {
             break;
           }
         }
+<<<<<<< HEAD
     }
   }
 }
@@ -143,3 +162,11 @@ p{
   width: 60%;
 }
 </style>
+=======
+
+    }
+
+  }
+}
+</script>
+>>>>>>> 87cadcf503a23a7d1d144e0f302993586ce29a16

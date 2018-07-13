@@ -13,6 +13,7 @@ export default new Router({
   routes: [
     {
       path: '/',
+<<<<<<< HEAD
       name: 'index',
       component: index
     },
@@ -20,6 +21,15 @@ export default new Router({
       path:'/data',
       name: 'layout',
       component: layout
+=======
+      name: 'layout',
+      component: layout
+    },
+    {
+      path:'/index',
+      name:'test',
+      component:index
+>>>>>>> 87cadcf503a23a7d1d144e0f302993586ce29a16
     }
   ]
 })

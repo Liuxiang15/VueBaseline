@@ -1,8 +1,13 @@
 <template>
   <!--修改SNL语句弹出对话框-->
+<<<<<<< HEAD
   <div id="OK">
     <!---->
     <el-button type="text" @click="dialogFormVisible = true">新建SNL语句</el-button>
+=======
+  <div>
+    <el-button type="text" @click="dialogFormVisible = true">编辑SNL语句</el-button>
+>>>>>>> 87cadcf503a23a7d1d144e0f302993586ce29a16
     <el-dialog title="弹出对话框" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="新的SNL语句" :label-width="formLabelWidth">

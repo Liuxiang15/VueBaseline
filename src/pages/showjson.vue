@@ -65,6 +65,11 @@ export default {
   },
   methods: {
       handleNodeClick(data) {
+<<<<<<< HEAD
+=======
+        //console.log('data');
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+>>>>>>> 87cadcf503a23a7d1d144e0f302993586ce29a16
       }
   }
 }
