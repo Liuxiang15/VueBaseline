@@ -1,0 +1,91 @@
+{
+  "data": {
+    "_id": "5b44be77fc6a38618709e9a8",
+    "config": [
+      {
+        "key": "墙",
+        "value": [
+          "ifc2x3:ifcwall",
+          "ifc2x3:ifcwallstandardcase"
+        ]
+      },
+      {
+        "key": "门",
+        "value": [
+          "ifc2x3:ifcdoor",
+          "ifc2x3:ifcdoorstandardcase"
+        ]
+      },
+      {
+        "key": "洞",
+        "value": [
+          "ifc2x3:ifcopeningelement"
+        ]
+      }
+    ],
+    "data":[ {
+      "children": [
+        {
+          "children": [
+            {
+              "description": "Limitation On Wall Heights",
+              "id": 1,
+              "order": "1.1.1",
+              "text": "Wall Heights"
+            },
+            {
+              "description": "Limitation On Wall Thickness",
+              "id": 2,
+              "order": "1.1.2",
+              "text": "Wall Thickness"
+            },
+            {
+              "description": "Limitation On Wall Length",
+              "id": 3,
+              "order": "1.1.3",
+              "text": "Wall Length"
+            },
+            {
+              "description": "Limitation On Wall Opening Distance",
+              "id": 4,
+              "order": "1.1.4",
+              "text": "Wall Opening Distance"
+            }
+          ],
+          "description": "None",
+          "order": "1.1",
+          "text": "Wall Dimensions Should Be Sensible"
+        },
+        {
+          "children": [
+            {
+              "description": "Limitation On Window Width",
+              "id": 5,
+              "order": "1.2.1",
+              "text": "Window Width"
+            },
+            {
+              "description": "Limitation On Window Height",
+              "id": 6,
+              "order": "1.2.2",
+              "text": "Window Height"
+            }
+          ],
+          "description": "None",
+          "order": "1.2",
+          "text": "Door And Window Openings"
+        }
+      ],
+      "description": "None",
+      "order": "1",
+      "text": "Component Dimensions"
+    }],
+    "group": [
+      "未描述",
+      "民用建筑",
+      "商店建筑",
+      "厂房、仓库"
+    ],
+    "lib_name": "Component Check"
+  }
+}
