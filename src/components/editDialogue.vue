@@ -20,13 +20,13 @@
     // 1 dialogFormVisible决定了对话框是否显现，初始值在本组件里定义
     // 在layout.vue里实现了对该属性修改的函数
     props:{
-      dialogFormVisible: Boolean,
+      show: Boolean,
       default: false
     },
 
     data() {
       return {
-        dialogTableVisible: false,
+        dialogTableVisible: this.show,
         dialogFormVisible: false,
         form: {
           name: '',
@@ -41,7 +41,11 @@
         formLabelWidth: '120px'
       };
     },
-
+    watch:{
+      show(val){
+        this.dialogFormVisible = val;
+      }
+    },
     methods:{
       //2 调用父组件的close函数使的对话框消失
       close() {

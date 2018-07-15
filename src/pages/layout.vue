@@ -9,7 +9,7 @@
       </el-aside>
       <el-main width="60%">
         <list :node_data="node_data" ref="snlLists" @editDialogue="editDialogue"></list>
-        <edit-dialogue :dialogFormVisible="edit_show" @save="save" @close="close">
+        <edit-dialogue :show = "edit_show" @save="save" @close="close">
         </edit-dialogue>
       </el-main>
     </el-container>
@@ -35,35 +35,24 @@ export default {
   },
   data() {
     return {
+      //1 pnodedata存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
+      //edit_show决定对话框是否显示
       pnodedata: {},
       meta_data: {},
       node_data: {},
-      data:{},
       edit_show:false
     }
   },
   created(){
-    console.log("$route.params.id = " + this.$route.params.id);
-    // console.log("in index meta_data = ");
-    // console.log(meta_data);
-    // console.log("in index node_data = ");
-    // console.log(node_data);
-    console.log("in layout $route.query.meta_data = ");
-    // console.log(this.$route.params.meta_data);
-    console.log(this.$route.query.meta_data);
-    console.log("in layout $route.query.node_data = ");
-    console.log(this.$route.query.node_data);
     this.meta_data = this.$route.query.meta_data;
     this.node_data = this.$route.query.node_data;
 },
   methods:{
     showMsgFromChild:function(data){
+      //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
       console.log("enter showMsgFromChild函数");
       this.pnodedata = data;
-
-      //执行list的显示函数
-      var _this = this;
-      _this.$refs.snlLists.showList(this.pnodedata);
+      this.$refs.snlLists.showList(this.pnodedata);
 
     },
     editDialogue: function(){
