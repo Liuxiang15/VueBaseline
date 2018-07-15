@@ -17,7 +17,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <!--cell-click当某个单元格被点击时会触发该事件row, column, cell, event-->
   </div>
 </template>
 
@@ -26,52 +25,46 @@ export default {
   name: "index",
   data() {
     return {
+      // 1 tableData存储lib_name的字典列表，
+      //lib_names是存储包含id和snl_spl_pairs属性的字典的列表
+      //lib_names_ids是包含lib_name和_id属性的字典的列表
       tableData: [],
       lib_names:[],
       lib_names_ids:[]
     }
   },
   created(){
+    //2 向指定网页发送get请求并接收存储metadata和nodedata的字典
+	console.log("enter created 函数");
     this.$ajax({
       method:'GET',
-      url:'http://101.5.82.179:8099/data/index'
+	  //dataType:"jsonp",
+      url:'http://166.111.83.83:8099/data/index'
     }).then(response=>{
-      console.log("response.data是"+response.data);
-      console.log("response.data.data是"+response.data.data);
+       console.log("response.data是"+response.data);
+       // console.log("response.data.data是"+response.data.data);
       this.lib_names = response.data.data;
-      console.log("this.lib_names是"+this.lib_names);
+      // console.log("this.lib_names是"+this.lib_names);
     }).catch(function(err){
       console.log(err);
     });
 
-    // var libs_file = require("../../libs.json");
-    // var libs = libs_file.data;
-    // console.log("before loop this.lib_names是"+this.lib_names);
-    // var tempTable = [];       //用来存储 tableData的值
-    // //便历数组来查询 id = "strId"的字典
-    // var temp = this.lib_names;
-    // console.log("temp是"+temp);
-    // for(var lib_name of temp){
-    //     var dict = {};
-    //     console.log(lib_name.lib_name);
-    //     dict.lib_name = lib_name.lib_name; //字典或者对象
-    //     tempTable.push(dict);
-    // }
-    // this.tableData = tempTable;
   },
   methods:{
     showDetail(index, data){
-      // console.log(index);
-      console.log("data是" + data);
-      console.log(data.lib_name);
-      for(var item in data){
-        console.log("data里的属性有" + item);
-      }
+      //3 点击某一行规则库名后的按钮触发的事件，
+      //index是点击行在列表中的下标(从0开始)
+      //data是点击该行存储的数据，具体内容可看console语句输出
+
       //console.log("目前点击了规则库的第"+index+"行");
+      // console.log("data是" + data);
+      // console.log(data.lib_name);
       //console.log("data.this_id是"+data.this_id);
 
       var id = "";
       for(var lib_id of this.lib_names_ids){
+        //4 在this.lib_names_ids寻找lib_name属性与被点击行元素相同的元素
+        //并将其_id属性值赋值给id
         if(lib_id.lib_name == data.lib_name){
           id = lib_id._id;
           console.log("_id = "+ id);
@@ -81,22 +74,15 @@ export default {
       var meta_data = {};
       var node_data = {};
       this.$ajax({
-        //
+        //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
         method:'POST',
-        url:'http://101.5.82.179:8099/data/get_data',
-        //101.5.82.179:8099/data/index
-        //data: {"_id":"5b470ba5fc6a38858a673ec8"},
+		//dataType:"jsonp",
+        url:'http://166.111.83.83:8099/data/get_data',
         data: {"_id":id},
       }).then(response=>{
-        console.log(response.data);
-
         meta_data = response.data.metadata;
         node_data = response.data.nodedata;
-        console.log("in index meta_data = ");
-        console.log(meta_data);
-        console.log("in index node_data = ");
-        console.log(node_data);
-
+        //6 路由跳转并传递lib的id， meta_data， node_data
         this.$router.push({
           path: '/data',
           name: "layout" ,
@@ -104,40 +90,31 @@ export default {
               id: id
           },
           query: {
-            // meta_data: JSON.stringify(meta_data),
-            // node_data: JSON.stringify(node_data)
             meta_data: meta_data,
             node_data: node_data
           }
-        });//路由传lib的_id参数和nodedata,metadata
+        });
 
       }).catch(function(err){
         console.log(err);
       });
-      // debugger;
-
     },
     getData(){
       this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
         method:'GET',
-        url:'http://101.5.82.179:8099/data/index'
+        url:'http://183.172.65.146:8099/data/index'
       }).then(response=>{
-        // console.log("response.data是"+response.data);
-        // console.log("response.data.data是"+response.data.data);
         this.lib_names = response.data.data;
-        // console.log("this.lib_names是"+this.lib_names);
       }).catch(function(err){
         console.log(err);
       });
-      var tempTable = [];       //用来存储 tableData的值
-      //便历数组来查询 id = "strId"的字典
+      var tempTable = [];       //8 用来临时存储 tableData的值
       var temp = this.lib_names;
-      // console.log("temp是"+temp);
       for(var lib_id of temp){
-          var dict = {};    //帮助存储lib_names
-          // console.log(lib_name.lib_name);
-          var _dict = {};   //帮助存储lib_names_ids
-          dict.lib_name = lib_id.lib_name; //字典或者对象
+          var dict = {};
+          var _dict = {};
+          dict.lib_name = lib_id.lib_name;
           _dict.lib_name = lib_id.lib_name;
           _dict._id = lib_id._id;
           tempTable.push(dict);
