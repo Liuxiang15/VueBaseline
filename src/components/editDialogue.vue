@@ -19,6 +19,7 @@
   export default {
     // 1 dialogFormVisible决定了对话框是否显现，初始值在本组件里定义
     // 在layout.vue里实现了对该属性修改的函数
+    name:"editDialogue",
     props:{
       show: Boolean,
       default: false

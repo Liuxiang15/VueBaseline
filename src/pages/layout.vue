@@ -21,7 +21,6 @@
 
 import DemoHeader from '../components/demoHeader'
 import LeftTree from '../components/leftTree'
-import saveAs from "../../FileSaver.js"
 import editDialogue from "../components/editDialogue.vue"
 import List from '../components/list'
 

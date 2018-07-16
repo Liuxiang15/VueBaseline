@@ -1,26 +1,31 @@
 <template>
-  <div id="container">
-    <h1>规则库列表</h1>
-    <el-table
-      :data="tableData"
-      border
-      style="width: 100%">
-      <el-table-column  prop="lib_name" label="规则库名字">
-        <template slot-scope="scope">
-          <i class="el-icon-document"></i>
-          <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="props">
-          <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+  <div>
+    <demo-header></demo-header>
+    <div id="container">
+      <h1>规则库列表</h1>
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%">
+        <el-table-column  prop="lib_name" label="规则库名字">
+          <template slot-scope="scope">
+            <i class="el-icon-document"></i>
+            <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="props">
+            <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
 <script>
+import DemoHeader from '../components/demoHeader'
+
 export default {
   name: "index",
   data() {
@@ -32,6 +37,9 @@ export default {
       lib_names:[],
       lib_names_ids:[]
     }
+  },
+  components:{
+    DemoHeader
   },
   created(){
     //2 向指定网页发送get请求并接收存储metadata和nodedata的字典
@@ -86,6 +94,7 @@ export default {
         this.$router.push({
           path: '/data',
           name: "layout" ,
+          props: true,
           params:{
               id: id
           },
