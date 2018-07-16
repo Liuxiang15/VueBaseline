@@ -4,6 +4,10 @@
     <div id="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
       Drop excel file here or
       <el-button :loading="loading" style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">Browse</el-button>
+      <br/>
+      <!--<div>-->
+      <el-button  size="mini" type="primary" @click="handleUpload">Upload</el-button>
+      <!--</div>-->
     </div>
   </div>
 </template>
@@ -123,7 +127,7 @@ export default {
 #drop{
   border: 2px dashed #bbb;
   width: 600px;
-  height: 160px;
+  height: 250px;
   line-height: 160px;
   margin: 0 auto;
   font-size: 24px;

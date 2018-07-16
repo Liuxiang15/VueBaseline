@@ -5,7 +5,8 @@ import HelloWorld from '@/components/HelloWorld'
 // import showjson from '@/pages/showjson'
 
 import layout from '@/pages/layout'
-// import uploadexcel from '@/pages/uploadExcel'
+
+import index from '@/pages/index'
 
 Vue.use(Router)
 
@@ -16,18 +17,13 @@ export default new Router({
       name: 'layout',
       component: layout
     },
-    // {
-    //   path: '/excel',
-    //   redirect: '/excel/import-excel',
-    //   name: 'uploadExcel',
-    //   component: uploadexcel,
-    //   // component:layout,
-    //   // children:[
-    //   //   { path: 'import-excel', component: importExcel, name: 'importExcel', meta: { title: 'importExcel' }}
-    //   // ]
-    // },
 
     { path: '/excel',  component: () => import('@/pages/uploadExcel'), hidden: true },
+    {
+      path:'/index',
+      name:'test',
+      component:index
+    }
 
   ]
 })
