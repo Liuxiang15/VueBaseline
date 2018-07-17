@@ -21,9 +21,14 @@ export default new Router({
       component: index
     },
 
-    { path: '/excel',  component: () => import('@/pages/uploadExcel'), hidden: true },
     {
-      path:'/data',
+      path: '/importExcel',
+      name: 'excel',
+      component: () => import('@/pages/uploadExcel'),
+      // hidden: true
+    },
+    {
+      path: '/data',
       name: 'layout',
       component: layout
     }

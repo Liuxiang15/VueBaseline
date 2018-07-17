@@ -4,8 +4,8 @@
       <el-menu-item index="/">主页面</el-menu-item>
       <el-submenu index="2">
         <template slot="title">次页面</template>
-        <el-menu-item index="/">menu-item-2-1</el-menu-item>
-        <!--<el-menu-item @click="handleImportExcel()">Excel导入</el-menu-item>-->
+        <!--<el-menu-item index="/">menu-item-2-1</el-menu-item>-->
+        <el-menu-item index="/importExcel">Excel导入</el-menu-item>
         <el-menu-item index="/">menu-item-2-2</el-menu-item>
         <el-menu-item index="/">menu-item-2-3</el-menu-item>
       </el-submenu>
@@ -16,12 +16,12 @@
 
 <script>
   export default {
-    name: 'DemoHeader',
+    name: 'DemoHeader'
   }
 </script>
 
 <style>
-  #header{
+  #header {
     background-color: #0d71d0;
     color: #0d71d0;
   }
