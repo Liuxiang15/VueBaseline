@@ -3,134 +3,190 @@
     <input id="excel-upload-input" ref="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
     <div id="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
       Drop excel file here or
-      <el-button :loading="loading" style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">Browse</el-button>
+      <el-button :loading="loading" style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">Browse
+      </el-button>
 
     </div>
   </div>
 </template>
 
 <script>
-import XLSX from 'xlsx'
+  import XLSX from 'xlsx'
+  import {importExcel} from '../../api/import'
 
-export default {
-  props: {
-    beforeUpload: Function,
-    onSuccess: Function
-  },
-  data() {
-    return {
-      loading: false,
-      excelData: {
-        header: null,
-        results: null
-      }
-    }
-  },
-  methods: {
-    generateDate({ header, results }) {
-      this.excelData.header = header
-      this.excelData.results = results
-      this.onSuccess && this.onSuccess(this.excelData)
-    },
-    handleDrop(e) {
-      e.stopPropagation()
-      e.preventDefault()
-      if (this.loading) return
-      const files = e.dataTransfer.files
-      if (files.length !== 1) {
-        this.$message.error('Only support uploading one file!')
-        return
-      }
-      const rawFile = files[0] // only use files[0]
-      this.upload(rawFile)
-      e.stopPropagation()
-      e.preventDefault()
-    },
-    handleDragover(e) {
-      e.stopPropagation()
-      e.preventDefault()
-      e.dataTransfer.dropEffect = 'copy'
-    },
-    handleUpload() {
-      document.getElementById('excel-upload-input').click()
-    },
-    handleClick(e) {
-      const files = e.target.files
-      const rawFile = files[0] // only use files[0]
-      if (!rawFile) return
-      this.upload(rawFile)
-    },
-    upload(rawFile) {
-      this.$refs['excel-upload-input'].value = null // fix can't select the same excel
+  // import { importExcel } from '@/api/article'
 
-      if (!this.beforeUpload) {
-        this.readerData(rawFile)
-        return
-      }
-      const before = this.beforeUpload(rawFile)
-      if (before) {
-        this.readerData(rawFile)
-      }
+  export default {
+    props: {
+      beforeUpload: Function,
+      onSuccess: Function
     },
-    readerData(rawFile) {
-      this.loading = true
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = e => {
-          const data = e.target.result
-          const fixedData = this.fixdata(data)
-          const workbook = XLSX.read(btoa(fixedData), { type: 'base64' })
-          const firstSheetName = workbook.SheetNames[0]
-          const worksheet = workbook.Sheets[firstSheetName]
-          const header = this.get_header_row(worksheet)
-          const results = XLSX.utils.sheet_to_json(worksheet)
-          this.generateDate({ header, results })
-          this.loading = false
-          resolve()
+    data() {
+      return {
+        loading: false,
+        excelData: {
+          header: null,
+          results: null
         }
-        reader.readAsArrayBuffer(rawFile)
-      })
-    },
-    fixdata(data) {
-      let o = ''
-      let l = 0
-      const w = 10240
-      for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)))
-      o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)))
-      return o
-    },
-    get_header_row(sheet) {
-      const headers = []
-      const range = XLSX.utils.decode_range(sheet['!ref'])
-      let C
-      const R = range.s.r /* start in the first row */
-      for (C = range.s.c; C <= range.e.c; ++C) { /* walk every column in the range */
-        var cell = sheet[XLSX.utils.encode_cell({ c: C, r: R })] /* find the cell in the first row */
-        var hdr = 'UNKNOWN ' + C // <-- replace with your desired default
-        if (cell && cell.t) hdr = XLSX.utils.format_cell(cell)
-        headers.push(hdr)
       }
-      return headers
+    },
+    methods: {
+      generateDate({header, results}) {
+        this.excelData.header = header
+        this.excelData.results = results
+        this.onSuccess && this.onSuccess(this.excelData)
+      },
+      handleDrop(e) {
+        e.stopPropagation()
+        e.preventDefault()
+        if (this.loading) return
+        const files = e.dataTransfer.files
+        if (files.length !== 1) {
+          this.$message.error('Only support uploading one file!')
+          return
+        }
+        const rawFile = files[0] // only use files[0]
+        this.upload(rawFile)
+        e.stopPropagation()
+        e.preventDefault()
+      },
+      handleDragover(e) {
+        e.stopPropagation()
+        e.preventDefault()
+        e.dataTransfer.dropEffect = 'copy'
+      },
+      handleUpload() {
+        document.getElementById('excel-upload-input').click()
+      },
+      handleClick(e) {
+        const files = e.target.files
+        const rawFile = files[0] // only use files[0]
+        if (!rawFile) return
+        this.upload(rawFile)
+      },
+
+      upload(rawFile) {
+        this.$refs['excel-upload-input'].value = null // fix can't select the same excel
+
+        if (!this.beforeUpload) {
+          this.readerData(rawFile)
+          return
+        }
+        const before = this.beforeUpload(rawFile)
+        if (before) {
+          this.readerData(rawFile)
+        }
+
+        this.upload2Server(rawFile)
+      },
+      upload2Server(rawFile) {
+
+        // fetchList(this.listQuery).then(response => {
+        //   this.list = response.data.items
+        //   this.loading = false
+        // })
+
+
+        debugger;
+
+        let formData = new FormData();
+        formData.append('file', rawFile)
+
+        // return request({
+        //   url: 'http://127.0.0.1:8099/excel/importExcel',
+        //   method: 'post',
+        //   data: formData
+        // })
+
+
+        this.$http.post('http://127.0.0.1:8099/excel/importExcel', formData, {
+          // progress(event) {
+          //   //传递给父组件的progress方法
+          //   self.$emit('progress', parseFloat(event.loaded / event.total * 100), flag)
+          // }
+        }).then(response => {
+            // const result = response.body
+            // if (result.hash && result.key) {
+            //   //传递给父组件的complete方法
+            //   self.$emit('complete', 200, result, flag)
+            //   //让当前target可以重新选择
+            //   event.target.value = null
+            // } else {
+            //   self.$emit('complete', 500, result, flag)
+            // }
+          console.log(response)
+          }
+
+        )
+
+
+        // importExcel(rawFile)
+        // .then(res => {
+        //   console.log(res);
+        // })
+      },
+      readerData(rawFile) {
+        this.loading = true
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = e => {
+            const data = e.target.result
+            const fixedData = this.fixdata(data)
+            const workbook = XLSX.read(btoa(fixedData), {type: 'base64'})
+            const firstSheetName = workbook.SheetNames[0]
+            const worksheet = workbook.Sheets[firstSheetName]
+            const header = this.get_header_row(worksheet)
+            const results = XLSX.utils.sheet_to_json(worksheet)
+            this.generateDate({header, results})
+            this.loading = false
+            resolve()
+          }
+          reader.readAsArrayBuffer(rawFile)
+        })
+      },
+      fixdata(data) {
+        let o = ''
+        let l = 0
+        const w = 10240
+        for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)))
+        o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)))
+        return o
+      },
+      get_header_row(sheet) {
+        const headers = []
+        const range = XLSX.utils.decode_range(sheet['!ref'])
+        let C
+        const R = range.s.r
+        /* start in the first row */
+        for (C = range.s.c; C <= range.e.c; ++C) { /* walk every column in the range */
+          var cell = sheet[XLSX.utils.encode_cell({c: C, r: R})]
+          /* find the cell in the first row */
+          var hdr = 'UNKNOWN ' + C // <-- replace with your desired default
+          if (cell && cell.t) hdr = XLSX.utils.format_cell(cell)
+          headers.push(hdr)
+        }
+        return headers
+      }
     }
   }
-}
 </script>
 
 <style scoped>
-#excel-upload-input{
-  display: none;
-  z-index: -9999;
-}
-#drop{
-  border: 2px dashed #bbb;
-  width: 600px;
-  height: 160px;
-  line-height: 160px;
-  margin: 0 auto;
-  font-size: 24px;
-  border-radius: 5px;
-  text-align: center;
-  color: #bbb;
-  position: relative;
-}
+  #excel-upload-input {
+    display: none;
+    z-index: -9999;
+  }
+
+  #drop {
+    border: 2px dashed #bbb;
+    width: 600px;
+    height: 160px;
+    line-height: 160px;
+    margin: 0 auto;
+    font-size: 24px;
+    border-radius: 5px;
+    text-align: center;
+    color: #bbb;
+    position: relative;
+  }
 </style>
