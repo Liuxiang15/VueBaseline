@@ -80,50 +80,10 @@
         this.upload2Server(rawFile)
       },
       upload2Server(rawFile) {
-
-        // fetchList(this.listQuery).then(response => {
-        //   this.list = response.data.items
-        //   this.loading = false
-        // })
-
-
-        debugger;
-
-        let formData = new FormData();
-        formData.append('file', rawFile)
-
-        // return request({
-        //   url: 'http://127.0.0.1:8099/excel/importExcel',
-        //   method: 'post',
-        //   data: formData
-        // })
-
-
-        this.$http.post('http://127.0.0.1:8099/excel/importExcel', formData, {
-          // progress(event) {
-          //   //传递给父组件的progress方法
-          //   self.$emit('progress', parseFloat(event.loaded / event.total * 100), flag)
-          // }
-        }).then(response => {
-            // const result = response.body
-            // if (result.hash && result.key) {
-            //   //传递给父组件的complete方法
-            //   self.$emit('complete', 200, result, flag)
-            //   //让当前target可以重新选择
-            //   event.target.value = null
-            // } else {
-            //   self.$emit('complete', 500, result, flag)
-            // }
-          console.log(response)
-          }
-
-        )
-
-
-        // importExcel(rawFile)
-        // .then(res => {
-        //   console.log(res);
-        // })
+        // 使用then语法，或者新增callback参数
+        importExcel(rawFile).then(res => {
+          console.log(res);
+        })
       },
       readerData(rawFile) {
         this.loading = true
