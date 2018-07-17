@@ -71,7 +71,7 @@ export default {
 </script>
 
 <style>
-/* .el-header, .el-footer {
+.el-header, .el-footer {
   background-color: #B3C0D1;
   color: #333;
   text-align: center;
@@ -79,17 +79,12 @@ export default {
 }
 
 .el-aside {
-  background-color: #D3DCE6;
-  color: #333;
-  text-align: center;
-  line-height: 200px;
+  padding-left: 1%;
+  padding-right: 2%;
 }
 
 .el-main {
-  background-color: #E9EEF3;
-  color: #333;
-  text-align: center;
-  line-height: 160px;
-} */
+
+}
 
 </style>
