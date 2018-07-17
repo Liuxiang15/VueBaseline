@@ -2,13 +2,16 @@
   <div>
     <demo-header></demo-header>
     <el-container>
-      <el-aside width="500px">
-        <left-tree :meta="meta" v-on:listenToNodeClick="showMsgFromChild"></left-tree>
+      <el-aside width="30%">
+        <left-tree id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild"
+        >
+        </left-tree>
       </el-aside>
-      <el-main>
-        <list :node_data="node_data" ref="snlLists"></list>
+      <el-main width="60%">
+        <list :node_data="node_data" ref="snlLists" @editDialogue="editDialogue"></list>
+        <edit-dialogue :show = "edit_show" @save="save" @close="close">
+        </edit-dialogue>
       </el-main>
-      <router-link to="/index">fuck</router-link>
     </el-container>
   </div>
 </template>
@@ -30,43 +33,53 @@
     },
     data() {
       return {
+        //1 pnodedata存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
+        //edit_show决定对话框是否显示
         pnodedata: {},
-        meta: {},
+        meta_data: {},
         node_data: {},
-        data:{}
+        edit_show:false
       }
     },
     created(){
-      this.$ajax({
-        method:'POST',
-        url:'http://101.5.82.179:8099/data/get_data',
-        //101.5.82.179:8099/data/index
-        data: {"_id":"5b470ba5fc6a38858a673ec8"},
-      }).then(response=>{
-        console.log(response.data);
-        this.meta = response.data.metadata;
-        this.node_data = response.data.nodedata;
-        console.log(this.meta);
-      }).catch(function(err){
-        console.log(err);
-      });
-      // this.meta_data = response_data.metadata;
-      // this.node_data = response_data.nodedata;
-      // console.log("in layout this.meta_data是" + this.meta_data);
+      this.meta_data = this.$route.query.meta_data;
+      this.node_data = this.$route.query.node_data;
     },
     methods:{
       showMsgFromChild:function(data){
+        //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
         console.log("enter showMsgFromChild函数");
         this.pnodedata = data;
-        //执行list的显示函数
-        var _this = this;
-        _this.$refs.snlLists.show_list(this.pnodedata);
+        this.$refs.snlLists.showList(this.pnodedata);
       },
+      editDialogue: function(){
+        console.log("进入showDialogue函数");
+        this.edit_show = true;
+        console.log("this.edit_show"+this.edit_show);
+      },
+      save(){
+        this.edit_show = false;
+      },
+      close(){
+        this.edit_show = false;
+      },
+      get_meta_node_data:function(){
+        this.meta = this.$route.query.meta_data;
+        this.node_data = this.$route.query.node_data;
+      }
     },
+    watch:{
+      meta_data(){
+        this.get_meta_node_data();
+      }
+    }
   }
 </script>
 
 <style>
+  .el-textarea__inner {
+    width: 100%;
+  }
   .el-tag {
     white-space: inherit !important;
   }
@@ -75,5 +88,13 @@
   }
   .el-textarea.is-disabled .el-textarea__inner {
     color: black;
+  }
+  #dialog{
+    /*display:none;*/
+  }
+  #left_tree{
+    position: relative;
+    width: 90%;
+    left: 10%;
   }
 </style>

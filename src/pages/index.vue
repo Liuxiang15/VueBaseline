@@ -1,0 +1,145 @@
+<template>
+  <div id="container">
+    <h1>规则库列表</h1>
+    <el-table
+      :data="tableData"
+      border
+      style="width: 100%">
+      <el-table-column  prop="lib_name" label="规则库名字">
+        <template slot-scope="scope">
+          <i class="el-icon-document"></i>
+          <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="props">
+          <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "index",
+  data() {
+    return {
+      // 1 tableData存储lib_name的字典列表，
+      //lib_names是存储包含id和snl_spl_pairs属性的字典的列表
+      //lib_names_ids是包含lib_name和_id属性的字典的列表
+      tableData: [],
+      lib_names:[],
+      lib_names_ids:[]
+    }
+  },
+  created(){
+    //2 向指定网页发送get请求并接收存储metadata和nodedata的字典
+	console.log("enter created 函数");
+    this.$ajax({
+      method:'GET',
+	  //dataType:"jsonp",
+      url:'http://166.111.83.83:8099/data/index'
+    }).then(response=>{
+       console.log("response.data是"+response.data);
+       // console.log("response.data.data是"+response.data.data);
+      this.lib_names = response.data.data;
+      // console.log("this.lib_names是"+this.lib_names);
+    }).catch(function(err){
+      console.log(err);
+    });
+
+  },
+  methods:{
+    showDetail(index, data){
+      //3 点击某一行规则库名后的按钮触发的事件，
+      //index是点击行在列表中的下标(从0开始)
+      //data是点击该行存储的数据，具体内容可看console语句输出
+
+      //console.log("目前点击了规则库的第"+index+"行");
+      // console.log("data是" + data);
+      // console.log(data.lib_name);
+      //console.log("data.this_id是"+data.this_id);
+
+      var id = "";
+      for(var lib_id of this.lib_names_ids){
+        //4 在this.lib_names_ids寻找lib_name属性与被点击行元素相同的元素
+        //并将其_id属性值赋值给id
+        if(lib_id.lib_name == data.lib_name){
+          id = lib_id._id;
+          console.log("_id = "+ id);
+          break;
+        }
+      }
+      var meta_data = {};
+      var node_data = {};
+      this.$ajax({
+        //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+        method:'POST',
+		//dataType:"jsonp",
+        url:'http://166.111.83.83:8099/data/get_data',
+        data: {"_id":id},
+      }).then(response=>{
+        meta_data = response.data.metadata;
+        node_data = response.data.nodedata;
+        //6 路由跳转并传递lib的id， meta_data， node_data
+        this.$router.push({
+          path: '/data',
+          name: "layout" ,
+          params:{
+              id: id
+          },
+          query: {
+            meta_data: meta_data,
+            node_data: node_data
+          }
+        });
+
+      }).catch(function(err){
+        console.log(err);
+      });
+    },
+    getData(){
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'GET',
+        url:'http://183.172.65.146:8099/data/index'
+      }).then(response=>{
+        this.lib_names = response.data.data;
+      }).catch(function(err){
+        console.log(err);
+      });
+      var tempTable = [];       //8 用来临时存储 tableData的值
+      var temp = this.lib_names;
+      for(var lib_id of temp){
+          var dict = {};
+          var _dict = {};
+          dict.lib_name = lib_id.lib_name;
+          _dict.lib_name = lib_id.lib_name;
+          _dict._id = lib_id._id;
+          tempTable.push(dict);
+          this.lib_names_ids.push(_dict);
+      }
+      this.tableData = tempTable;
+    }
+  },
+  watch:{
+    lib_names(){
+      this.getData();
+    }
+  }
+}
+</script>
+
+<style>
+#container{
+  position: relative;
+  text-align: center;
+  width:40%;
+  left:30%;
+}
+
+.el-table th > .cell {
+    text-align: center;
+}
+</style>

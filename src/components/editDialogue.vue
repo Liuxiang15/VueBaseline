@@ -1,7 +1,4 @@
 <template>
-  <!--修改SNL语句弹出对话框-->
-  <div>
-    <el-button type="text" @click="dialogFormVisible = true">编辑SNL语句</el-button>
     <el-dialog title="弹出对话框" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="新的SNL语句" :label-width="formLabelWidth">
@@ -12,18 +9,24 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
+        <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
       </div>
     </el-dialog>
-  </div>
 </template>
 
 <script>
   export default {
+    // 1 dialogFormVisible决定了对话框是否显现，初始值在本组件里定义
+    // 在layout.vue里实现了对该属性修改的函数
+    props:{
+      show: Boolean,
+      default: false
+    },
+
     data() {
       return {
-        dialogTableVisible: false,
+        dialogTableVisible: this.show,
         dialogFormVisible: false,
         form: {
           name: '',
@@ -37,6 +40,23 @@
         },
         formLabelWidth: '120px'
       };
+    },
+    watch:{
+      show(val){
+        this.dialogFormVisible = val;
+      }
+    },
+    methods:{
+      //2 调用父组件的close函数使的对话框消失
+      close() {
+        //this.dialogFormVisible = false;
+        this.$emit('close');
+      },
+
+      save() {
+        //this.dialogFormVisible = false
+        this.$emit('save');
+      }
     }
   };
 </script>

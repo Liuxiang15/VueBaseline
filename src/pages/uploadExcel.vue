@@ -5,6 +5,10 @@
       <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
       </el-table-column>
     </el-table>
+    <br/>
+    <div style="text-align: center;">
+      <el-button size="mini" type="success" @click="handleImportExcel">Upload</el-button>
+    </div>
   </div>
 </template>
 
@@ -14,17 +18,17 @@
   export default {
     name: "uploadExcel",
     // comments: {ImportExcel},
-    components: { UploadExcelComponent },
+    components: {UploadExcelComponent},
     data() {
       return {
         tableData: [],
         tableHeader: []
       }
     },
-    created(){
-      // debugger;
-      console.log("ddddddddddddddssssssssygfhgkkoiuddddddddddddddd")
-    },
+    // created() {
+    //   // debugger;
+    //   console.log("ddddddddddddddssssssssygfhgkkoiuddddddddddddddd")
+    // },
     methods: {
       beforeUpload(file) {
         const isLt1M = file.size / 1024 / 1024 < 1
@@ -42,6 +46,9 @@
       handleSuccess({results, header}) {
         this.tableData = results
         this.tableHeader = header
+      },
+      handleImportExcel() {
+        console.log("click on import excel")
       }
     },
 

@@ -1,28 +1,27 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-// import home from '@/pages/home'
-// import showjson from '@/pages/showjson'
+
 
 import layout from '@/pages/layout'
 
 import index from '@/pages/index'
 
 Vue.use(Router)
-
+// 1定义路由，每个路由应该映射一个组件
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'layout',
-      component: layout
+      name: 'index',
+      component: index
     },
 
     { path: '/excel',  component: () => import('@/pages/uploadExcel'), hidden: true },
     {
-      path:'/index',
-      name:'test',
-      component:index
+      path:'/data',
+      name: 'layout',
+      component: layout
     }
 
   ]

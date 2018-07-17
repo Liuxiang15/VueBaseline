@@ -1,20 +1,24 @@
 <template>
 <div>
-  <p> id= {{this.strId}}对应的text</p>
   <div id="test">
+    <p>description</p>
     <el-input
       type="textarea"
-      id="textarea"
+      id="text_area"
       placeholder="请输入内容"
-      v-model="textarea"
-      v-bind:disabled= "disableFlag"
-      >
+      v-model="text_area"
+      v-bind:disabled= "disable_flag"
+    >
     </el-input>
-    <el-button type="primary" v-on:click='handleEditText()' >修改</el-button>
-    <el-button type="success" v-on:click='SaveText()' >保存</el-button>
+    <p></p>
+    <div id="btns">
+      <el-button type="primary" v-on:click='handleEditText()' >修改</el-button>
+      <el-button type="success" v-on:click='saveText()' >保存</el-button>
+      <p></p>
+    </div>
   </div>
 
-  <p>id= {{this.strId}}对应的SNL语句</p>
+  <p>SNL语句</p>
   <!--用于展示规则的列表-->
   <div>
     <el-table
@@ -50,75 +54,82 @@
 </template>
 
 <script>
-//import layout from '../pages/layout.vue'
-import LeftTree from '../components/leftTree'
 export default {
   props: {
     node_data: {}
+    //1 在layout中传入node_data的json内容
   },
-  components:{
-    LeftTree
-  },
+
   data() {
     return {
-      disableFlag:true,
+      //2 disable_flag决定了description是否可以编辑，table_data是table的数据来源
+      //text_area存储输入框里的值，
+      disable_flag:true,
       tableData: [],
-      textarea:"",
-      strId:"",
+      text_area:"",
       list_data:[]
     }
   },
   methods:{
     handleEditText(){
       console.log("enter handleEditText函数");
-      this.disableFlag = false;
+      this.disable_flag = false;
     },
 
-
-    SaveText(){
-      // console.log("用户输入的text是"+this.textarea);
+    saveText(){
       console.log("enter saveText 函数");
-      var newInfo = {};   //存储新增的｛text,snls｝对象
+      var newInfo = {};
       var strId = this.list_data["id"].toString();
       newInfo[strId] = {};
-      newInfo[strId].text = this.textarea;
-
-      var node_datas = this.node_data.data;
+      newInfo[strId].text = this.text_area;
+      //var node_datas = this.node_data.data;
       newInfo[strId].snl = node_datas[strId]["snl"];
     },
 
+    handleEdit(index, row){
+      //3 触发父组件对话框弹出
+      console.log("enter handleEdit 函数");
+      this.$emit("editDialogue");
+    },
 
-    show_list(data){
+    handleDelete(index, row){
+      alert("删除本行");
+    },
+
+    showList(data){
       console.log("进入show_list函数");
       this.list_data = data;`
       //先将"description"赋值给text`
-      this.textarea = this.list_data.description;
+      this.text_area = this.list_data.description;
 
-      //读入nodedata
       var node_datas = this.node_data.data;
-      console.log("in list nodedata_file is " + node_datas);
-
+      // console.log("in list nodedata_file is " + node_datas);
       var strId = data["id"].toString();
-      //保存当前list的id属性
-      this.strId = strId;
-      var tempTable = [];       //用来存储 tableData的值
-      //便历数组来查询 id = "strId"的字典
+      var tempTableData = [];       //用来存储 tableData的值
+      //4 便历数组来查询 id = "strId"的字典并将其snl属性赋值给tempTableData
       for(var node_data of node_datas){
           if(node_data.this_id == strId){
             var snl_spl_pairs = node_data["snl_spl_pairs"];
             for(var snl_spl of snl_spl_pairs){
-                // console.log("enter the for loop");
                 var dict = {};
-                dict.snl = snl_spl.snl; //字典或者对象
-                tempTable.push(dict);
+                dict.snl = snl_spl.snl;
+                tempTableData.push(dict);
             }
-            this.tableData = tempTable;
+            this.tableData = tempTableData;
             break;
           }
         }
-
     }
-
   }
 }
 </script>
+<style>
+p{
+  text-align: center;
+}
+
+#btns{
+  position: relative;
+  width: 60%;
+}
+</style>
