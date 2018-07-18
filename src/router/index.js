@@ -4,6 +4,7 @@ import HelloWorld from '@/components/HelloWorld'
 
 
 import layout from '@/pages/layout'
+
 import index from '@/pages/index'
 
 Vue.use(Router)
@@ -19,10 +20,18 @@ export default new Router({
       name: 'index',
       component: index
     },
+
     {
-      path:'/data',
+      path: '/importExcel',
+      name: 'excel',
+      component: () => import('@/pages/uploadExcel'),
+      // hidden: true
+    },
+    {
+      path: '/data',
       name: 'layout',
       component: layout
     }
+
   ]
 })

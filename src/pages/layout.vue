@@ -53,7 +53,7 @@ export default {
       console.log(this.meta_data[i]);
     }
     //this.node_data = this.$route.query.node_data;
-},
+  },
   methods:{
     showMsgFromChild(data){
       //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
@@ -66,24 +66,12 @@ export default {
       console.log("进入showDialogue函数");
       this.edit_show = true;
       console.log("this.edit_show"+this.edit_show);
-    },
-    save(){
-      this.edit_show = false;
-    },
-    close(){
-      this.edit_show = false;
-    },
-    get_meta_node_data:function(){
-      this.meta_data = this.$route.query.meta_data;
-      console.log("in layout this.meta_data = ");
-      console.log(this.meta_data);
-      //this.node_data = this.$route.query.node_data;
     }
   },
+  
+
   watch:{
     meta_data(){
-      console.log("in layout this.meta_data = ");
-      console.log(this.meta_data);
       this.get_meta_node_data();
     }
   }
@@ -91,6 +79,7 @@ export default {
 </script>
 
 <style>
+<<<<<<< HEAD
 body{
   height: 100%;
 }
@@ -148,20 +137,26 @@ div{
   box-sizing: border-box;
 }
 
+
 .el-textarea__inner {
-    width: 100%;
+  width: 100%;
 }
-
 .el-tag {
-    white-space: inherit !important;
+  white-space: inherit !important;
 }
-
 .el-tag--medium {
-    height: 100%;
+  height: 100%;
 }
-
 .el-textarea.is-disabled .el-textarea__inner {
-    color: black;
+  color: black;
 }
 
+  #dialog{
+    /*display:none;*/
+  }
+  #left_tree{
+    position: relative;
+    width: 90%;
+    left: 10%;
+  }
 </style>
