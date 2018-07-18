@@ -1,18 +1,21 @@
 <template>
-  <div>
-    <demo-header></demo-header>
+  <div class="container">
+    <el-header>
+      <demo-header></demo-header>
+    </el-header>
     <el-container>
-      <el-aside width="30%">
+      <el-aside>
         <left-tree id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild"
         >
         </left-tree>
       </el-aside>
-      <el-main width="60%">
-        <list :node_data="node_data" ref="snlLists" @editDialogue="editDialogue"></list>
+      <el-main>
+        <list  ref="snlLists" @editDialogue="editDialogue"></list>
         <edit-dialogue :show = "edit_show" @save="save" @close="close">
         </edit-dialogue>
       </el-main>
     </el-container>
+    <el-footer>Footer</el-footer>
   </div>
 </template>
 
@@ -34,9 +37,9 @@ export default {
   },
   data() {
     return {
-      //1 pnodedata存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
+      //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
       //edit_show决定对话框是否显示
-      pnodedata: {},
+      current_node: {},
       meta_data: {},
       node_data: {},
       edit_show:false
@@ -44,17 +47,22 @@ export default {
   },
   created(){
     this.meta_data = this.$route.query.meta_data;
-    this.node_data = this.$route.query.node_data;
+    console.log("in layout this.meta_data = ");
+    console.log(this.meta_data);
+    for(var i in this.meta_data){
+      console.log(this.meta_data[i]);
+    }
+    //this.node_data = this.$route.query.node_data;
 },
   methods:{
-    showMsgFromChild:function(data){
+    showMsgFromChild(data){
       //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
       console.log("enter showMsgFromChild函数");
-      this.pnodedata = data;
-      this.$refs.snlLists.showList(this.pnodedata);
+      this.current_node = data;
+      this.$refs.snlLists.showList(this.current_node);
 
     },
-    editDialogue: function(){
+    editDialogue(){
       console.log("进入showDialogue函数");
       this.edit_show = true;
       console.log("this.edit_show"+this.edit_show);
@@ -66,12 +74,16 @@ export default {
       this.edit_show = false;
     },
     get_meta_node_data:function(){
-      this.meta = this.$route.query.meta_data;
-      this.node_data = this.$route.query.node_data;
+      this.meta_data = this.$route.query.meta_data;
+      console.log("in layout this.meta_data = ");
+      console.log(this.meta_data);
+      //this.node_data = this.$route.query.node_data;
     }
   },
   watch:{
     meta_data(){
+      console.log("in layout this.meta_data = ");
+      console.log(this.meta_data);
       this.get_meta_node_data();
     }
   }
@@ -79,6 +91,63 @@ export default {
 </script>
 
 <style>
+body{
+  height: 100%;
+}
+
+div{
+  box-sizing: border-box !important;
+}
+.container{
+  height: 100%;
+  box-sizing: border-box;
+  background-color: #DCDFE6 !important;
+}
+
+.el-header{
+  height: 10% !important;
+  /* 我们希望 header 采用固定的高度，只占用必须的空间 */
+  /* 0 flex-grow, 0 flex-shrink, auto flex-basis */
+  flex: 0 0 auto;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+  box-sizing: border-box;
+  padding: 0 !important;
+}
+
+.el-footer {
+  height: 10% !important;
+  /* 我们希望 header 采用固定的高度，只占用必须的空间 */
+  /* 0 flex-grow, 0 flex-shrink, auto flex-basis */
+  flex: 0 0 auto;
+
+  background-color: #B3C0D1;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+  box-sizing: border-box;
+}
+
+.el-container{
+  /* height: 80%; */
+  min-height: 80%;
+  max-height: 80%;
+  flex: 1 0 auto;
+  box-sizing: border-box;
+}
+
+.el-aside {
+  height: 100%;
+  width: 40%;
+  box-sizing: border-box;
+}
+.el-main {
+  height: 100%;
+  width:50%;
+  box-sizing: border-box;
+}
+
 .el-textarea__inner {
     width: 100%;
 }
@@ -95,13 +164,4 @@ export default {
     color: black;
 }
 
-#dialog{
-  /*display:none;*/
-}
-
-#left_tree{
-  position: relative;
-  width: 90%;
-  left: 10%;
-}
 </style>

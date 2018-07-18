@@ -13,9 +13,7 @@ const portfinder = require('portfinder')
 
 const express = require('express')
 const app = express()
-var appData1 = require('../demo.json')//加载本地数据文件
-var mytree = appData1.tree
-var treename = appData1.name
+
 
 var appData2 = require('../goods.json')
 var goods = appData2.goods

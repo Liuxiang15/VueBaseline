@@ -1,6 +1,6 @@
 <template>
-<div>
-  <div id="test">
+<div id="container">
+  <div id="text_container">
     <p>description</p>
     <el-input
       type="textarea"
@@ -17,57 +17,52 @@
       <p></p>
     </div>
   </div>
-
-  <p>SNL语句</p>
-  <!--用于展示规则的列表-->
-  <div>
+  <div id="snl_container">
+    <p>SNL语句</p>
+    <!--用于展示规则的列表-->
     <el-table
-    :data="tableData"
+    :data="table_data"
     style="width: 100%">
-
-    <el-table-column
-      label="SNL语句">
-      <template slot-scope="scope">
-        <el-popover trigger="hover" placement="top">
-          <p>snl语句: {{ scope.row.snl }}</p>
-          <div slot="reference" class="name-wrapper">
-            <el-tag size="medium">{{ scope.row.snl }}</el-tag>
-          </div>
-        </el-popover>
-      </template>
-    </el-table-column>
-
-    <el-table-column label="操作">
-      <template slot-scope="scope">
-        <el-button
-          size="mini"
-          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-      </template>
-    </el-table-column>
+      <el-table-column
+        label="SNL语句">
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            <p>snl语句: {{ scope.row.snl }}</p>
+            <div slot="reference" class="name-wrapper">
+              <el-tag size="medium">{{ scope.row.snl }}</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            @click="handleEdit(scope.$index, scope.row) ">编辑</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
-  </div>
+</div>
 </template>
 
 <script>
 export default {
-  props: {
-    node_data: {}
-    //1 在layout中传入node_data的json内容
-  },
 
   data() {
     return {
       //2 disable_flag决定了description是否可以编辑，table_data是table的数据来源
-      //text_area存储输入框里的值，
+      //text_area存储输入框里的值，current_node存储当前被点击节点的信息
+      //list_data存储当前节点的所有信息
       disable_flag:true,
-      tableData: [],
+      table_data: [],
       text_area:"",
-      list_data:[]
+      list_data:[],
+      current_node:{}
     }
   },
   methods:{
@@ -83,7 +78,7 @@ export default {
       newInfo[strId] = {};
       newInfo[strId].text = this.text_area;
       //var node_datas = this.node_data.data;
-      newInfo[strId].snl = node_datas[strId]["snl"];
+      //newInfo[strId].snl = node_datas[strId]["snl"];
     },
 
     handleEdit(index, row){
@@ -93,37 +88,75 @@ export default {
     },
 
     handleDelete(index, row){
-      alert("删除本行");
+      console.log("进入handleDelet函数");
+      console.log("被删除的row.snl是" + row.snl);
+      console.log("this.list_data.id" + this.list_data.id);
+      console.log("this.list_data.text" + this.list_data.text);
+      console.log("this.list_data.description" + this.list_data.description);
+      for(var index = 0; index < this.table_data.length; index++){
+        //在存储列表数据的table_data里遍历并删除该元素
+        if(this.table_data[index].snl == row.snl){
+          this.table_data.splice(index, 1);
+        }
+      }
+      //alert("删除本行");
     },
 
-    showList(data){
+    showList(current_node){
+      console.log(current_node);
       console.log("进入show_list函数");
-      this.list_data = data;`
-      //先将"description"赋值给text`
+      this.list_data = current_node;
+      //先将"description"赋值给text
       this.text_area = this.list_data.description;
-
-      var node_datas = this.node_data.data;
       // console.log("in list nodedata_file is " + node_datas);
-      var strId = data["id"].toString();
-      var tempTableData = [];       //用来存储 tableData的值
-      //4 便历数组来查询 id = "strId"的字典并将其snl属性赋值给tempTableData
-      for(var node_data of node_datas){
-          if(node_data.this_id == strId){
-            var snl_spl_pairs = node_data["snl_spl_pairs"];
-            for(var snl_spl of snl_spl_pairs){
-                var dict = {};
-                dict.snl = snl_spl.snl;
-                tempTableData.push(dict);
-            }
-            this.tableData = tempTableData;
-            break;
-          }
+      //var strId = data["id"].toString();
+      var strId = current_node.id;
+      var snl_spl_pairs = {};
+      this.$ajax({
+        //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+        method:'POST',
+		//dataType:"jsonp",
+        url:'http://166.111.83.83:8199/data/get_snl_spl_pairs',
+        data: {"_id":strId},
+      }).then(response=>{
+        console.log("list收到的snl_spl_pairs是：");
+        console.log(response.data.snl_spl_pairs.data);
+        snl_spl_pairs = response.data.snl_spl_pairs.data;
+        var tempTableData = [];       //用来存储 tableData的值
+        //4 便历数组来查询 id = "strId"的字典并将其snl属性赋值给tempTableData
+        for(var snl_spl of snl_spl_pairs){
+            var dict = {};
+            console.log("============");
+            console.log(snl_spl);
+            dict.snl = snl_spl.snl;
+            tempTableData.push(dict);
         }
+        this.table_data = tempTableData;
+        console.log("this.table_data是：");
+        console.log(this.table_data);
+      }).catch(function(err){
+        console.log(err);
+      // });
+    });
+
+
+
+
     }
   }
 }
 </script>
 <style>
+#text_container{
+  max-height: 30%;
+  box-sizing: border-box;
+}
+
+#snl_container{
+  max-height: 60%;
+  box-sizing: border-box;
+}
+
 p{
   text-align: center;
 }
@@ -132,4 +165,5 @@ p{
   position: relative;
   width: 60%;
 }
+
 </style>

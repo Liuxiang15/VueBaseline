@@ -38,17 +38,29 @@ export default {
       lib_names_ids:[]
     }
   },
+
+  // dynamically set transition based on route change
+  watch: {
+    '$route' (to, from) {
+      const toDepth = to.path.split('/').length
+      const fromDepth = from.path.split('/').length
+      this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+    }
+  },
+
   components:{
     DemoHeader
   },
   created(){
     //2 向指定网页发送get请求并接收存储metadata和nodedata的字典
-	console.log("enter created 函数");
+    debugger;
+	  console.log("enter created 函数");
     this.$ajax({
       method:'GET',
 	  //dataType:"jsonp",
-      url:'http://166.111.83.83:8099/data/index'
+      url:'http://166.111.83.83:8199/data/index'
     }).then(response=>{
+      debugger;
        console.log("response.data是"+response.data);
        // console.log("response.data.data是"+response.data.data);
       this.lib_names = response.data.data;
@@ -85,11 +97,13 @@ export default {
         //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
         method:'POST',
 		//dataType:"jsonp",
-        url:'http://166.111.83.83:8099/data/get_data',
+        url:'http://166.111.83.83:8199/data/get_metadata',
         data: {"_id":id},
       }).then(response=>{
-        meta_data = response.data.metadata;
-        node_data = response.data.nodedata;
+        meta_data = response.data;
+        console.log("in index ");
+        console.log(meta_data);
+        //node_data = response.data.nodedata;
         //6 路由跳转并传递lib的id， meta_data， node_data
         this.$router.push({
           path: '/data',
@@ -100,7 +114,7 @@ export default {
           },
           query: {
             meta_data: meta_data,
-            node_data: node_data
+            //node_data: node_data
           }
         });
 
@@ -112,7 +126,7 @@ export default {
       this.$ajax({
       //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
         method:'GET',
-        url:'http://183.172.65.146:8099/data/index'
+        url:'http://166.111.83.83:8199/data/index'
       }).then(response=>{
         this.lib_names = response.data.data;
       }).catch(function(err){
@@ -150,5 +164,9 @@ export default {
 
 .el-table th > .cell {
     text-align: center;
+}
+
+::-webkit-scrollbar {
+  display:none;
 }
 </style>
