@@ -16,6 +16,7 @@
         <el-table-column label="操作">
           <template slot-scope="props">
             <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
+            <el-button size="mini"  @click.native ="editConfig(props.$index, props.row)">编辑config</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -25,6 +26,7 @@
 
 <script>
 import DemoHeader from '../components/demoHeader'
+import config from '../components/editConfig.vue'
 
 export default {
   name: "index",
@@ -96,7 +98,6 @@ export default {
         }
       }
       var meta_data = {};
-      var node_data = {};
       this.$ajax({
         //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
         method:'POST',
@@ -126,14 +127,43 @@ export default {
         console.log(err);
       });
     },
-    getData(){}
+    editConfig(index, data){
+
+      var id = "";
+      for(var lib_id of this.lib_names_ids){
+        //4 在this.lib_names_ids寻找lib_name属性与被点击行元素相同的元素
+        //并将其_id属性值赋值给id
+        if(lib_id.lib_name == data.lib_name){
+          id = lib_id._id;
+          console.log("_id = "+ id);
+          break;
+        }
+      }
+
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'POST',
+        url:'http://166.111.83.83:8199/config/get_config',
+        data: {"_id":id},
+      }).then(response=>{
+        console.log("config file is ");
+        //console.log(response.data);
+        console.log(response.data.config.config_list);
+        var config_list = response.data.config.config_list;
+        this.$router.push({
+          path: '/config',
+          name: "config" ,
+          props: true,
+          params:{
+            config_list: config_list,
+          }
+        });
+      }).catch(function(err){
+        console.log(err);
+      });
+    },
+
   },
-  // watch:{
-  //   lib_names(){
-  //     //this.getData();
-  //
-  //   }
-  // }
 }
 </script>
 

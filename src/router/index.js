@@ -31,6 +31,12 @@ export default new Router({
       path: '/data',
       name: 'layout',
       component: layout
+    },
+
+    {
+      path:"/config",
+      name: "config",
+      component: () => import('@/components/editConfig'),
     }
 
   ]

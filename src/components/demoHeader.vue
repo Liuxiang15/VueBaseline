@@ -26,7 +26,8 @@
   width: 100%;
   padding-left: 20%;
   padding-right: 20%;
-  padding-top: 2%;
+  padding-top: 1%;
+  padding-bottom: 1%;
   background-color: #333;
   border: none;
   box-sizing: border-box;

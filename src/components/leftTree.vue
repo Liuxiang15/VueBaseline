@@ -86,7 +86,6 @@ export default {
 
       getData(){
         this.data = this.meta_data.metadata.data;
-        this.data = this.meta_data.metadata.data;
         this.group = this.meta_data.metadata.tags;
       }
   },
@@ -100,11 +99,11 @@ export default {
 </script>
 
 <style>
-/* #aside{
+#aside{
   height:100%;
-} */
+}
 .el-tree{
-  height: 100%;
+  height: 100%; 
 }
 
 .el-tree-node {

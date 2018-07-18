@@ -120,6 +120,7 @@ div{
 
 .el-container{
   /* height: 80%; */
+  width: 100%;
   min-height: 80%;
   max-height: 80%;
   flex: 1 0 auto;
@@ -135,6 +136,13 @@ div{
   /* width:50%; */
   box-sizing: border-box;
 }
+
+.el-table td, .el-table th.is-leaf {
+
+    background-color: ##EBEEF5;
+}
+
+
 
 
 .el-textarea__inner {

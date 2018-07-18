@@ -147,9 +147,15 @@ export default {
 }
 </script>
 <style>
+#container{
+
+}
+
 #text_container{
-  max-height: 30%;
+  max-height: 50%;
   box-sizing: border-box;
+  background-color: #F2F6FC;
+  padding:5% 10%;
 }
 
 #snl_container{
@@ -159,6 +165,11 @@ export default {
 
 p{
   text-align: center;
+}
+
+.el-table td, .el-table th.is-leaf {
+
+    background-color: ##EBEEF5;
 }
 
 #btns{
