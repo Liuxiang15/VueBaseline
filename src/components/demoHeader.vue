@@ -1,5 +1,5 @@
 <template>
-  
+
   <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal" :router="true">
     <el-menu-item index="/">主页面</el-menu-item>
     <el-submenu index="2">
@@ -11,7 +11,7 @@
     </el-submenu>
     <el-menu-item index="/">三页面</el-menu-item>
   </el-menu>
-  
+
 </template>
 
 <script>
@@ -26,11 +26,9 @@
   width: 100%;
   padding-left: 20%;
   padding-right: 20%;
+  padding-top: 2%;
   background-color: #333;
   border: none;
   box-sizing: border-box;
 }
 </style>
-
-
-

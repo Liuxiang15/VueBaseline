@@ -68,18 +68,17 @@ export default {
       console.log("this.edit_show"+this.edit_show);
     }
   },
-  
+
 
   watch:{
     meta_data(){
-      this.get_meta_node_data();
+      //this.get_meta_node_data();
     }
   }
 }
 </script>
 
 <style>
-<<<<<<< HEAD
 body{
   height: 100%;
 }
@@ -98,6 +97,7 @@ div{
   /* 我们希望 header 采用固定的高度，只占用必须的空间 */
   /* 0 flex-grow, 0 flex-shrink, auto flex-basis */
   flex: 0 0 auto;
+  background-color: #333;
   color: #333;
   text-align: center;
   line-height: 60px;
@@ -127,13 +127,12 @@ div{
 }
 
 .el-aside {
-  height: 100%;
-  width: 40%;
-  box-sizing: border-box;
+  /* height: 100% !important; */
+  /* width: 30% !important; */
 }
 .el-main {
-  height: 100%;
-  width:50%;
+  /* height: 100%; */
+  /* width:50%; */
   box-sizing: border-box;
 }
 
@@ -151,12 +150,12 @@ div{
   color: black;
 }
 
-  #dialog{
+  /* #dialog{
     /*display:none;*/
-  }
+  /* }
   #left_tree{
     position: relative;
     width: 90%;
     left: 10%;
-  }
+  } */
 </style>

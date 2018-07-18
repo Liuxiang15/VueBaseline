@@ -51,20 +51,29 @@ export default {
   components:{
     DemoHeader
   },
-  created(){
+  created() {
     //2 向指定网页发送get请求并接收存储metadata和nodedata的字典
-    debugger;
 	  console.log("enter created 函数");
+
     this.$ajax({
+    //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
       method:'GET',
-	  //dataType:"jsonp",
       url:'http://166.111.83.83:8199/data/index'
     }).then(response=>{
-      debugger;
-       console.log("response.data是"+response.data);
-       // console.log("response.data.data是"+response.data.data);
       this.lib_names = response.data.data;
-      // console.log("this.lib_names是"+this.lib_names);
+      console.log(this.lib_names);
+      var tempTable = [];       //8 用来临时存储 tableData的值
+      var temp = this.lib_names;
+      for(var lib_id of temp){
+          var dict = {};
+          var _dict = {};
+          dict.lib_name = lib_id.lib_name;
+          _dict.lib_name = lib_id.lib_name;
+          _dict._id = lib_id._id;
+          tempTable.push(dict);
+          this.lib_names_ids.push(_dict);
+      }
+      this.tableData = tempTable;
     }).catch(function(err){
       console.log(err);
     });
@@ -75,11 +84,6 @@ export default {
       //3 点击某一行规则库名后的按钮触发的事件，
       //index是点击行在列表中的下标(从0开始)
       //data是点击该行存储的数据，具体内容可看console语句输出
-
-      //console.log("目前点击了规则库的第"+index+"行");
-      // console.log("data是" + data);
-      // console.log(data.lib_name);
-      //console.log("data.this_id是"+data.this_id);
 
       var id = "";
       for(var lib_id of this.lib_names_ids){
@@ -122,35 +126,14 @@ export default {
         console.log(err);
       });
     },
-    getData(){
-      this.$ajax({
-      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
-        method:'GET',
-        url:'http://166.111.83.83:8199/data/index'
-      }).then(response=>{
-        this.lib_names = response.data.data;
-      }).catch(function(err){
-        console.log(err);
-      });
-      var tempTable = [];       //8 用来临时存储 tableData的值
-      var temp = this.lib_names;
-      for(var lib_id of temp){
-          var dict = {};
-          var _dict = {};
-          dict.lib_name = lib_id.lib_name;
-          _dict.lib_name = lib_id.lib_name;
-          _dict._id = lib_id._id;
-          tempTable.push(dict);
-          this.lib_names_ids.push(_dict);
-      }
-      this.tableData = tempTable;
-    }
+    getData(){}
   },
-  watch:{
-    lib_names(){
-      this.getData();
-    }
-  }
+  // watch:{
+  //   lib_names(){
+  //     //this.getData();
+  //
+  //   }
+  // }
 }
 </script>
 
