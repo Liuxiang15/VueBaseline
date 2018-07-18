@@ -1,4 +1,5 @@
 <template>
+<div>
   <el-table
     :data="table_data"
     style="width: 100%">
@@ -6,7 +7,7 @@
       label="key"
       width="180">
       <template slot-scope="scope">
-        <span style="margin-left: 10px">{{ scope.row.key }}</span>
+        <el-tag size="medium">{{ scope.row.key }}</el-tag>
       </template>
     </el-table-column>
 
@@ -14,12 +15,16 @@
       label="value"
       width="180">
       <template slot-scope="scope">
-        <el-popover trigger="hover" placement="top">
-          <p>value: {{ scope.row.value }}</p>
-          <div slot="reference" class="name-wrapper">
-            <el-tag size="medium">{{ scope.row.value }}</el-tag>
-          </div>
-        </el-popover>
+
+
+        <div slot="reference" class="name-wrapper">
+          <!-- <el-tag size="medium">{{ scope.row.value }}</el-tag> -->
+          <!-- <span style="margin-left: 10px" >{{ scope.row.value }}</span> -->
+          <el-tag size="medium" v-for = "val in scope.row.value ">
+              {{val}}
+          </el-tag>
+        </div>
+
       </template>
     </el-table-column>
 
@@ -35,13 +40,28 @@
       </template>
     </el-table-column>
   </el-table>
+
+  <config-dialogue :show = "edit_show" :default_data ="curr_data" @save="save" @close="close">
+  </config-dialogue>
+  <edit
+</div>
 </template>
 
+<script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script>
+import configDialogue from "./configDialogue.vue"
+
   export default {
+    components:{
+      //editDialogue
+      configDialogue
+    },
+
     data() {
       return {
-        table_data: []
+        table_data: [],
+        edit_show:false,
+        curr_data:{}
       }
     },
     created(){
@@ -51,13 +71,16 @@
 
       var config_list = this.$route.params.config_list;
       for(var item of config_list){
-        var dict = {}
-        var str_value = "";
+        var dict = {};
+        var str_value = [];
+        //var str_value = "";
         dict.key = item.key;
         for(var val of item.value){
-          str_value += val;
-          str_value += "#";
+          // str_value += val;
+          // str_value += "              ";
           //#号区分多个value值
+          str_value.push(val);
+
         }
         dict.value = str_value;
         temp_table_data.push(dict);
@@ -68,10 +91,32 @@
     methods: {
       handleEdit(index, row) {
         console.log(index, row);
+        console.log("被点击的这行数据是：");
+        this.curr_data.key = row.key;
+        this.curr_data.value = row.value;
+        console.log(this.curr_data);
+        //console.log(index, row);
+        this.editDialogue();
       },
       handleDelete(index, row) {
-        console.log(index, row);
+        console.log("要删除的这行是");
+        this.table_data.splice(index, 1);
+        console.log(row);
+      },
+
+      editDialogue(){
+        console.log("进入showDialogue函数");
+        this.edit_show = true;
+        console.log("this.edit_show"+this.edit_show);
+      },
+      close(){
+        this.edit_show = false;
+      },
+      save(){
+        this.edit_show = false;
       }
+
+
     }
   }
 </script>
