@@ -23,7 +23,8 @@
         <el-button
           size="mini"
           type="danger"
-          @click="handleDelete(index)">删除</el-button>
+          @click="handleDelete(index)">删除
+        </el-button>
 
       </el-form-item>
     </el-form>

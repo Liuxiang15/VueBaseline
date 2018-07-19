@@ -95,37 +95,35 @@ import {HOST} from '../utils/config'
         this.config.config_list.push(item);
       },
       handleEdit(index, row) {
-        console.log(index, row);
-        console.log("被点击的这行数据是：");
-        console.log(row);
+        // console.log(index, row);
+        // console.log("被点击的这行数据是：");
+        // console.log(row);
         //console.log(index, row);
         this.editDialogue(index, row);
       },
       handleDelete(index, row) {
-        console.log("要删除的这行是");
+        // console.log("要删除的这行是");
         this.config.config_list.splice(index, 1);
-        console.log(row);
+        // console.log(row);
       },
 
       editDialogue(index, row){
-        console.log("进入showDialogue函数");
+        // console.log("进入showDialogue函数");
         this.edit_show = true;
-        console.log("this.edit_show"+this.edit_show);
+        // console.log("this.edit_show"+this.edit_show);
         this.curr_data.data.key = row.key;
 
         this.curr_data.data.value = [].concat(row.value);
 
         this.curr_data.index = index;
-        console.log("lalalalalalalalaal");
-        console.log(this.curr_data);
+        // console.log(this.curr_data);
       },
       close(){
         this.edit_show = false;
       },
       save(res){
         this.edit_show = false;
-        console.log("---------");
-        console.log(res);
+        // console.log(res);
         this.curr_data = res;
         console.log(this.curr_data);
         this.config.config_list[res.index].key = res.data.key;

@@ -50,9 +50,11 @@
 </div>
 </template>
 
-import {HOST} from '../utils/config'
+
 
 <script>
+import {HOST} from '../utils/config'
+
 export default {
 
   data() {

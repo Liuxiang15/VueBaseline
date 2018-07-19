@@ -18,9 +18,11 @@
   </el-tree>
 </template>
 
-import {HOST} from '../utils/config'
+
 
 <script>
+import {HOST} from '../utils/config'
+
 export default {
   props: {
     meta_data: {}
