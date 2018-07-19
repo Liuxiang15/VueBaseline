@@ -137,7 +137,7 @@ import configDialogue from "./configDialogue.vue"
           //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
           method:'POST',
       //dataType:"jsonp",
-          url:'http://166.111.83.83:8199/config/refresh_config',
+          url:HOST + '/config/refresh_config',
           data: JSON.stringify(this.config),
         }).then(response=>{
           //node_data = response.data.nodedata;

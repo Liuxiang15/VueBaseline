@@ -47,7 +47,7 @@ export default {
       //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
       method:'POST',
   //dataType:"jsonp",
-      url:'http://166.111.83.83:8199/data/test',
+      url:HOST+'/data/test',
       data: JSON.stringify(this.meta_data)
     }).then(response=>{
       var test = response.data;
@@ -103,7 +103,7 @@ export default {
   height:100%;
 }
 .el-tree{
-  height: 100%; 
+  height: 100%;
 }
 
 .el-tree-node {

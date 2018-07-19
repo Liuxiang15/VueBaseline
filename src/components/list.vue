@@ -116,7 +116,7 @@ export default {
         //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
         method:'POST',
 		//dataType:"jsonp",
-        url:'http://166.111.83.83:8199/data/get_snl_spl_pairs',
+        url:HOST + '/data/get_snl_spl_pairs',
         data: {"_id":strId},
       }).then(response=>{
         console.log("list收到的snl_spl_pairs是：");
