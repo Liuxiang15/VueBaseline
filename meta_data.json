@@ -1,0 +1,10 @@
+{"metadata":{"_id":"5b4fffceb6e8643f7c5dbf85",
+              "create_date":"2018-07-19 11:04:46.977000",
+              "data":[{"children":[{"children":[{"children":[],"description":"Limitation On Wall Heights","is_rule":true,"order":"1.1.1","snl_spl_pairs":[{"snl":"所有 墙 的 BBHeight >= 500","spl":[]},{"snl":"所有 幕墙 的 BBHeight >= 500","spl":[]}],
+              "tags":["未描述","民用建筑","商店建筑","厂房、仓库"],
+              "text":"Wall Heights"},{"children":[],"description":"Limitation On Wall Thickness","is_rule":true,"order":"1.1.2","snl_spl_pairs":[{"snl":"所有 墙 的 厚度 >= 10","spl":[]},{"snl":"所有 墙 的 厚度 <= 1000","spl":[]}],"tags":["未描述","民用建筑","商店建筑","厂房、仓库"],"text":"Wall Thickness"},
+              {"children":[],"description":"Limitation On Wall Length","is_rule":true,"order":"1.1.3","snl_spl_pairs":[{"snl":"所有 墙 的 长度 >= 200","spl":[]},{"snl":"所有 幕墙 的 长度 >= 200","spl":[]}],"tags":["未描述","民用建筑","商店建筑","厂房、仓库"],"text":"Wall Length"},{"children":[],"description":"Limitation On Wall Opening Distance",
+                "is_rule":true,"order":"1.1.4","snl_spl_pairs":[{"snl":"所有 门 的 门-门距离 >= 100","spl":[]}],"tags":["未描述","民用建筑","商店建筑","厂房、仓库"],"text":"Wall Opening Distance"}],"description":"None","is_rule":false,"order":"1.1","snl_spl_pairs":[],"tags":[],"text":"Wall Dimensions Should Be Sensible"},{"children":[{"children":[],"description":"Limitation On Window Width","is_rule":true,"order":"1.2.1","snl_spl_pairs":[{"snl":"所有 窗 的 宽度 >= 100","spl":[]}],"tags":["未描述","民用建筑","商店建筑","厂房、仓库"],"text":"Window Width"},{"children":[],"description":"Limitation On Window Height","is_rule":true,"order":"1.2.2","snl_spl_pairs":[{"snl":"所有 窗 的 高度 >= 150","spl":[]}],"tags":["未描述","民用建筑","商店建筑","厂房、仓库"],"text":"Window Height"}],"description":"None","is_rule":false,"order":"1.2","snl_spl_pairs":[],"tags":[],"text":"Door And Window Openings"}],"description":"None","is_rule":false,"order":"1","snl_spl_pairs":[],"tags":[],"text":"Component Dimensions 啊啊啊啊啊啊啊啊啊啊"}],"is_default":false,"is_deleted":false,"is_draft":false,"lib_name":"Component Check啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊","tags":[],"update_date":"2018-07-19 11:04:46.977000"
+
+              }
+}
