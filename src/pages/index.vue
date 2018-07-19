@@ -29,6 +29,8 @@
 import DemoHeader from '../components/demoHeader'
 import config from '../components/editConfig.vue'
 
+import {HOST} from '../utils/config'
+
 export default {
   name: "index",
   data() {
@@ -59,7 +61,7 @@ export default {
     this.$ajax({
     //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
       method:'GET',
-      url:'http://166.111.83.83:8199/data/index'
+      url:HOST+'/data/index'
     }).then(response=>{
       this.lib_names = response.data.data;
       console.log(this.lib_names);
@@ -86,7 +88,7 @@ export default {
         //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
         method:'POST',
 		//dataType:"jsonp",
-        url:'http://166.111.83.83:8199/data/get_metadata',
+        url:HOST+'/data/get_metadata',
         data: {"_id":id},
       }).then(response=>{
         console.log("in index response.data =  ");
@@ -130,7 +132,7 @@ export default {
       this.$ajax({
       //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
         method:'POST',
-        url:'http://166.111.83.83:8199/config/get_config',
+        url:HOST+'/config/get_config',
         data: {"_id":id},
       }).then(response=>{
         console.log("config file is ");
