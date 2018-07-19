@@ -7,7 +7,7 @@
         :data="lib_names"
         border
         style="width: 100%">
-        <el-table-column prop="lib_name" label="规则库名字">
+        <el-table-column prop="lib_names" label="规则库名字">
           <template slot-scope="scope">
             <i class="el-icon-document"></i>
             <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
@@ -37,7 +37,6 @@ export default {
       //lib_names是存储包含id和snl_spl_pairs属性的字典的列表
       //lib_names_ids是包含lib_name和_id属性的字典的列表
       lib_names:[],
-      lib_names_ids:[]
     }
   },
 
@@ -71,22 +70,18 @@ export default {
 
   },
   methods:{
-    showDetail(index, data){
+    showDetail(index, row){
       //3 点击某一行规则库名后的按钮触发的事件，
       //index是点击行在列表中的下标(从0开始)
       //data是点击该行存储的数据，具体内容可看console语句输出
+      console.log("=============");
+      console.log("=============");
+      console.log("=============");
+      console.log("=============");
+      console.log("=============");
+      console.log(row);
 
-      var id = "";
-      for(var lib_id of this.lib_names_ids){
-        //4 在this.lib_names_ids寻找lib_name属性与被点击行元素相同的元素
-        //并将其_id属性值赋值给id
-        if(lib_id.lib_name == data.lib_name){
-          id = lib_id._id;
-          console.log("_id = "+ id);
-          break;
-        }
-      }
-      var meta_data = {};
+      var id = row._id;
       this.$ajax({
         //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
         method:'POST',
@@ -94,9 +89,8 @@ export default {
         url:'http://166.111.83.83:8199/data/get_metadata',
         data: {"_id":id},
       }).then(response=>{
-        meta_data = response.data;
-        console.log("in index ");
-        console.log(meta_data);
+        console.log("in index response.data =  ");
+        console.log(response.data);
         //node_data = response.data.nodedata;
         //6 路由跳转并传递lib的id， meta_data， node_data
         this.$router.push({
@@ -107,7 +101,7 @@ export default {
               id: id
           },
           query: {
-            meta_data: meta_data,
+            meta_data: response.data,
             //node_data: node_data
           }
         });
