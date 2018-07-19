@@ -50,6 +50,8 @@
 </div>
 </template>
 
+import {HOST} from '../utils/config'
+
 <script>
 export default {
 

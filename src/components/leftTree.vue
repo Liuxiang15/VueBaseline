@@ -18,6 +18,8 @@
   </el-tree>
 </template>
 
+import {HOST} from '../utils/config'
+
 <script>
 export default {
   props: {

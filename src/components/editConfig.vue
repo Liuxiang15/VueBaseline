@@ -45,7 +45,7 @@
 <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script>
 import configDialogue from "./configDialogue.vue"
-
+import {HOST} from '../utils/config'
   export default {
     components:{
       configDialogue
