@@ -5,24 +5,18 @@
       <el-input id="key" v-model="form.name"
       v-bind:placeholder = "get_key()"
       auto-complete="off">
-
       </el-input>
     </el-form-item>
   </el-form>
 
-    <div v-for = "val in this.default_data.value">
-      <!-- <el-tag size="medium">{{ scope.row.value }}</el-tag> -->
-      <!-- <el-tag size="medium" v-for = "val in scope.row.value ">
-          {{val}}
-      </el-tag> -->
-    <el-form>
-      <el-form-item label="value" :label-width="formLabelWidth">
-        <el-input type="textarea" id="value"
+  <el-form>
+    <el-form-item label="value" :label-width="formLabelWidth">
+      <el-input v-for = "val in this.default_data.value"
         :placeholder = "val"
-        auto-complete="off"></el-input>
-      </el-form-item>
-    </el-form>
-    </div>
+        auto-complete="off">
+      </el-input>
+    </el-form-item>
+  </el-form>
 
 
   <div slot="footer" class="dialog-footer">

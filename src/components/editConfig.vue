@@ -16,11 +16,9 @@
       width="180">
       <template slot-scope="scope">
 
-
         <div slot="reference" class="name-wrapper">
-          <!-- <el-tag size="medium">{{ scope.row.value }}</el-tag> -->
-          <!-- <span style="margin-left: 10px" >{{ scope.row.value }}</span> -->
-          <el-tag size="medium" v-for = "val in scope.row.value ">
+          <el-tag size="medium" v-for = "(val, index) in scope.row.value"
+          :key = "index">
               {{val}}
           </el-tag>
         </div>
