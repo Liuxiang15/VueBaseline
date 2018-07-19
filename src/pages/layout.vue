@@ -11,7 +11,7 @@
       </el-aside>
       <el-main>
         <list  ref="snlLists" @editDialogue="editDialogue"></list>
-        <edit-dialogue :show = "edit_show" @save="save" @close="close">
+        <edit-dialogue :show = "edit_show" >
         </edit-dialogue>
       </el-main>
     </el-container>
@@ -66,7 +66,8 @@ export default {
       console.log("进入showDialogue函数");
       this.edit_show = true;
       console.log("this.edit_show"+this.edit_show);
-    }
+    },
+
   },
 
 
