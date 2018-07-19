@@ -45,7 +45,19 @@
           this.$message.error('Only support uploading one file!')
           return
         }
+
         const rawFile = files[0] // only use files[0]
+
+
+        let fname = rawFile.name
+        let ext = fname.slice(fname.lastIndexOf(".") + 1).toLowerCase()
+        let allow = $('#excel-upload-input').attr('accept')
+
+        if (allow.indexOf(ext) === -1) {
+          this.$message.error('Only support excel!')
+          return
+        }
+
         this.upload(rawFile)
         e.stopPropagation()
         e.preventDefault()
