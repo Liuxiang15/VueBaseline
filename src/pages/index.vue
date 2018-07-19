@@ -4,15 +4,16 @@
     <div id="container">
       <h1>规则库列表</h1>
       <el-table
-        :data="tableData"
+        :data="lib_names"
         border
         style="width: 100%">
-        <el-table-column  prop="lib_name" label="规则库名字">
+        <el-table-column prop="lib_name" label="规则库名字">
           <template slot-scope="scope">
             <i class="el-icon-document"></i>
             <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
           </template>
         </el-table-column>
+
         <el-table-column label="操作">
           <template slot-scope="props">
             <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
@@ -35,7 +36,6 @@ export default {
       // 1 tableData存储lib_name的字典列表，
       //lib_names是存储包含id和snl_spl_pairs属性的字典的列表
       //lib_names_ids是包含lib_name和_id属性的字典的列表
-      tableData: [],
       lib_names:[],
       lib_names_ids:[]
     }
@@ -64,18 +64,7 @@ export default {
     }).then(response=>{
       this.lib_names = response.data.data;
       console.log(this.lib_names);
-      var tempTable = [];       //8 用来临时存储 tableData的值
-      var temp = this.lib_names;
-      for(var lib_id of temp){
-          var dict = {};
-          var _dict = {};
-          dict.lib_name = lib_id.lib_name;
-          _dict.lib_name = lib_id.lib_name;
-          _dict._id = lib_id._id;
-          tempTable.push(dict);
-          this.lib_names_ids.push(_dict);
-      }
-      this.tableData = tempTable;
+
     }).catch(function(err){
       console.log(err);
     });
@@ -130,15 +119,19 @@ export default {
     editConfig(index, data){
 
       var id = "";
-      for(var lib_id of this.lib_names_ids){
-        //4 在this.lib_names_ids寻找lib_name属性与被点击行元素相同的元素
-        //并将其_id属性值赋值给id
-        if(lib_id.lib_name == data.lib_name){
-          id = lib_id._id;
-          console.log("_id = "+ id);
-          break;
-        }
-      }
+      console.log("===========");
+      console.log(data);
+      id = data._id;
+      //
+      // for(var lib_id of this.lib_names_ids){
+      //   //4 在this.lib_names_ids寻找lib_name属性与被点击行元素相同的元素
+      //   //并将其_id属性值赋值给id
+      //   if(lib_id.lib_name == data.lib_name){
+      //     id = lib_id._id;
+      //     console.log("_id = "+ id);
+      //     break;
+      //   }
+      // }
 
       this.$ajax({
       //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
@@ -149,13 +142,13 @@ export default {
         console.log("config file is ");
         //console.log(response.data);
         console.log(response.data.config.config_list);
-        var config_list = response.data.config.config_list;
+        var config = response.data.config;
         this.$router.push({
           path: '/config',
           name: "config" ,
           props: true,
           params:{
-            config_list: config_list,
+            config: config,
           }
         });
       }).catch(function(err){

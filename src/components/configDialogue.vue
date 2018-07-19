@@ -1,31 +1,37 @@
 <template>
 <el-dialog title="弹出对话框" :visible.sync="dialogFormVisible">
-  <el-form :model="form">
-    <el-form-item label="key" :label-width="formLabelWidth">
-      <el-input id="key" v-model="form.name"
-      v-bind:placeholder = "get_key()"
-      auto-complete="off">
 
+  <el-form :model="form">
+
+    <el-form-item label="key" :label-width="formLabelWidth">
+      <el-input id="key" v-model="default_data.data.key"
+      auto-complete="off">
       </el-input>
     </el-form-item>
   </el-form>
 
-    <div v-for = "val in this.default_data.value">
+    <div v-for = "(val,index) in default_data.data.value">
       <!-- <el-tag size="medium">{{ scope.row.value }}</el-tag> -->
       <!-- <el-tag size="medium" v-for = "val in scope.row.value ">
           {{val}}
       </el-tag> -->
     <el-form>
       <el-form-item label="value" :label-width="formLabelWidth">
-        <el-input type="textarea" id="value"
-        :placeholder = "val"
+        <el-input type="textarea" id="value" v-model="default_data.data.value[index]"
         auto-complete="off"></el-input>
+
+        <el-button
+          size="mini"
+          type="danger"
+          @click="handleDelete(index)">删除</el-button>
+
       </el-form-item>
     </el-form>
     </div>
 
 
   <div slot="footer" class="dialog-footer">
+    <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
     <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
     <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
   </div>
@@ -43,7 +49,7 @@
     //   default_data: {}
     // },
     props:[
-      "show", "default_data"
+      "show", "default_data",
     ],
 
     data() {
@@ -81,6 +87,16 @@
     },
     methods:{
       //2 调用父组件的close函数使的对话框消失
+      handleDelete(index) {
+        console.log("要删除的这行是");
+        this.default_data.data.value.splice(index, 1);
+      },
+
+      newItem(){
+        this.default_data.data.value.push("new");
+
+      },
+
       close() {
         //this.dialogFormVisible = false;
         this.$emit('close');
@@ -88,7 +104,7 @@
 
       save() {
         //this.dialogFormVisible = false
-        this.$emit('save');
+        this.$emit('save', this.default_data);
       },
 
       get_key(){

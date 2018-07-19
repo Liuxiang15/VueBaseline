@@ -130,6 +130,8 @@ div{
 .el-aside {
   /* height: 100% !important; */
   /* width: 30% !important; */
+  width: 30%;
+  max-height: 100%;
 }
 .el-main {
   /* height: 100%; */
