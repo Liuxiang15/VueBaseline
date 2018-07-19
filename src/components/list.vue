@@ -6,11 +6,11 @@
       type="textarea"
       id="text_area"
       placeholder="请输入内容"
-      v-model="text_area"
+      v-model="current_node.description"
       v-bind:disabled= "disable_flag"
     >
     </el-input>
-    <p></p>
+    </br>
     <div id="btns">
       <el-button type="primary" v-on:click='handleEditText()' >修改</el-button>
       <el-button type="success" v-on:click='saveText()' >保存</el-button>
@@ -21,10 +21,9 @@
     <p>SNL语句</p>
     <!--用于展示规则的列表-->
     <el-table
-    :data="table_data"
+    :data="current_node.snl_spl_pairs"
     style="width: 100%">
-      <el-table-column
-        label="SNL语句">
+      <el-table-column label="SNL语句">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>snl语句: {{ scope.row.snl }}</p>
@@ -33,6 +32,7 @@
             </div>
           </el-popover>
         </template>
+
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -46,27 +46,46 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
+    <!-- <el-button type="success" icon="el-icon-check" @click="snlSave">保存</el-button> -->
+    <edit-dialogue :show = "edit_show" :default_data ="current_snl"
+    @save = "save" @close="close" >
+    </edit-dialogue>
   </div>
 </div>
+
+
 </template>
 
 
 
 <script>
+import editDialogue from "../components/editDialogue.vue"
 import {HOST} from '../utils/config'
 
 export default {
+
+  components:{
+    editDialogue,
+  },
 
   data() {
     return {
       //2 disable_flag决定了description是否可以编辑，table_data是table的数据来源
       //text_area存储输入框里的值，current_node存储当前被点击节点的信息
       //list_data存储当前节点的所有信息
+      //edit_show决定对话框是否显示
       disable_flag:true,
       table_data: [],
       text_area:"",
       list_data:[],
-      current_node:{}
+      current_node:{},
+      current_snl:{
+        index: Number,
+        snl: String,
+        spl:[]
+      },
+      edit_show:false,
     }
   },
   methods:{
@@ -76,7 +95,7 @@ export default {
     },
 
     saveText(){
-      console.log("enter saveText 函数");
+      // console.log("enter saveText 函数");
       var newInfo = {};
       var strId = this.list_data["id"].toString();
       newInfo[strId] = {};
@@ -87,61 +106,73 @@ export default {
 
     handleEdit(index, row){
       //3 触发父组件对话框弹出
-      console.log("enter handleEdit 函数");
-      this.$emit("editDialogue");
+      // console.log("enter handleEdit 函数");
+      console.log("1111111111111111111111111");
+      console.log(index);
+      console.log(row);
+      this.edit_show = true;
+      this.current_snl.index = index;
+      this.current_snl.snl = row.snl;
+      this.current_snl.spl = [].concat(row.spl);
     },
 
     handleDelete(index, row){
-      console.log("进入handleDelet函数");
-      console.log("被删除的row.snl是" + row.snl);
-      console.log("this.list_data.id" + this.list_data.id);
-      console.log("this.list_data.text" + this.list_data.text);
-      console.log("this.list_data.description" + this.list_data.description);
-      for(var index = 0; index < this.table_data.length; index++){
-        //在存储列表数据的table_data里遍历并删除该元素
-        if(this.table_data[index].snl == row.snl){
-          this.table_data.splice(index, 1);
-        }
-      }
+      // console.log("进入handleDelet函数");
+      // console.log("被删除的row.snl是" + row.snl);
+      // console.log("this.list_data.id" + this.list_data.id);
+      // console.log("this.list_data.text" + this.list_data.text);
+      // console.log("this.list_data.description" + this.list_data.description);
+      this.current_node.snl_spl_pairs.splice(index, 1);
       //alert("删除本行");
     },
 
     showList(current_node){
-      console.log(current_node);
-      console.log("进入show_list函数");
-      this.list_data = current_node;
+      // console.log(current_node);
+      // console.log("进入show_list函数");
+      this.current_node = current_node;
       //先将"description"赋值给text
-      this.text_area = this.list_data.description;
-      // console.log("in list nodedata_file is " + node_datas);
-      //var strId = data["id"].toString();
-      var strId = current_node.id;
-      var snl_spl_pairs = {};
-      this.$ajax({
-        //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
-        method:'POST',
-		//dataType:"jsonp",
-        url:HOST + '/data/get_snl_spl_pairs',
-        data: {"_id":strId},
-      }).then(response=>{
-        console.log("list收到的snl_spl_pairs是：");
-        console.log(response.data.snl_spl_pairs.data);
-        snl_spl_pairs = response.data.snl_spl_pairs.data;
-        var tempTableData = [];       //用来存储 tableData的值
-        //4 便历数组来查询 id = "strId"的字典并将其snl属性赋值给tempTableData
-        for(var snl_spl of snl_spl_pairs){
-            var dict = {};
-            console.log("============");
-            console.log(snl_spl);
-            dict.snl = snl_spl.snl;
-            tempTableData.push(dict);
-        }
-        this.table_data = tempTableData;
-        console.log("this.table_data是：");
-        console.log(this.table_data);
-      }).catch(function(err){
-        console.log(err);
-      // });
-    });
+    },
+
+    close(){
+      this.edit_show = false;
+    },
+
+    save(res){
+      this.edit_show = false;
+      this.current_node.snl_spl_pairs[res.index].snl = res.snl;
+
+
+      // console.log("保存后的结果是： ");
+      console.log(res);
+      console.log(this.current_node);
+      // console.log(this.current_node);
+      //console.log(this.current_node[res.index]);
+    },
+
+    newItem() {
+      var item = {};
+      item.snl="new";
+      item.spl=[];
+      this.current_node.snl_spl_pairs.push(item);
+    },
+
+    snlSave(){
+    //   this.$ajax({
+    //     //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+    //     method:'POST',
+    // //dataType:"jsonp",
+    //     url:HOST + '/data/refresh_metadata',
+    //     data: JSON.stringify(this.current_node),
+    //   }).then(response=>{
+    //     //node_data = response.data.nodedata;
+    //     //6 路由跳转并传递lib的id， meta_data， node_data
+    //     console.log(response.data);
+    //     alert("保存成功");
+    //
+    //   }).catch(function(err){
+    //     console.log(err);
+    //   });
+      this.$emit("metadataSend");
 
     }
   }

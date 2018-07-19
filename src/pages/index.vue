@@ -56,7 +56,7 @@ export default {
   },
   created() {
     //2 向指定网页发送get请求并接收存储metadata和nodedata的字典
-	  console.log("enter created 函数");
+	  // console.log("enter created 函数");
 
     this.$ajax({
     //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
@@ -64,7 +64,7 @@ export default {
       url:HOST+'/data/index'
     }).then(response=>{
       this.lib_names = response.data.data;
-      console.log(this.lib_names);
+      // console.log(this.lib_names);
 
     }).catch(function(err){
       console.log(err);
@@ -76,12 +76,8 @@ export default {
       //3 点击某一行规则库名后的按钮触发的事件，
       //index是点击行在列表中的下标(从0开始)
       //data是点击该行存储的数据，具体内容可看console语句输出
-      console.log("=============");
-      console.log("=============");
-      console.log("=============");
-      console.log("=============");
-      console.log("=============");
-      console.log(row);
+
+      // console.log(row);
 
       var id = row._id;
       this.$ajax({
@@ -91,8 +87,9 @@ export default {
         url:HOST+'/data/get_metadata',
         data: {"_id":id},
       }).then(response=>{
-        console.log("in index response.data =  ");
-        console.log(response.data);
+        // console.log("in index response.data =  ");
+        // console.log(response.data);
+
         //node_data = response.data.nodedata;
         //6 路由跳转并传递lib的id， meta_data， node_data
         this.$router.push({
@@ -115,8 +112,8 @@ export default {
     editConfig(index, data){
 
       var id = "";
-      console.log("===========");
-      console.log(data);
+      // console.log("===========");
+      // console.log(data);
       id = data._id;
       //
       // for(var lib_id of this.lib_names_ids){
@@ -135,9 +132,9 @@ export default {
         url:HOST+'/config/get_config',
         data: {"_id":id},
       }).then(response=>{
-        console.log("config file is ");
-        //console.log(response.data);
-        console.log(response.data.config.config_list);
+        // console.log("config file is ");
+        // //console.log(response.data);
+        // console.log(response.data.config.config_list);
         var config = response.data.config;
         this.$router.push({
           path: '/config',
