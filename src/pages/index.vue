@@ -17,7 +17,7 @@
         <el-table-column label="操作">
           <template slot-scope="props">
             <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
-            <el-button size="mini"  @click.native ="editConfig(props.$index, props.row)">编辑config</el-button>
+            <el-button @click.native ="editConfig(props.$index, props.row)">编辑config</el-button>
           </template>
         </el-table-column>
       </el-table>

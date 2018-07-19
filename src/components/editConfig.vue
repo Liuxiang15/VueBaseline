@@ -34,6 +34,7 @@
   </el-table>
 
   <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
+  <el-button type="success" icon="el-icon-check" @click="configSave">保存</el-button>
 
   <config-dialogue :show = "edit_show" :default_data ="curr_data" @save="save" @close="close">
   </config-dialogue>
@@ -130,6 +131,23 @@ import configDialogue from "./configDialogue.vue"
         this.config.config_list[res.index].key = res.data.key;
         this.config.config_list[res.index].value = res.data.value;
 
+      },
+      configSave(){
+        this.$ajax({
+          //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+          method:'POST',
+      //dataType:"jsonp",
+          url:'http://166.111.83.83:8199/config/refresh_config',
+          data: JSON.stringify(this.config),
+        }).then(response=>{
+          //node_data = response.data.nodedata;
+          //6 路由跳转并传递lib的id， meta_data， node_data
+          console.log(response.data);
+          alert("保存成功");
+
+        }).catch(function(err){
+          console.log(err);
+        });
       }
     }
   }
