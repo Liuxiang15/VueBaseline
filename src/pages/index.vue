@@ -92,6 +92,8 @@ export default {
 
         //node_data = response.data.nodedata;
         //6 路由跳转并传递lib的id， meta_data， node_data
+        debugger;
+
         this.$router.push({
           path: '/data',
           name: "layout" ,

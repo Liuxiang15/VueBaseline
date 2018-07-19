@@ -93,8 +93,22 @@
       },
       upload2Server(rawFile) {
         // 使用then语法，或者新增callback参数
-        importExcel(rawFile).then(res => {
-          console.log(res);
+        importExcel(rawFile).then(result => {
+          console.log(result);
+          debugger;
+          this.$router.push({
+            path: '/data',
+            name: "layout",
+            props: true,
+            params: {
+              id: result.data.res._id['$oid']
+            },
+            query: {
+              meta_data: {metadata: result.data.res},
+              //node_data: node_data
+            }
+          });
+
         })
       },
       readerData(rawFile) {
