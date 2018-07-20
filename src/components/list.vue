@@ -1,7 +1,7 @@
 <template>
 <div id="container">
   <div id="text_container">
-    <p>description</p>
+    <h2>description</h2>
     <el-input
       type="textarea"
       id="text_area"
@@ -21,13 +21,16 @@
 
 
   <div id="snl_container">
-    <p>tags</p>
+    <span>
+      <span>tags:</span>
 
-      <el-tag v-for = "tag in current_node.tags" size="medium">
-        {{ tag }}
-      </el-tag>
+        <el-tag v-for = "tag in current_node.tags" size="medium">
+          {{ tag }}
+        </el-tag>
+    </span>
 
-    <p>SNL语句</p>
+
+    <!-- <h2>SNL语句</h2> -->
 
     <!--用于展示规则的列表-->
     <el-table
@@ -233,5 +236,7 @@ p{
 .el-tag{
   display:inline;
 }
+
+
 
 </style>

@@ -17,10 +17,15 @@
     @node-click="handleNodeClick"
     @contextmenu.native="handleRightClick"
   >
-    <span class="custom-tree-node" slot-scope="{ node, data }">
+
+
+    <span class="custom-tree-node" slot-scope="{ node, data }" >
+
       <span>{{ node.label }}</span>
       <span>{{ node.data.text }} </span>
+
     </span>
+
   </el-tree>
 </template>
 

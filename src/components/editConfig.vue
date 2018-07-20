@@ -1,8 +1,7 @@
 <template>
 <div>
   <el-table
-    :data="config.config_list"
-    style="width: 100%">
+    :data="config.config_list">
 
     <el-table-column label="key" width="180" align="center">
       <template slot-scope="scope">
@@ -10,9 +9,9 @@
       </template>
     </el-table-column>
 
-    <el-table-column label="value" width="180">
+    <el-table-column label="value" >
       <template slot-scope="scope">
-        <div slot="reference" class="name-wrapper">
+        <div slot="reference" class="name-wrapper" >
           <el-tag size="medium" v-for = "val in scope.row.value ">
               {{val}}
           </el-tag>
@@ -33,8 +32,11 @@
     </el-table-column>
   </el-table>
 
-  <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
-  <el-button type="success" icon="el-icon-check" @click="configSave">保存</el-button>
+  <div >
+    <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
+    <el-button type="success" icon="el-icon-check" @click="configSave">保存</el-button>
+  </div>
+
 
   <config-dialogue :show = "edit_show" :default_data ="curr_data" @save="save" @close="close">
   </config-dialogue>
@@ -150,3 +152,28 @@ import {HOST} from '../utils/config'
     }
   }
 </script>
+<style>
+/* #container{
+  height: 90%;
+} */
+
+.el-table {
+    position: relative;
+    width: 60%;
+    left: 20%;
+}
+
+.el-table .cell{
+  text-align: center;
+}
+
+.el-tag{
+  display:inline;
+}
+
+
+
+td{
+  width: auto;
+}
+</style>

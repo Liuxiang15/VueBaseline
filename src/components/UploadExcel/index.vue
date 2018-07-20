@@ -2,7 +2,7 @@
   <div>
     <input id="excel-upload-input" ref="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
     <div id="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
-      Drop excel file here or
+      Drag excel file here or
       <el-button :loading="loading" style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">Browse
       </el-button>
 
@@ -45,7 +45,19 @@
           this.$message.error('Only support uploading one file!')
           return
         }
+
         const rawFile = files[0] // only use files[0]
+
+
+        let fname = rawFile.name
+        let ext = fname.slice(fname.lastIndexOf(".") + 1).toLowerCase()
+        let allow = $('#excel-upload-input').attr('accept')
+
+        if (allow.indexOf(ext) === -1) {
+          this.$message.error('Only support excel!')
+          return
+        }
+
         this.upload(rawFile)
         e.stopPropagation()
         e.preventDefault()
@@ -77,12 +89,33 @@
           this.readerData(rawFile)
         }
 
-        this.upload2Server(rawFile)
+        this.rawFile = rawFile
       },
-      upload2Server(rawFile) {
+
+      upload2Server() {
         // 使用then语法，或者新增callback参数
-        importExcel(rawFile).then(res => {
-          console.log(res);
+
+        if (this.rawFile==null){
+          this.$message.error('Please select excel file first')
+          return
+        }
+
+        importExcel(this.rawFile).then(result => {
+          console.log(result);
+          // debugger;
+          this.$router.push({
+            path: '/data',
+            name: "layout",
+            props: true,
+            params: {
+              id: result.data.res._id
+            },
+            query: {
+              meta_data: {metadata: result.data.res},
+              //node_data: node_data
+            }
+          });
+
         })
       },
       readerData(rawFile) {
