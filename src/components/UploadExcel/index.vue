@@ -2,7 +2,7 @@
   <div>
     <input id="excel-upload-input" ref="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
     <div id="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
-      Drop excel file here or
+      Drag excel file here or
       <el-button :loading="loading" style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">Browse
       </el-button>
 
@@ -89,19 +89,26 @@
           this.readerData(rawFile)
         }
 
-        this.upload2Server(rawFile)
+        this.rawFile = rawFile
       },
-      upload2Server(rawFile) {
+
+      upload2Server() {
         // 使用then语法，或者新增callback参数
-        importExcel(rawFile).then(result => {
+
+        if (this.rawFile==null){
+          this.$message.error('Please select excel file first')
+          return
+        }
+
+        importExcel(this.rawFile).then(result => {
           console.log(result);
-          debugger;
+          // debugger;
           this.$router.push({
             path: '/data',
             name: "layout",
             props: true,
             params: {
-              id: result.data.res._id['$oid']
+              id: result.data.res._id
             },
             query: {
               meta_data: {metadata: result.data.res},

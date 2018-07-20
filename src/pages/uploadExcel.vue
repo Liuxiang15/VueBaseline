@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
-    <upload-excel-component :on-success='handleSuccess' :before-upload="beforeUpload"></upload-excel-component>
+    <upload-excel-component :on-success='handleSuccess' :before-upload="beforeUpload"
+                            ref="upload-excel-component"></upload-excel-component>
     <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
       <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
       </el-table-column>
@@ -19,6 +20,7 @@
     name: "uploadExcel",
     // comments: {ImportExcel},
     components: {UploadExcelComponent},
+
     data() {
       return {
         tableData: [],
@@ -43,12 +45,17 @@
         })
         return false
       },
+
+
       handleSuccess({results, header}) {
         this.tableData = results
         this.tableHeader = header
       },
       handleImportExcel() {
         console.log("click on import excel")
+        debugger;
+
+        this.$refs["upload-excel-component"].upload2Server()
       }
     },
 
