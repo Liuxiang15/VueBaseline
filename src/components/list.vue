@@ -17,8 +17,18 @@
       <p></p>
     </div>
   </div>
+
+
+
   <div id="snl_container">
+    <p>tags</p>
+
+      <el-tag v-for = "tag in current_node.tags" size="medium">
+        {{ tag }}
+      </el-tag>
+
     <p>SNL语句</p>
+
     <!--用于展示规则的列表-->
     <el-table
     :data="current_node.snl_spl_pairs"
@@ -46,9 +56,12 @@
         </template>
       </el-table-column>
     </el-table>
+
+
     <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
     <!-- <el-button type="success" icon="el-icon-check" @click="snlSave">保存</el-button> -->
     <edit-dialogue :show = "edit_show" :default_data ="current_snl"
+    :default_tags = "current_tags"
     @save = "save" @close="close" >
     </edit-dialogue>
   </div>
@@ -75,6 +88,7 @@ export default {
       //text_area存储输入框里的值，current_node存储当前被点击节点的信息
       //list_data存储当前节点的所有信息
       //edit_show决定对话框是否显示
+      //default_tags是传入对话框的参数数组
       disable_flag:true,
       table_data: [],
       text_area:"",
@@ -85,6 +99,7 @@ export default {
         snl: String,
         spl:[]
       },
+      current_tags:[],
       edit_show:false,
     }
   },
@@ -107,13 +122,15 @@ export default {
     handleEdit(index, row){
       //3 触发父组件对话框弹出
       // console.log("enter handleEdit 函数");
-      console.log("1111111111111111111111111");
-      console.log(index);
+      // console.log("1111111111111111111111111");
+      // console.log(index);
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       console.log(row);
       this.edit_show = true;
       this.current_snl.index = index;
       this.current_snl.snl = row.snl;
       this.current_snl.spl = [].concat(row.spl);
+      //this.current_tags = [].concat();
     },
 
     handleDelete(index, row){
@@ -130,6 +147,8 @@ export default {
       // console.log(current_node);
       // console.log("进入show_list函数");
       this.current_node = current_node;
+      console.log("in showList");
+      console.log(this.current_node);
       //先将"description"赋值给text
     },
 
@@ -180,11 +199,13 @@ export default {
 </script>
 <style>
 #container{
-
+  width: 70%;
+  position: relative;
+  left: 15%;
 }
 
 #text_container{
-  max-height: 50%;
+  max-height: 70%;
   box-sizing: border-box;
   background-color: #F2F6FC;
   padding:5% 10%;
@@ -207,6 +228,10 @@ p{
 #btns{
   position: relative;
   width: 60%;
+}
+
+.el-tag{
+  display:inline;
 }
 
 </style>

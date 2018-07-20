@@ -3,13 +3,19 @@
   为元素绑定一个 oncontextmenu 事件 -->
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
   <el-tree
-  :data="data"
-  default-expand-all
-  node-key="id"
-  ref="tree"
-  :props="defaultProps"
-  @node-click="handleNodeClick"
-  @contextmenu.native="handleRightClick"
+    oncontextmenu="self.event.returnValue=false"
+    draggable
+    :data="data"
+    default-expand-all
+    node-key="id"
+    @node-drag-start="handleDragStart"
+    @node-drag-enter="handleDragEnter"
+    @node-drag-end="handleDragEnd"
+    @node-drop="handleDrop"
+    ref="tree"
+    :props="defaultProps"
+    @node-click="handleNodeClick"
+    @contextmenu.native="handleRightClick"
   >
     <span class="custom-tree-node" slot-scope="{ node, data }">
       <span>{{ node.label }}</span>
@@ -52,16 +58,48 @@ export default {
   methods: {
       handleNodeClick(data, node) {
         this.$emit("listenToNodeClick", node.data);
+        console.log("被点击的node是");
+        console.log(node.data);
       },
       handleRightClick(){
         // console.log("进入handleRightClick函数");
-        // alert("弹出新增目录或者节点对话框");
+        alert("弹出新增目录或者节点对话框");
       },
 
       getData(){
         this.data = this.meta_data.metadata.data;
         this.group = this.meta_data.metadata.tags;
+      },
+
+      handleDragStart(node, ev) {
+        console.log('drag start', node);
+      },
+      handleDragEnter(draggingNode, dropNode, ev) {
+        console.log('tree drag enter: ', dropNode.label);
+      },
+      // handleDragLeave(draggingNode, dropNode, ev) {
+      //   console.log('tree drag leave: ', dropNode.label);
+      // },
+      // handleDragOver(draggingNode, dropNode, ev) {
+      //   console.log('tree drag over: ', dropNode.label);
+      // },
+      handleDragEnd(draggingNode, dropNode, dropType, ev) {
+        console.log('tree drag end: ', dropNode && dropNode.label, dropType);
+      },
+      handleDrop(draggingNode, dropNode, dropType, ev) {
+        console.log('tree drop: ', dropNode.label, dropType);
+      },
+      allowDrop(draggingNode, dropNode, type) {
+        // if (dropNode.data.label === '二级 3-1') {
+        //   return type !== 'inner';
+        // } else {
+        //   return true;
+        // }
+      },
+      allowDrag(draggingNode) {
+        // return draggingNode.data.label.indexOf('三级 3-2-2') === -1;
       }
+
   },
   watch:{
     meta_data(){

@@ -105,3 +105,10 @@
     }
   };
 </script>
+
+<style>
+.el-textarea__inner {
+  display: inline;
+  width: 60%;
+}
+</style>

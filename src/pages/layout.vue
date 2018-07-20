@@ -11,7 +11,7 @@
 
       <el-main>
         <list ref="snlLists"></list>
-        <el-button type="success" icon="el-icon-check" @click="snlSave">保存</el-button>
+        <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
       </el-main>
     </el-container>
     <el-footer>Footer</el-footer>
@@ -185,6 +185,11 @@ div{
 }
 .el-textarea.is-disabled .el-textarea__inner {
   color: black;
+}
+
+#save_metadata{
+  position: relative;
+  left:70%;
 }
 
   /* #dialog{
