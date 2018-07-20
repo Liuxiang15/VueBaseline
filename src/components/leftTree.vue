@@ -20,23 +20,26 @@
 
 
     <span class="custom-tree-node" slot-scope="{ node, data }" >
-
       <span>{{ node.label }}</span>
       <span>{{ node.data.text }} </span>
-
     </span>
 
   </el-tree>
+  <!-- <cascader></cascader> -->
 </template>
 
 
 
 <script>
+import cascader from '../components/cascader.vue'
 import {HOST} from '../utils/config'
 
 export default {
   props: {
     meta_data: {}
+  },
+  components: {
+    cascader
   },
   data () {
       return {

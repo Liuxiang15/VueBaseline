@@ -7,5 +7,4 @@ module.exports = merge(prodEnv, {
   ENV_CONFIG: '"dev"',
   BASE_API: '"166.111.83.83:8199"'
 
-
 })

@@ -2,7 +2,8 @@
   :options="options2"
   @active-item-change="handleItemChange"
   :props="props"
-></el-cascader>
+>
+</el-cascader>
 
 <script>
   export default {

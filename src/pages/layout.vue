@@ -14,7 +14,7 @@
         <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
       </el-main>
     </el-container>
-    <el-footer>Footer</el-footer>
+    <!-- <el-footer>Footer</el-footer> -->
   </div>
 
 
