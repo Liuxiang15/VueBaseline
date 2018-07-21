@@ -1,1 +1,1 @@
-export const HOST = 'http://' + process.env.BASE_API
+export const HOST = "http://" + process.env.BASE_API
