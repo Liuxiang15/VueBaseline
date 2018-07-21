@@ -4,7 +4,7 @@
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
   <div id="aside_container">
     <el-tree
-      oncontextmenu="self.event.returnValue=false"
+      oncontextmenu="return false"
       draggable
       :data="data"
       default-expand-all
@@ -16,13 +16,14 @@
       ref="tree"
       :props="defaultProps"
       @node-click="handleNodeClick"
-      @contextmenu.native="handleRightClick"
+      @node-contextmenu="handleRightClick"
     >
-      <span class="custom-tree-node" slot-scope="{ node, data }" >
+      <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
         <span>{{ node.data.text }} </span>
       </span>
     </el-tree>
+
 
 </div>
 </template>
@@ -48,7 +49,10 @@ export default {
         defaultProps: {
           "children": "children",
           "label": "order"
-        }
+        },
+
+      
+
       }
   },
   created () {
@@ -68,9 +72,23 @@ export default {
         console.log("被点击的node是");
         console.log(node.data);
       },
-      handleRightClick(){
+      handleRightClick(e, obj, node, self){
         // console.log("进入handleRightClick函数");
-        alert("弹出新增目录或者节点对话框");
+        // alert("弹出新增目录或者节点对话框");og(0)
+        console.log("event是");
+        console.log(e);
+        console.log("obj是");
+        console.log(obj);
+        console.log("node是");
+        console.log(node);
+        // console.log(self);
+        this.$emit("listenRightClick");
+        /*1捕获鼠标右键*/
+          e.preventDefault();
+          var x = e.clientX;
+          var y = e.clientY;
+
+
       },
 
       getData(){
@@ -105,7 +123,9 @@ export default {
       },
       allowDrag(draggingNode) {
         // return draggingNode.data.label.indexOf('三级 3-2-2') === -1;
-      }
+      },
+
+
 
   },
   watch:{

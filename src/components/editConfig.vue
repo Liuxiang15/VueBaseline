@@ -11,7 +11,6 @@
 
     <el-table-column label="value" >
       <template slot-scope="scope">
-<<<<<<< HEAD
 <!--
         <div slot="reference" class="name-wrapper">
           <el-tag size="medium" v-for = "(val, index) in scope.row.value"

@@ -10,16 +10,7 @@
     </el-form-item>
   </el-form>
 
-<<<<<<< HEAD
-  <el-form>
-    <el-form-item label="value" :label-width="formLabelWidth">
-      <el-input v-for = "val in this.default_data.value"
-        :placeholder = "val"
-        auto-complete="off">
-      </el-input>
-    </el-form-item>
-  </el-form>
-=======
+
     <div v-for = "(val,index) in default_data.data.value">
       <el-form>
         <el-form-item label="value" :label-width="formLabelWidth">
@@ -34,7 +25,7 @@
         </el-form-item>
       </el-form>
     </div>
->>>>>>> c36e4336fac8a8ca952ef1fc6a5d29a25606e27c
+
 
 
   <div slot="footer" class="dialog-footer">

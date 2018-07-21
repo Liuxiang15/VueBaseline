@@ -9,12 +9,16 @@ import VueResource from 'vue-resource'
 import axios from 'axios'
 
 Vue.prototype.$ajax=axios
+
 Vue.use(ElementUI);
 Vue.use(VueResource)
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
+
+
+
 new Vue({
   el: '#app',
   router,

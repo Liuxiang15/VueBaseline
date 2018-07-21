@@ -5,10 +5,12 @@
     </el-header>
     <el-container>
       <el-aside>
-        <cascader></cascader>
-        <left-tree id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
-        <menu></menu>
+
+        <!-- <cascader></cascader> -->
+        <left-tree id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild"
+        v-on:listenRightClick="showMenu">
         </left-tree>
+        <mymenu id="act_menu" v-show="menu_show"></mymenu>
       </el-aside>
 
       <el-main>
@@ -31,7 +33,7 @@ import DemoHeader from '../components/demoHeader'
 import LeftTree from '../components/leftTree'
 import List from '../components/list'
 import cascader from '../components/cascader.vue'
-import menu from "../components/menu.vue"
+import mymenu from "../components/mymenu.vue"
 
 export default {
   name: 'layout',
@@ -40,13 +42,14 @@ export default {
     LeftTree,
     List,
     cascader,
-    menu
+    mymenu
   },
   data() {
     return {
       //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
       current_node: {},
       meta_data: {},
+      menu_show: false,
 
     }
   },
@@ -99,7 +102,13 @@ export default {
       }).catch(function(err){
         console.log(err);
       });
+    },
+    showMenu(){
+      this.menu_show = true;
+      console.log("enter showMenu函数");
+
     }
+
   },
 
 
