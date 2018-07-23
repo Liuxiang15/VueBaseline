@@ -52,8 +52,7 @@
 
     data() {
       return {
-        dialogTableVisible: this.show,
-        dialogFormVisible: false,
+        dialogFormVisible: this.show,
         form: {
           name: '',
           region: '',

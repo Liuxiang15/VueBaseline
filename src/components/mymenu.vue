@@ -30,7 +30,7 @@
   };
 </script>
 
-<style>
+<style scoped>
 .el-table__header-wrapper {
     overflow: hidden;
     display: none;

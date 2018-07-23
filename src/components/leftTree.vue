@@ -23,6 +23,19 @@
         <span>{{ node.data.text }} </span>
       </span>
     </el-tree>
+    <new-content :default_data="hello"
+    :show="new_content_show"
+    @save="save" @close="close" >
+    </new-content>
+    <el-menu
+      v-show="menu_show"
+      class="el-menu-vertical-demo">
+      <el-menu-item index="1-1" @click.native="newContent">新建目录</el-menu-item>
+      <el-menu-item index="1-2" @click.native="newRule">新建规则</el-menu-item>
+      <el-menu-item index="1-3" @click.native="deleleNode">删除节点</el-menu-item>
+     <el-menu-item index="1-4" @click.native="rename">重命名</el-menu-item>
+
+    </el-menu>
 
 
 </div>
@@ -33,13 +46,14 @@
 <script>
 
 import {HOST} from '../utils/config'
+import newContent from './newContent.vue'
 
 export default {
   props: {
     meta_data: {}
   },
   components: {
-
+    newContent
   },
   data () {
       return {
@@ -50,8 +64,9 @@ export default {
           "children": "children",
           "label": "order"
         },
-
-      
+        menu_show: false,
+        new_content_show:false,
+        hello:"hello"
 
       }
   },
@@ -67,28 +82,43 @@ export default {
 },
 
   methods: {
-      handleNodeClick(data, node) {
+      handleNodeClick(node_data, node) {
+        // 参数:传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node
         this.$emit("listenToNodeClick", node.data);
+        // console.log("被点击的node是");
+        // console.log(node.data);
+        console.log("被点击的nodedata是");
+        console.log(node_data);
         console.log("被点击的node是");
-        console.log(node.data);
+        console.log(node);
       },
       handleRightClick(e, obj, node, self){
         // console.log("进入handleRightClick函数");
         // alert("弹出新增目录或者节点对话框");og(0)
-        console.log("event是");
-        console.log(e);
-        console.log("obj是");
-        console.log(obj);
-        console.log("node是");
-        console.log(node);
+        // console.log("event是");
+        // console.log(e);
+        // console.log("obj是");
+        // console.log(obj);
+        // console.log("node是");
+        // console.log(node);
         // console.log(self);
-        this.$emit("listenRightClick");
+        this.menu_show = true;
+        this.new_content_show = true;
         /*1捕获鼠标右键*/
-          e.preventDefault();
-          var x = e.clientX;
-          var y = e.clientY;
+        e.preventDefault();
+        var x = e.clientX;
+        var y = e.clientY;
 
+        //test handleDelete
+        this.deleleNode(node);
 
+      },
+      close(){
+        this.new_content_show = false;
+      },
+      save(res){
+        this.new_content_show = false;
+        //还要保存输入结果
       },
 
       getData(){
@@ -125,6 +155,42 @@ export default {
         // return draggingNode.data.label.indexOf('三级 3-2-2') === -1;
       },
 
+      newContent(node_data, des, text){
+        //先传参进入newContent函数,之后可能通过data里的值传进来
+        //新建元素的order属性需要判断node_data的children的order
+        var new_item = {};
+        new_item.children = [];
+        new_item.description = des;
+        new_item.is_rule = false;
+        new_item.snl_spl_pairs = [];
+        new_item.tags = [];
+        node_data.push(new_item);
+      },
+
+      newRule(node_data, des, text){
+        //新建叶子节点不同之处在于要
+        var new_item = {};
+        new_item.children = [];
+        new_item.description = des;
+        new_item.is_rule = true;
+        new_item.snl_spl_pairs = [];
+        new_item.tags = [];
+        node_data.push(new_item);
+      },
+
+      deleleNode(node){
+        //删除该节点，修改双亲节点,注意参数是node
+        const parent = node.parent;
+        const children = parent.data.children || parent.data;
+        const index = children.findIndex(d => d.id === data.id);
+        children.splice(index, 1);
+      },
+
+
+      rename(){
+
+      },
+
 
 
   },
@@ -142,9 +208,7 @@ export default {
   height:100%;
 }
 
-#aside{
-  height:100%;
-}
+
 .el-tree{
   background-color: #DCDFE6;
   height: 100%;
