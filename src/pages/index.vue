@@ -87,8 +87,8 @@ export default {
         url:HOST+'/data/get_metadata',
         data: {"_id":id},
       }).then(response=>{
-        // console.log("in index response.data =  ");
-        // console.log(response.data);
+        console.log("in index response.data =  ");
+        console.log(response.data);
 
         //node_data = response.data.nodedata;
         //6 路由跳转并传递lib的id， meta_data， node_data
@@ -153,7 +153,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #container{
   position: relative;
   text-align: center;

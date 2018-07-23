@@ -107,7 +107,7 @@
   };
 </script>
 
-<style>
+<style scoped>
 .el-textarea__inner {
   display: inline;
   width: 60%;

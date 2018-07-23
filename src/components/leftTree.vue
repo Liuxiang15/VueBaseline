@@ -23,18 +23,38 @@
         <span>{{ node.data.text }} </span>
       </span>
     </el-tree>
-    <new-content :default_data="hello"
+    <!-- <new-content :default_data="hello"
     :show="new_content_show"
     @save="save" @close="close" >
-    </new-content>
-    <el-menu
-      v-show="menu_show"
+    </new-content> -->
+    <el-dialog title="新建目录" :visible.sync="new_content_show">
+      <el-form>
+        <el-form-item label="text">
+          <el-input v-model="new_text" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-form>
+        <el-form-item label="description">
+          <el-input v-model="new_description" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-form>
+        <el-form-item label="order">
+          <el-input v-model="new_order" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
+        <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-menu v-show="menu_show"
       class="el-menu-vertical-demo">
       <el-menu-item index="1-1" @click.native="newContent">新建目录</el-menu-item>
       <el-menu-item index="1-2" @click.native="newRule">新建规则</el-menu-item>
       <el-menu-item index="1-3" @click.native="deleleNode">删除节点</el-menu-item>
-     <el-menu-item index="1-4" @click.native="rename">重命名</el-menu-item>
-
+      <el-menu-item index="1-4" @click.native="rename">重命名</el-menu-item>
     </el-menu>
 
 
@@ -66,8 +86,12 @@ export default {
         },
         menu_show: false,
         new_content_show:false,
-        hello:"hello"
-
+        hello:"hello",
+        new_text:"text",
+        new_description:"None",
+        new_order:"0",
+        current_data:{},
+        current_node:{}
       }
   },
   created () {
@@ -92,33 +116,45 @@ export default {
         console.log("被点击的node是");
         console.log(node);
       },
-      handleRightClick(e, obj, node, self){
+      handleRightClick(e, nodedata, node, self){
         // console.log("进入handleRightClick函数");
         // alert("弹出新增目录或者节点对话框");og(0)
         // console.log("event是");
         // console.log(e);
-        // console.log("obj是");
-        // console.log(obj);
+        console.log("nodedata是");
+        console.log(nodedata);
         // console.log("node是");
         // console.log(node);
         // console.log(self);
         this.menu_show = true;
-        this.new_content_show = true;
+        // this.new_content_show = true;
         /*1捕获鼠标右键*/
         e.preventDefault();
         var x = e.clientX;
         var y = e.clientY;
 
-        //test handleDelete
-        this.deleleNode(node);
+        this.current_data = nodedata;
+
 
       },
       close(){
         this.new_content_show = false;
       },
-      save(res){
+      save(){
         this.new_content_show = false;
+
         //还要保存输入结果
+        const new_item = {};
+        new_item.children = [];
+        new_item.description = this.new_description;
+        new_item.is_rule = false;
+        new_item.order = this.new_order;
+        new_item.snl_spl_pairs = [];
+        new_item.tags = [];
+        new_item.text = this.new_text;
+        console.log("this.current_data是：");
+        console.log(this.current_data);
+        this.current_data.children.push(new_item);
       },
 
       getData(){
@@ -155,16 +191,10 @@ export default {
         // return draggingNode.data.label.indexOf('三级 3-2-2') === -1;
       },
 
-      newContent(node_data, des, text){
+      newContent(node_data){
         //先传参进入newContent函数,之后可能通过data里的值传进来
         //新建元素的order属性需要判断node_data的children的order
-        var new_item = {};
-        new_item.children = [];
-        new_item.description = des;
-        new_item.is_rule = false;
-        new_item.snl_spl_pairs = [];
-        new_item.tags = [];
-        node_data.push(new_item);
+        this.new_content_show = true;
       },
 
       newRule(node_data, des, text){
@@ -175,7 +205,7 @@ export default {
         new_item.is_rule = true;
         new_item.snl_spl_pairs = [];
         new_item.tags = [];
-        node_data.push(new_item);
+        this.current_data.children.push(new_item);
       },
 
       deleleNode(node){

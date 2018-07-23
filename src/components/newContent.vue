@@ -1,5 +1,9 @@
 <template>
+
     <el-dialog title="新建目录" >
+
+      <div> newContentdsfdsfdsfdsfsfdgoigybkol</div>
+
       <el-form>
         <el-form-item label="text"
         :visible.sync="dialogFormVisible">
@@ -43,6 +47,7 @@
       console.log('in newContent');
       console.log(this.default_data);
       console.log(this.show);
+      console.log(this.dialogFormVisible);
     },
     methods:{
       //2 调用父组件的close函数使的对话框消失
@@ -69,8 +74,8 @@
 
 <style scoped>
 .el-dialog{
-  display: inline !important;
-  z-index: 100;
+  /* display: inline !important;
+  z-index: 100; */
   width: 200px;
   height: 300px;
 }
