@@ -30,7 +30,7 @@
   };
 </script>
 
-<style>
+<style scoped>
 .el-table__header-wrapper {
     overflow: hidden;
     display: none;
@@ -47,4 +47,15 @@
 .el-table th, .el-table tr {
     background-color: #DCDFE6;
 }
+
+.el-menu {
+
+  background-color: white;
+
+}
+
+.el-menu-item {
+    color: #000000 !important;
+}
+
 </style>

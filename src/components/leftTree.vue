@@ -23,15 +23,25 @@
         <span>{{ node.data.text }} </span>
       </span>
     </el-tree>
+    <!-- <mymenu v-show="menu_show" id="mymenu"></mymenu> -->
+    <el-menu
+      v-show="menu_show"
+      class="el-menu-vertical-demo">
+      <el-menu-item index="1-1" @click.native="newContent">新建目录</el-menu-item>
+      <el-menu-item index="1-2" @click.native="newRule">新建规则</el-menu-item>
+      <el-menu-item index="1-3" @click.native="deleleNode">删除节点</el-menu-item>
+      <el-menu-item index="1-4" @click.native="rename">重命名</el-menu-item>
+    </el-menu>
 
-
+    <new-content></new-content>
 </div>
 </template>
 
 
 
 <script>
-
+import mymenu from "./mymenu.vue"
+import newContent from "./newContent.vue"
 import {HOST} from '../utils/config'
 
 export default {
@@ -39,6 +49,8 @@ export default {
     meta_data: {}
   },
   components: {
+    mymenu,
+    newContent,
 
   },
   data () {
@@ -50,20 +62,16 @@ export default {
           "children": "children",
           "label": "order"
         },
-
-      
-
+        menu_show: false,
       }
   },
   created () {
-    console.log("enter leftTree的create函数");
-    console.log("in leftTree this.meta_data = ");
-    console.log(this.meta_data);
+    // console.log("enter leftTree的create函数");
+    // console.log("in leftTree this.meta_data = ");
+    // console.log(this.meta_data);
 
-    this.data = this.meta_data.metadata.data;
     this.data = this.meta_data.metadata.data;
     this.group = this.meta_data.metadata.tags;
-
 },
 
   methods: {
@@ -72,22 +80,59 @@ export default {
         console.log("被点击的node是");
         console.log(node.data);
       },
-      handleRightClick(e, obj, node, self){
+      handleRightClick(e, nodedata, node, self){
         // console.log("进入handleRightClick函数");
         // alert("弹出新增目录或者节点对话框");og(0)
-        console.log("event是");
-        console.log(e);
-        console.log("obj是");
-        console.log(obj);
-        console.log("node是");
-        console.log(node);
-        // console.log(self);
-        this.$emit("listenRightClick");
+        this.menu_show = true;
+        // console.log("event是");
+        // console.log(e);
+        console.log("nodedata是");
+        console.log(nodedata);
+        // console.log("node是");
+        // console.log(node);
         /*1捕获鼠标右键*/
-          e.preventDefault();
-          var x = e.clientX;
-          var y = e.clientY;
+        e.preventDefault();
+        var x = e.clientX;
+        var y = e.clientY;
+        console.log("鼠标点击的位置是");
+        console.log(x);
+        console.log(y);
+        // jquery给一个DIV设置坐标：
+        // jquery中设置div的坐标位置的方法是通过offset实现的。
+        // 1、获取到div对象并且获取到当前偏移位置
+        // var p = $("#elementId");对象
+        // var offset = p.offset(); 位置
+        // 2、设置坐标位置，一般之关系距离顶部和左部的坐标：
+        // $("#secondElementId").offset({ top: offset.top, left: offset.left})
 
+        // var mymenu = $("#mymenu");
+        // var offset = mymenu.offset();
+        // console.log("mymenu的位置是");
+        // console.log(offset);
+
+        //绝对定位赋值
+        // console.log(mymenu);
+        // mymenu.style.position = "absolute";
+        // mymenu.style.left = (x + 100) + "px";
+        // mymenu.style.top = y + "px";
+
+        // console.log("absolute");
+
+      },
+      newContent(description, text){
+        console.log("进入新建目录函数！！！");
+
+      },
+
+      newRule(){
+
+      },
+
+      delete(){
+
+      },
+
+      rename(){
 
       },
 
@@ -151,9 +196,16 @@ export default {
 }
 
 .el-tree-node {
-    height: 100%;
+    height: 80%;
     white-space: nowrap;
     /* outline: 0; */
     /* background-color: #C0C4CC; */
 }
+.el-menu {
+    background-color: #333;
+    border: none;
+    box-sizing: border-box;
+
+}
+
 </style>

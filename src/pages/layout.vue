@@ -7,10 +7,8 @@
       <el-aside>
 
         <!-- <cascader></cascader> -->
-        <left-tree id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild"
-        v-on:listenRightClick="showMenu">
+        <left-tree id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
         </left-tree>
-        <mymenu id="act_menu" v-show="menu_show"></mymenu>
       </el-aside>
 
       <el-main>
@@ -33,7 +31,7 @@ import DemoHeader from '../components/demoHeader'
 import LeftTree from '../components/leftTree'
 import List from '../components/list'
 import cascader from '../components/cascader.vue'
-import mymenu from "../components/mymenu.vue"
+// import mymenu from "../components/mymenu.vue"
 
 export default {
   name: 'layout',
@@ -42,23 +40,23 @@ export default {
     LeftTree,
     List,
     cascader,
-    mymenu
+    // mymenu
   },
   data() {
     return {
       //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
       current_node: {},
       meta_data: {},
-      menu_show: false,
+
 
     }
   },
   created(){
-    //console.log("in layout create metadata = ");
+    console.log("in layout create metadata = ");
     this.meta_data = this.$route.query.meta_data;
 
     //console.log("in layout this.$route.query.meta_data = ");
-    // console.log(this.$route.query.meta_data);
+    console.log(this.$route.query.meta_data);
     //console.log(JSON.stringify(this.$route.query.meta_data.meta_data));
     // console.log("in layout this.$route.query.meta_data.data = ");
     // console.log(JSON.stringify(this.meta_data));
@@ -120,6 +118,7 @@ export default {
 }
 </script>
 
+<!-- 使用vue 引入一个组件时，组件中的css样式将作用域全局 ,解决方法-->
 <style>
 body{
   height: 100%;

@@ -20,7 +20,7 @@
   }
 </script>
 
-<style>
+<style scoped>
 .el-menu {
   position: relative;
   width: 100%;
