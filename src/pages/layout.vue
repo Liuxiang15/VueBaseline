@@ -9,6 +9,7 @@
         <!-- <cascader></cascader> -->
         <left-tree id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
         </left-tree>
+
       </el-aside>
 
       <el-main>
@@ -31,7 +32,7 @@ import DemoHeader from '../components/demoHeader'
 import LeftTree from '../components/leftTree'
 import List from '../components/list'
 import cascader from '../components/cascader.vue'
-// import mymenu from "../components/mymenu.vue"
+
 
 export default {
   name: 'layout',
@@ -40,7 +41,6 @@ export default {
     LeftTree,
     List,
     cascader,
-    // mymenu
   },
   data() {
     return {
@@ -146,18 +146,6 @@ div{
   padding: 0 !important;
 }
 
-/* .el-footer {
-  height: 10% !important;
-  /* 我们希望 header 采用固定的高度，只占用必须的空间 */
-  /* 0 flex-grow, 0 flex-shrink, auto flex-basis */
-  /* flex: 0 0 auto;
-
-  /* background-color: #B3C0D1; */
-  /* color: #333;
-  text-align: center;
-  line-height: 60px;
-  box-sizing: border-box;
-} */
 
 .el-container{
   /* height: 80%; */
@@ -207,12 +195,4 @@ div{
   left:70%;
 }
 
-  /* #dialog{
-    /*display:none;*/
-  /* }
-  #left_tree{
-    position: relative;
-    width: 90%;
-    left: 10%;
-  } */
 </style>

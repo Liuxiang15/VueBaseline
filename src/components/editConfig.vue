@@ -156,7 +156,7 @@ import {HOST} from '../utils/config'
     }
   }
 </script>
-<style>
+<style scoped>
 /* #container{
   height: 90%;
 } */

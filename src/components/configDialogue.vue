@@ -52,8 +52,7 @@
 
     data() {
       return {
-        dialogTableVisible: this.show,
-        dialogFormVisible: false,
+        dialogFormVisible: this.show,
         form: {
           name: '',
           region: '',
@@ -108,7 +107,7 @@
   };
 </script>
 
-<style>
+<style scoped>
 .el-textarea__inner {
   display: inline;
   width: 60%;
