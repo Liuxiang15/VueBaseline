@@ -142,7 +142,10 @@ export default {
     console.log("enter leftTree的create函数");
     console.log("in leftTree this.meta_data = ");
     console.log(this.meta_data);
-    this.data = this.meta_data.metadata.data;
+    if(this.meta_data.data == undefined){
+      console.log("传入的meta_data为空");
+      //this.menu_show = true;
+    }
     this.data = this.meta_data.metadata.data;
     this.group = this.meta_data.metadata.tags;
 },
@@ -152,20 +155,20 @@ export default {
         this.$emit("listenToNodeClick", node.data);
         // console.log("被点击的node是");
         // console.log(node.data);
-        console.log("被点击的nodedata是");
-        console.log(node_data);
-        console.log("被点击的node是");
-        console.log(node);
+        // console.log("被点击的nodedata是");
+        // console.log(node_data);
+        // console.log("被点击的node是");
+        // console.log(node);
       },
       handleRightClick(e, nodedata, node, self){
         // console.log("进入handleRightClick函数");
         // alert("弹出新增目录或者节点对话框");og(0)
         // console.log("event是");
         // console.log(e);
-        console.log("nodedata是");
-        console.log(nodedata);
-        console.log("node是");
-        console.log(node);
+        // console.log("nodedata是");
+        // console.log(nodedata);
+        // console.log("node是");
+        // console.log(node);
         // console.log(self);
         this.menu_show = true;
         // this.new_content_show = true;

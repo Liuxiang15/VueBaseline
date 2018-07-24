@@ -22,6 +22,7 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-button @click.native ="createRuleBase()">创建规则库</el-button>
     </div>
   </div>
 </template>
@@ -133,6 +134,31 @@ export default {
             config: config,
           }
         });
+      }).catch(function(err){
+        console.log(err);
+      });
+    },
+    createRuleBase(){
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'POST',
+        url:HOST+'/data/create_metadata'
+      }).then(response=>{
+
+        console.log(response.data);
+
+      }).catch(function(err){
+        console.log(err);
+      });
+
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'GET',
+        url:HOST+'/data/index'
+      }).then(response=>{
+        this.lib_names = response.data.data;
+        console.log(this.lib_names);
+
       }).catch(function(err){
         console.log(err);
       });
