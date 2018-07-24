@@ -7,7 +7,7 @@
       <el-aside>
 
         <!-- <cascader></cascader> -->
-        <left-tree id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
+        <left-tree  ref="mytree" id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
         </left-tree>
 
       </el-aside>
@@ -105,6 +105,10 @@ export default {
       this.menu_show = true;
       console.log("enter showMenu函数");
 
+    },
+    closeMenu(){
+      this.$refs.mytree.close();
+      console.log("进入clickMenu函数");
     }
 
   },
