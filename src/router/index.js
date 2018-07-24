@@ -37,6 +37,12 @@ export default new Router({
       path:"/config",
       name: "config",
       component: () => import('@/components/editConfig'),
+    },
+
+    {
+      path:"/alias",
+      name: "alias",
+      component: () => import('@/components/editAlias'),
     }
 
   ]

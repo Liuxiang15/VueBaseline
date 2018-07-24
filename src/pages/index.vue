@@ -18,6 +18,7 @@
           <template slot-scope="props">
             <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
             <el-button @click.native ="editConfig(props.$index, props.row)">编辑config</el-button>
+            <el-button @click.native ="editAlias(props.$index, props.row)">编辑alias</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -28,6 +29,7 @@
 <script>
 import DemoHeader from '../components/demoHeader'
 import config from '../components/editConfig.vue'
+import alias from '../components/editAlias.vue'
 
 import {HOST} from '../utils/config'
 
@@ -112,20 +114,7 @@ export default {
     editConfig(index, data){
 
       var id = "";
-      // console.log("===========");
-      // console.log(data);
       id = data._id;
-      //
-      // for(var lib_id of this.lib_names_ids){
-      //   //4 在this.lib_names_ids寻找lib_name属性与被点击行元素相同的元素
-      //   //并将其_id属性值赋值给id
-      //   if(lib_id.lib_name == data.lib_name){
-      //     id = lib_id._id;
-      //     console.log("_id = "+ id);
-      //     break;
-      //   }
-      // }
-
       this.$ajax({
       //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
         method:'POST',
@@ -149,6 +138,34 @@ export default {
       });
     },
 
+    editAlias(index, data){
+
+      var id = "";
+      id = data._id;
+      console.log("id = " + id);
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'POST',
+        url:HOST+'/alias/get_alias',
+        data: {"_id":id},
+      }).then(response=>{
+        console.log("alias file is ");
+        console.log(response.data);
+        // console.log(response.data.config.alias_list);
+        // var alias_list = response.data.config.alias_list;
+        this.$router.push({
+          path: '/alias',
+          name: "alias" ,
+          props: true,
+          params:{
+            response: response.data,
+          }
+        });
+      }).catch(function(err){
+        console.log(err);
+      });
+    },
+
   },
 }
 </script>
@@ -157,8 +174,8 @@ export default {
 #container{
   position: relative;
   text-align: center;
-  width:40%;
-  left:30%;
+  width:50%;
+  left:25%;
 }
 
 .el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell {
