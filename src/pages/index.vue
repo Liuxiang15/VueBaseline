@@ -161,11 +161,35 @@ export default {
   left:30%;
 }
 
+.el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell {
+    padding-left: 10px;
+    text-align: center !important;
+}
+
 .el-table th > .cell {
+    text-align: center !important;
+}
+
+
+.el-table td, .el-table th.is-leaf {
+    border-bottom: 1px solid #ebeef5;
     text-align: center;
 }
 
 ::-webkit-scrollbar {
   display:none;
+}
+
+
+.el-table .cell{
+  text-align: center;
+}
+
+.el-table th{
+  text-align: center !important;
+}
+
+div{
+  text-align: center !important;
 }
 </style>

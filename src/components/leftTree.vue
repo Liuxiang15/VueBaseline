@@ -88,7 +88,7 @@
       </div>
     </el-dialog>
 
-    <el-menu v-show="menu_show"
+    <el-menu  id="action_menu"v-show="menu_show"
       class="el-menu-vertical-demo">
       <el-menu-item index="1-1" @click.native="newContent">新建目录</el-menu-item>
       <el-menu-item index="1-2" @click.native="newRule">新建规则</el-menu-item>
@@ -177,8 +177,16 @@ export default {
         this.current_node = node;
       },
       close(){
+        //所有对话框和菜单栏不可见
         this.new_content_show = false;
         this.new_rule_show = false;
+        this.menu_show = false;
+        this.rename_show = false;
+        //输入框的值保持为原始
+        this.new_text = "";
+        this.new_description = "";
+        this.new_order = "";
+        this.new_snl = "";
       },
       save(){
         if(this.operation == 1){
@@ -225,6 +233,12 @@ export default {
         }
 
         this.menu_show = false;
+
+        //输入框的值保持为原始
+        this.new_text = "";
+        this.new_description = "";
+        this.new_order = "";
+        this.new_snl = "";
       },
       getData(){
         this.data = this.meta_data.metadata.data;
@@ -306,5 +320,11 @@ export default {
     white-space: nowrap;
     /* outline: 0; */
     /* background-color: #C0C4CC; */
+}
+
+#action_menu{
+  position: absolute;
+  left: 200px;
+  width: 97px;
 }
 </style>
