@@ -170,7 +170,7 @@ div{
 }
 
 .el-table td, .el-table th.is-leaf {
-
+  text-align: center;
     background-color: ##EBEEF5;
 }
 

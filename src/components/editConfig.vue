@@ -1,8 +1,9 @@
 <template>
-<div>
+<div id="config_container">
   <el-table
-    :data="config.config_list">
+    :data="pagedData">
 
+    <!-- config.config_list -->
     <el-table-column label="key" width="180" align="center">
       <template slot-scope="scope">
         <el-tag size="medium">{{ scope.row.key }}</el-tag>
@@ -11,15 +12,12 @@
 
     <el-table-column label="value" >
       <template slot-scope="scope">
-<!--
         <div slot="reference" class="name-wrapper">
-          <el-tag size="medium" v-for = "(val, index) in scope.row.value"
-          :key = "index">
-=======
-
-              {{val}}
-          </el-tag>
-        </div> -->
+            <el-tag size="medium" v-for = "(val, index) in scope.row.value"
+            :key = "index">
+                {{val}}
+            </el-tag>
+          </div>
       </template>
     </el-table-column>
 
@@ -36,7 +34,13 @@
     </el-table-column>
   </el-table>
 
-  <div >
+  <el-pagination :total="total" :current-page="currentPage"
+    :page-size="currentPageSize"
+    layout="total, sizes, prev, pager,next, jumper"
+    @size-change="pageSizeChange" @current-change="pageChange">
+  </el-pagination>
+
+  <div id="btns">
     <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
     <el-button type="success" icon="el-icon-check" @click="configSave">保存</el-button>
   </div>
@@ -71,6 +75,9 @@ import {HOST} from '../utils/config'
         },
 
         config:{},
+        // total:0,
+        currentPage: 1,
+        currentPageSize: 10
 
       }
     },
@@ -79,6 +86,9 @@ import {HOST} from '../utils/config'
       console.log(this.$route.params.config);
       this.config = this.$route.params.config;
       // this.config_list = this.$route.params.config.config_list;
+      //用于分页显示
+      // this.total = this.config.config_list.length;
+
 
     },
     // watch:{
@@ -92,6 +102,15 @@ import {HOST} from '../utils/config'
     //     deep: true
     //   }
     // },
+    computed:{
+      total(){
+        return this.config.config_list.length;
+      },
+
+      pagedData(){
+        return this.config.config_list.slice((this.currentPage - 1) * this.currentPageSize, this.currentPage * this.currentPageSize)
+      }
+    },
     methods: {
       newItem() {
         var item = {};
@@ -136,6 +155,13 @@ import {HOST} from '../utils/config'
         this.config.config_list[res.index].value = res.data.value;
 
       },
+
+      pageSizeChange(size) {
+        this.currentPageSize = size
+      },
+      pageChange(page) {
+          this.currentPage = page
+      },
       configSave(){
         this.$ajax({
           //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
@@ -161,11 +187,17 @@ import {HOST} from '../utils/config'
   height: 90%;
 } */
 
-.el-table {
+#config_container{
+  position: relative;
+  width: 60%;
+  left: 20%;
+}
+
+/* .el-table {
     position: relative;
     width: 60%;
     left: 20%;
-}
+} */
 
 .el-table .cell{
   text-align: center;
@@ -175,9 +207,16 @@ import {HOST} from '../utils/config'
   display:inline;
 }
 
-
-
-td{
-  width: auto;
+.el-pagination{
+  position: relative;
+  left: 10%;
 }
+
+#btns{
+  position: relative;
+  left: 50%;
+  top: 10%;
+}
+
+
 </style>
