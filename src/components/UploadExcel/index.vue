@@ -95,7 +95,7 @@
       upload2Server() {
         // 使用then语法，或者新增callback参数
 
-        if (this.rawFile==null){
+        if (this.rawFile == null) {
           this.$message.error('Please select excel file first')
           return
         }
@@ -103,19 +103,24 @@
         importExcel(this.rawFile).then(result => {
           console.log(result);
           // debugger;
-          this.$router.push({
-            path: '/data',
-            name: "layout",
-            props: true,
-            params: {
-              id: result.data.res._id
-            },
-            query: {
-              meta_data: {metadata: result.data.res},
-              //node_data: node_data
-            }
-          });
 
+          if (result.data.errmsg !== undefined) {
+            this.$message.error(result.data.errmsg)
+          } else {
+            this.$router.push({
+              path: '/data',
+              name: "layout",
+              props: true,
+              params: {
+                id: result.data.res._id
+              },
+              query: {
+                meta_data: {metadata: result.data.res},
+                //node_data: node_data
+              }
+            });
+
+          }
         })
       },
       readerData(rawFile) {

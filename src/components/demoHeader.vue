@@ -5,7 +5,7 @@
     <el-submenu index="2">
       <template slot="title">次页面</template>
       <!--<el-menu-item index="/">menu-item-2-1</el-menu-item>-->
-      <el-menu-item index="/importExcel">Excel导入</el-menu-item>
+      <el-menu-item index="/importExcel" v-show="showExcelImport()">Excel导入</el-menu-item>
       <el-menu-item index="/">menu-item-2-2</el-menu-item>
       <el-menu-item index="/">menu-item-2-3</el-menu-item>
     </el-submenu>
@@ -16,20 +16,25 @@
 
 <script>
   export default {
-    name: 'DemoHeader'
+    name: 'DemoHeader',
+    methods: {
+      showExcelImport: function () {
+        return this.$route.path === '/data';
+      }
+    }
   }
 </script>
 
 <style scoped>
-.el-menu {
-  position: relative;
-  width: 100%;
-  padding-left: 20%;
-  padding-right: 20%;
-  padding-top: 1%;
-  padding-bottom: 1%;
-  background-color: #333;
-  border: none;
-  box-sizing: border-box;
-}
+  .el-menu {
+    position: relative;
+    width: 100%;
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    background-color: #333;
+    border: none;
+    box-sizing: border-box;
+  }
 </style>

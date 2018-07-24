@@ -3,7 +3,7 @@
     <upload-excel-component :on-success='handleSuccess' :before-upload="beforeUpload"
                             ref="upload-excel-component"></upload-excel-component>
     <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
-      <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'>
+      <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item' :render-header="renderHeader">
       </el-table-column>
     </el-table>
     <br/>
@@ -46,7 +46,6 @@
         return false
       },
 
-
       handleSuccess({results, header}) {
         this.tableData = results
         this.tableHeader = header
@@ -56,7 +55,31 @@
         //debugger;
 
         this.$refs["upload-excel-component"].upload2Server()
-      }
+      },
+
+
+      clickHandler() {
+        alert('终于生效了')
+      },
+
+      renderHeader: function (createElement, {column, $index}) {
+        // debugger;
+        // return createElement('div', [
+        //   createElement('span', column.label),
+        //
+        //   createElement('i', {
+        //     on: {
+        //       click: this.clickHandler
+        //     },
+        //     style: {
+        //       color: 'red',
+        //       fontSize: '14px'
+        //     }
+        //   }, '我可以点击？')
+        // ])
+
+        return column.label
+      },
     },
 
   }
