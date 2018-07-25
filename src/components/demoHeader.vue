@@ -5,7 +5,7 @@
     <el-submenu index="2">
       <template slot="title">次页面</template>
       <!--<el-menu-item index="/">menu-item-2-1</el-menu-item>-->
-      <el-menu-item index="/importExcel" v-show="showExcelImport()">Excel导入</el-menu-item>
+      <el-menu-item index="/importExcel" v-if="showExcelImport()">Excel导入</el-menu-item>
       <el-menu-item index="/">menu-item-2-2</el-menu-item>
       <el-menu-item index="/">menu-item-2-3</el-menu-item>
     </el-submenu>
