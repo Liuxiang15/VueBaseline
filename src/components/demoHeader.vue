@@ -5,7 +5,9 @@
     <el-submenu index="2">
       <template slot="title">次页面</template>
       <!--<el-menu-item index="/">menu-item-2-1</el-menu-item>-->
-      <el-menu-item index="/importExcel" v-if="showExcelImport()">Excel导入</el-menu-item>
+      <el-menu-item :route="{path:'/importExcel/'+importExcelPath()}" v-if="showExcelImport()">
+        Excel导入
+      </el-menu-item>
       <el-menu-item index="/">menu-item-2-2</el-menu-item>
       <el-menu-item index="/">menu-item-2-3</el-menu-item>
     </el-submenu>
@@ -20,6 +22,10 @@
     methods: {
       showExcelImport: function () {
         return this.$route.path === '/data';
+      },
+
+      importExcelPath: function () {
+        return this.$route.params.id;
       }
     }
   }

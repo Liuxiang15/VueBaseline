@@ -8,8 +8,6 @@ export function importExcel(file,metadata_id) {
   formData.append('file', file)
   formData.append('metadata_id',metadata_id)
 
-  console.log(HOST + '/excel/importExcel')
-
   return axios.post(HOST + '/excel/importExcel', formData)
 }
 

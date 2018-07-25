@@ -52,8 +52,6 @@
       },
       handleImportExcel() {
         console.log("click on import excel")
-        //debugger;
-
         this.$refs["upload-excel-component"].upload2Server()
       },
 

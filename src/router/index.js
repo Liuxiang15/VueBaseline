@@ -22,10 +22,11 @@ export default new Router({
     },
 
     {
-      path: '/importExcel',
+      path: '/importExcel/:metadata_id',
       name: 'excel',
       component: () => import('@/pages/uploadExcel'),
-      // hidden: true
+      // props: true
+// hidden: true
     },
     {
       path: '/data',
@@ -34,13 +35,13 @@ export default new Router({
     },
 
     {
-      path:"/config",
+      path: "/config",
       name: "config",
       component: () => import('@/components/editConfig'),
     },
 
     {
-      path:"/alias",
+      path: "/alias",
       name: "alias",
       component: () => import('@/components/editAlias'),
     }
