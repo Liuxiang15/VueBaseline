@@ -147,21 +147,22 @@ export default {
 
         console.log(response.data);
 
+        this.$ajax({
+        //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+          method:'GET',
+          url:HOST+'/data/index'
+        }).then(response=>{
+          this.lib_names = response.data.data;
+          console.log(this.lib_names);
+
+        }).catch(function(err){
+          console.log(err);
+        });
+
       }).catch(function(err){
         console.log(err);
       });
 
-      this.$ajax({
-      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
-        method:'GET',
-        url:HOST+'/data/index'
-      }).then(response=>{
-        this.lib_names = response.data.data;
-        console.log(this.lib_names);
-
-      }).catch(function(err){
-        console.log(err);
-      });
     },
 
     editAlias(index, data){
