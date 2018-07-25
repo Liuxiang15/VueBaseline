@@ -139,15 +139,17 @@ export default {
       }
   },
   created () {
-    console.log("enter leftTree的create函数");
-    console.log("in leftTree this.meta_data = ");
-    console.log(this.meta_data);
-    if(this.meta_data.data == undefined){
-      console.log("传入的meta_data为空");
-      //this.menu_show = true;
-    }
     this.data = this.meta_data.metadata.data;
     this.group = this.meta_data.metadata.tags;
+    // console.log("enter leftTree的create函数");
+    // console.log("in leftTree this.meta_data.metadata.data = ");
+    // console.log(this.meta_data.metadata.data);
+    if(this.meta_data.data == undefined){
+      // console.log("in leftTree create");
+      // console.log(this.meta_data);
+      // console.log("传入的meta_data为空");
+      //this.menu_show = true;
+    }
 },
   methods: {
       handleNodeClick(node_data, node) {

@@ -100,12 +100,13 @@ export default {
           name: "layout" ,
           props: true,
           params:{
-              id: id
+              id: id,
+              meta_data: response.data,
           },
-          query: {
-            meta_data: response.data,
-            //node_data: node_data
-          }
+          // query: {
+          //   meta_data: response.data,
+          //   //node_data: node_data
+          // }
         });
 
       }).catch(function(err){
@@ -144,9 +145,7 @@ export default {
         method:'POST',
         url:HOST+'/data/create_metadata'
       }).then(response=>{
-
         console.log(response.data);
-
         this.$ajax({
         //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
           method:'GET',
@@ -154,11 +153,9 @@ export default {
         }).then(response=>{
           this.lib_names = response.data.data;
           console.log(this.lib_names);
-
         }).catch(function(err){
           console.log(err);
         });
-
       }).catch(function(err){
         console.log(err);
       });
