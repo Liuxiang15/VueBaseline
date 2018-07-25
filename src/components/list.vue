@@ -161,11 +161,8 @@ export default {
     save(res){
       this.edit_show = false;
       this.current_node.snl_spl_pairs[res.index].snl = res.snl;
-
-
-      // console.log("保存后的结果是： ");
-      console.log(res);
-      console.log(this.current_node);
+      // console.log(res);
+      // console.log(this.current_node);
       // console.log(this.current_node);
       //console.log(this.current_node[res.index]);
     },
@@ -177,25 +174,6 @@ export default {
       this.current_node.snl_spl_pairs.push(item);
     },
 
-    snlSave(){
-    //   this.$ajax({
-    //     //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
-    //     method:'POST',
-    // //dataType:"jsonp",
-    //     url:HOST + '/data/refresh_metadata',
-    //     data: JSON.stringify(this.current_node),
-    //   }).then(response=>{
-    //     //node_data = response.data.nodedata;
-    //     //6 路由跳转并传递lib的id， meta_data， node_data
-    //     console.log(response.data);
-    //     alert("保存成功");
-    //
-    //   }).catch(function(err){
-    //     console.log(err);
-    //   });
-      this.$emit("metadataSend");
-
-    }
   }
 }
 </script>
