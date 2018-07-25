@@ -172,47 +172,57 @@
         var str2 = str1.match(/<span([\s\S]*)div>/)[0];
         var pos = str2.indexOf("</div>");
         var new_snl_html = str2.slice(0, pos);
-        console.log(new_snl_html)
+        console.log("new_snl_html is ");
+        console.log(new_snl_html);
+        while(new_snl_html.indexOf("</span>&nbsp;") != -1){
+          var first_pos = new_snl_html.indexOf(">");
+          var word = new_snl_html.slice(first_pos+1, new_snl_html.indexOf("</span>&nbsp;"));
+          var next_pos = new_snl_html.indexOf("</span>&nbsp;") + "</span>&nbsp;".length;
+          new_snl_html.substr(next_pos, new_snl_html.length);
+          console.log("in changeText word");
+          console.log(word);
+        }
+
 
         //对新的new_snl_html处理，使之展现正常颜色
-        var last_span_pos = new_snl_html.lastIndexOf("</span>");
-        var last_space_pos = new_snl_html.lastIndexOf("&nbsp;");
-        var last_pos;
-        if(last_span_pos > last_space_pos){
-          last_pos = last_span_pos + "</span>".length;
-        }
-        else if(last_span_pos < last_space_pos){
-          last_pos = last_space_pos + "&nbsp;".length;
-        }
-        else{
-          //此时用户清空输入框
-          last_pos = 0;
-        }
-        var add_str = new_snl_html.substr(last_pos, new_snl_html.length);
-        if(add_str.indexOf(" ") != -1){
-          add_str.replace(" ", "");
-
-          var type = this.TypeKeyWord(add_str);
-          var str = "";
-          if(type == -1){
-            str = '<span class="common">' + add_str + '</span>';
-          }
-          else if(type >= 0 && type <= 2){
-            str = '<span class="other">' + add_str + '</span>';
-          }
-          else if(type >= 3 && type <= 5){
-            str = '<span class="num_compare">' + add_str + '</span>';
-          }
-          else if(type >= 6 && type <= 9){
-            str = '<span class="logic_connect">' + add_str + '</span>';
-          }
-        }
-        var _new_snl_html = new_snl_html.substring(0, last_pos) + str;
-        this.snl_html = _new_snl_html;
-
-
-        console.log(add_str);
-        console.log(pos);
+        // var last_span_pos = new_snl_html.lastIndexOf("</span>");
+        // var last_space_pos = new_snl_html.lastIndexOf("&nbsp;");
+        // var last_pos;
+        // if(last_span_pos > last_space_pos){
+        //   last_pos = last_span_pos + "</span>".length;
+        // }
+        // else if(last_span_pos < last_space_pos){
+        //   last_pos = last_space_pos + "&nbsp;".length;
+        // }
+        // else{
+        //   //此时用户清空输入框
+        //   last_pos = 0;
+        // }
+        // var add_str = new_snl_html.substr(last_pos, new_snl_html.length);
+        // if(add_str.indexOf(" ") != -1){
+        //   add_str.replace(" ", "");
+        //
+        //   var type = this.TypeKeyWord(add_str);
+        //   var str = "";
+        //   if(type == -1){
+        //     str = '<span class="common">' + add_str + '</span>';
+        //   }
+        //   else if(type >= 0 && type <= 2){
+        //     str = '<span class="other">' + add_str + '</span>';
+        //   }
+        //   else if(type >= 3 && type <= 5){
+        //     str = '<span class="num_compare">' + add_str + '</span>';
+        //   }
+        //   else if(type >= 6 && type <= 9){
+        //     str = '<span class="logic_connect">' + add_str + '</span>';
+        //   }
+        // }
+        // var _new_snl_html = new_snl_html.substring(0, last_pos) + str;
+        // this.snl_html = _new_snl_html;
+        //
+        //
+        // console.log(add_str);
+        // console.log(pos);
 
 
 
