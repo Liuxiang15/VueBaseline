@@ -181,10 +181,11 @@
         if(last_span_pos > last_space_pos){
           last_pos = last_span_pos + "</span>".length;
         }
-        else{
+        else if(last_span_pos < last_space_pos){
           last_pos = last_space_pos + "&nbsp;".length;
         }
-        if(last_pos == -1){
+        else{
+          //此时用户清空输入框
           last_pos = 0;
         }
         var add_str = new_snl_html.substr(last_pos, new_snl_html.length);
