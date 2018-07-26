@@ -112,4 +112,9 @@
   display: inline;
   width: 60%;
 }
+
+.el-dialog__headerbtn .el-dialog__close {
+    color: #909399;
+    display: none;
+}
 </style>
