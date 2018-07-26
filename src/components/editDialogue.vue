@@ -81,20 +81,11 @@
           ["'", "，", '"', '“','”']
         ],
         formLabelWidth: '120px',
-        snl_html:""
+        snl_html:"",
+        new_snl:""//随时保存当下snl_html对应的snl
       };
     },
     created(){
-
-      // console.log("0000000000000000000000000000000000");
-      // console.log(this.default_data.index);
-      // console.log(this.default_data.snl);
-      // console.log(this.default_data);
-      // console.log(this.default_data.snl);
-      // for(var word of this.default_data.snl){
-      //   var str = "<span>" + word + "</span>";
-      //   this.snl_html += str;
-      // }
 
     },
     watch:{
@@ -106,27 +97,29 @@
         console.log(this.default_data);
       },
       "default_data.snl":function(){
-
+        console.log("default_data.snl起变化");
       }
     },
     methods:{
       //2 调用父组件的close函数使的对话框消失
       close() {
         //this.dialogFormVisible = false;
+
+        this.new_snl = "";
+        this.snl_html = "";
         this.$emit('close');
       },
 
       save() {
         //this.dialogFormVisible = false
+        this.default_data.snl = this.new_snl;
+        this.new_snl = "";
         this.$emit('save', this.default_data);
       },
 
-      updateDefaultData(default_data){
-        this.default_data = default_data;
-        // this.default_data.index = default_data.index;
-        // this.default_data.snl = default_data.snl;
-        // this.default_data.spl = default_data.spl;
-        var words = this.default_data.snl.split(' ');
+      snlToHtml(input_str){
+        var words = input_str.split(' ');
+        var snl_html = "";
         for(var word of words){
           var type = this.TypeKeyWord(word);
           var str = "";
@@ -142,20 +135,23 @@
           else if(type >= 6 && type <= 9){
             str = '<span class="logic_connect">' + word + '</span>';
           }
-          this.snl_html += str;
-          this.snl_html += "&nbsp";
+          snl_html += str;
+          snl_html += "&nbsp";
         }
+        return snl_html;
+      },
+
+      updateDefaultData(default_data){
+        this.default_data = default_data;
+        // this.default_data.index = default_data.index;
+        // this.default_data.snl = default_data.snl;
+        // this.default_data.spl = default_data.spl;
+        this.snl_html = this.snlToHtml(this.default_data.snl);
       },
 
       //遍历关键词数组返回词语类型
       TypeKeyWord(word){
-        // console.log("进入typekeyword");
-        // console.log(word);
-        // console.log(this.key_words);
         for(var type in this.key_words){
-          // console.log("进入typekeyword");
-          // console.log(type);
-          // console.log(this.key_words[type]);
           for(var key of this.key_words[type]){
             if(word == key){
               return type;
@@ -172,15 +168,58 @@
         var str2 = str1.match(/<span([\s\S]*)div>/)[0];
         var pos = str2.indexOf("</div>");
         var new_snl_html = str2.slice(0, pos);
-        console.log("new_snl_html is ");
-        console.log(new_snl_html);
+        // console.log("new_snl_html is ");
+        // console.log(new_snl_html);
+        var new_snl = "";
         while(new_snl_html.indexOf("</span>&nbsp;") != -1){
           var first_pos = new_snl_html.indexOf(">");
           var word = new_snl_html.slice(first_pos+1, new_snl_html.indexOf("</span>&nbsp;"));
+
+          //这里要注意的就是word可能是符号的html化版
+          //"=",">=",">","<=","<"
+          new_snl += word;
+          new_snl += ' ';
           var next_pos = new_snl_html.indexOf("</span>&nbsp;") + "</span>&nbsp;".length;
-          new_snl_html.substr(next_pos, new_snl_html.length);
-          console.log("in changeText word");
-          console.log(word);
+          new_snl_html = new_snl_html.substr(next_pos, new_snl_html.length);
+          // console.log("in changeText word");
+          // console.log(word);
+        }
+        if(new_snl_html.indexOf("&nbsp;") != -1){
+          console.log(new_snl_html);
+          new_snl_html = new_snl_html.replace("&nbsp;", "");
+
+          //继续修改snl
+          new_snl += new_snl_html;
+          new_snl += ' ';
+          this.new_snl = new_snl;
+
+          console.log(new_snl_html);
+          //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          // this.default_data.snl = new_snl;
+          // console.log(new_snl);
+          //这里可以对default_data.snl进行监听
+
+          var temp_snl_html = "";
+          var words = new_snl.split(' ');
+          for(var word of words){
+            var type = this.TypeKeyWord(word);
+            var str = "";
+            if(type == -1){
+              str = '<span class="common">' + word + '</span>';
+            }
+            else if(type >= 0 && type <= 2){
+              str = '<span class="other">' + word + '</span>';
+            }
+            else if(type >= 3 && type <= 5){
+              str = '<span class="num_compare">' + word + '</span>';
+            }
+            else if(type >= 6 && type <= 9){
+              str = '<span class="logic_connect">' + word + '</span>';
+            }
+            temp_snl_html += str;
+            temp_snl_html += "&nbsp";
+          }
+          this.snl_html = temp_snl_html;
         }
 
 
@@ -223,9 +262,6 @@
         //
         // console.log(add_str);
         // console.log(pos);
-
-
-
       }
 
     }
