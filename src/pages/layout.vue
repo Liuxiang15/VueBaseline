@@ -46,18 +46,24 @@ export default {
     }
   },
   created(){
+    var id = this.$route.query.id;
+    console.log("传参id = ");
+    console.log(id);
     console.log("in layout create metadata = ");
-    this.meta_data = this.$route.params.meta_data;
 
-    //console.log("in layout this.$route.query.meta_data = ");
-    // console.log(this.$route.params.meta_data);
-    //console.log(JSON.stringify(this.$route.query.meta_data.meta_data));
-    // console.log("in layout this.$route.query.meta_data.data = ");
-    // console.log(JSON.stringify(this.meta_data));
-    // for(var i in this.meta_data){
-    //   console.log(this.meta_data[i]);
-    // }
-    //this.node_data = this.$route.query.node_data;
+      this.$ajax({
+        //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+        method:'POST',
+        url:HOST+'/data/get_metadata',
+        data: {"_id":id},
+      }).then(response=>{
+        console.log("in index response.data =  ");
+        console.log(response.data);
+        this.meta_data = response.data;
+      }).catch(function(err){
+        console.log(err);
+      });
+
   },
   methods:{
     showMsgFromChild(data){
