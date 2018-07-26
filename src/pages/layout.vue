@@ -11,7 +11,10 @@
 
       <el-main>
         <list ref="snlLists"></list>
-        <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
+        <div id="btn-group">
+          <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
+          <el-button type="primary" icon="el-icon-download" @click="hello">下载SPL</el-button>
+        </div>
       </el-main>
     </el-container>
   </div>
@@ -51,18 +54,18 @@ export default {
     console.log(id);
     console.log("in layout create metadata = ");
 
-      this.$ajax({
-        //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
-        method:'POST',
-        url:HOST+'/data/get_metadata',
-        data: {"_id":id},
-      }).then(response=>{
-        console.log("in index response.data =  ");
-        console.log(response.data);
-        this.meta_data = response.data;
-      }).catch(function(err){
-        console.log(err);
-      });
+    this.$ajax({
+      //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+      method:'POST',
+      url:HOST+'/data/get_metadata',
+      data: {"_id":id},
+    }).then(response=>{
+      console.log("in index response.data =  ");
+      console.log(response.data);
+      this.meta_data = response.data;
+    }).catch(function(err){
+      console.log(err);
+    });
 
   },
   methods:{
@@ -194,9 +197,9 @@ div{
   color: black;
 }
 
-#save_metadata{
+#btn-group{
   position: relative;
-  left:70%;
+  left:60%;
 }
 
 </style>

@@ -23,7 +23,6 @@
   <div id="snl_container">
     <span>
       <span>tags:</span>
-
         <el-tag v-for = "tag in current_node.tags" size="medium">
           {{ tag }}
         </el-tag>
@@ -125,10 +124,7 @@ export default {
 
     handleEdit(index, row){
       //3 触发父组件对话框弹出
-      // console.log("enter handleEdit 函数");
-      // console.log("1111111111111111111111111");
-      // console.log(index);
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
       console.log(row);
 
       this.current_snl.index = index;
@@ -136,7 +132,6 @@ export default {
       this.current_snl.spl = [].concat(row.spl);
       this.$refs.edit_dialog.updateDefaultData(this.current_snl);
       this.edit_show = true;
-      console.log("22222222222222222222222222222222222222222222");
       console.log(this.current_snl);
     },
 

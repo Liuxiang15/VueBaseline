@@ -116,7 +116,7 @@ export default {
       return {
         data: [],
         config: "",
-        group: "",
+        // group: "",
         defaultProps: {
           "children": "children",
           "label": "order"
@@ -139,18 +139,8 @@ export default {
       }
   },
   created () {
-    this.data = this.meta_data.metadata.data;
-    this.group = this.meta_data.metadata.tags;
-    // console.log("enter leftTree的create函数");
-    // console.log("in leftTree this.meta_data.metadata.data = ");
-    // console.log(this.meta_data.metadata.data);
-    if(this.meta_data.data == undefined){
-      // console.log("in leftTree create");
-      // console.log(this.meta_data);
-      // console.log("传入的meta_data为空");
-      //this.menu_show = true;
-    }
-},
+  //之所以没有任何操作，是因为要传入的meta_data也是在layout里函数获取后才赋值的，所以此时不能赋值
+  },
   methods: {
       handleNodeClick(node_data, node) {
         // 参数:传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node
@@ -247,8 +237,10 @@ export default {
         this.new_snl = "";
       },
       getData(){
+        console.log("in getData ");
+        console.log(this.meta_data);
         this.data = this.meta_data.metadata.data;
-        this.group = this.meta_data.metadata.tags;
+        // this.group = this.meta_data.metadata.tags;
       },
       handleDragStart(node, ev) {
         console.log('drag start', node);

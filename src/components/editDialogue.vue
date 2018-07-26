@@ -104,24 +104,107 @@
       //2 调用父组件的close函数使的对话框消失
       close() {
         //this.dialogFormVisible = false;
-
         this.new_snl = "";
-        this.snl_html = "";
         this.$emit('close');
       },
 
       save() {
         //this.dialogFormVisible = false
         this.default_data.snl = this.new_snl;
-        this.new_snl = "";
+        // this.new_snl = "";
         this.$emit('save', this.default_data);
       },
 
+      updateDefaultData(default_data){
+        this.default_data = default_data;
+        this.snl_html = this.snlToHtml(this.default_data.snl);
+      },
+
+      //遍历关键词数组返回词语类型
+      typeKeyWord(word){
+        for(var type in this.key_words){
+          for(var key of this.key_words[type]){
+            if(word == key){
+              return type;
+            }
+          }
+        }
+        return -1;
+      },
+
+      changeText(){
+        // this.keepLastIndex(this.$el);
+
+        //解析html获取对话框显示的html元素
+        var div_html = this.$el.innerHTML;
+        var str1 = div_html.match(/<div id="snl_div"([\s\S]*)/)[0];
+        var str2 = str1.match(/<span([\s\S]*)div>/)[0];
+        var pos = str2.indexOf("</div>");
+        var new_snl_html = str2.slice(0, pos);
+        // console.log("new_snl_html is ");
+        // console.log(new_snl_html);
+        var new_snl = "";
+        while(new_snl_html.indexOf("</span>&nbsp;") != -1){
+          var first_pos = new_snl_html.indexOf(">");
+          var word = new_snl_html.slice(first_pos+1, new_snl_html.indexOf("</span>&nbsp;"));
+          //这里要注意的就是word可能是符号的html化版
+          //"=",">=",">","<=","<"
+          if(word.indexOf("&lt;") != -1 ){
+            word = word.replace("&lt;", "<");
+            console.log("被处理过的符号是：" + word);
+          }
+          else if(word.indexOf("&gt;") != -1){
+            word = word.replace("&gt;", ">");
+            console.log("被处理过的符号是：" + word);
+          }
+          // if(word.length > 0){
+            new_snl += word;
+            new_snl += ' ';
+            var next_pos = new_snl_html.indexOf("</span>&nbsp;") + "</span>&nbsp;".length;
+            new_snl_html = new_snl_html.substr(next_pos, new_snl_html.length);
+          // }
+        }
+        if(new_snl_html.indexOf("</span>&nbsp;") == -1 && new_snl_html.indexOf("</span>") != -1){
+          //考虑删除操作
+          var first_pos = new_snl_html.indexOf(">");
+          var word = new_snl_html.slice(first_pos+1, new_snl_html.indexOf("</span>"));
+          //这里要注意的就是word可能是符号的html化版
+          //"=",">=",">","<=","<"
+          if(word.indexOf("&lt;") != -1 ){
+            word = word.replace("&lt;", "<");
+            console.log("被处理过的符号是：" + word);
+          }
+          else if(word.indexOf("&gt;") != -1){
+            word = word.replace("&gt;", ">");
+            console.log("被处理过的符号是：" + word);
+          }
+          // if(word.length > 0){
+            new_snl += word;
+            new_snl += ' ';
+            var next_pos = new_snl_html.indexOf("</span>") + "</span>".length;
+            new_snl_html = new_snl_html.substr(next_pos, new_snl_html.length);
+
+        }
+        else if(new_snl_html.indexOf("&nbsp;") != -1){
+          new_snl_html = new_snl_html.replace("&nbsp;", "");
+
+          //继续修改snl
+          //如果被替换后new_snl_html为空，那么此时new_snl不需要再多加空格
+          if(new_snl_html.length > 0){
+            new_snl += new_snl_html;
+            new_snl += ' ';
+            this.new_snl = new_snl;
+            console.log("new_snl是--------------------------------");
+            console.log(new_snl);
+            this.snl_html = this.snlToHtml(new_snl);
+          }
+        }
+      },
       snlToHtml(input_str){
         var words = input_str.split(' ');
         var snl_html = "";
         for(var word of words){
-          var type = this.TypeKeyWord(word);
+          var type = this.typeKeyWord(word);
           var str = "";
           if(type == -1){
             str = '<span class="common">' + word + '</span>';
@@ -140,128 +223,24 @@
         }
         return snl_html;
       },
+      //光标聚集在最后
+      // keepLastIndex(obj) {
+      //   if (window.getSelection) {//ie11 10 9 ff safari
+      //       obj.focus(); //解决ff不获取焦点无法定位问题
+      //       var range = window.getSelection();//创建range
+      //       range.selectAllChildren(obj);//range 选择obj下所有子内容
+      //       range.collapseToEnd();//光标移至最后
+      //   }
+      //   else if (document.selection) {//ie10 9 8 7 6 5
+      //       var range = document.selection.createRange();//创建选择对象
+      //       //var range = document.body.createTextRange();
+      //       range.moveToElementText(obj);//range定位到obj
+      //       range.collapse(false);//光标移至最后
+      //       range.select();
+      //   }
+      // },
+      htmlToSnl(input_html){
 
-      updateDefaultData(default_data){
-        this.default_data = default_data;
-        // this.default_data.index = default_data.index;
-        // this.default_data.snl = default_data.snl;
-        // this.default_data.spl = default_data.spl;
-        this.snl_html = this.snlToHtml(this.default_data.snl);
-      },
-
-      //遍历关键词数组返回词语类型
-      TypeKeyWord(word){
-        for(var type in this.key_words){
-          for(var key of this.key_words[type]){
-            if(word == key){
-              return type;
-            }
-          }
-        }
-        return -1;
-      },
-
-      changeText(){
-        //解析html获取对话框显示的html元素
-        var div_html = this.$el.innerHTML;
-        var str1 = div_html.match(/<div id="snl_div"([\s\S]*)/)[0];
-        var str2 = str1.match(/<span([\s\S]*)div>/)[0];
-        var pos = str2.indexOf("</div>");
-        var new_snl_html = str2.slice(0, pos);
-        // console.log("new_snl_html is ");
-        // console.log(new_snl_html);
-        var new_snl = "";
-        while(new_snl_html.indexOf("</span>&nbsp;") != -1){
-          var first_pos = new_snl_html.indexOf(">");
-          var word = new_snl_html.slice(first_pos+1, new_snl_html.indexOf("</span>&nbsp;"));
-
-          //这里要注意的就是word可能是符号的html化版
-          //"=",">=",">","<=","<"
-          new_snl += word;
-          new_snl += ' ';
-          var next_pos = new_snl_html.indexOf("</span>&nbsp;") + "</span>&nbsp;".length;
-          new_snl_html = new_snl_html.substr(next_pos, new_snl_html.length);
-          // console.log("in changeText word");
-          // console.log(word);
-        }
-        if(new_snl_html.indexOf("&nbsp;") != -1){
-          console.log(new_snl_html);
-          new_snl_html = new_snl_html.replace("&nbsp;", "");
-
-          //继续修改snl
-          new_snl += new_snl_html;
-          new_snl += ' ';
-          this.new_snl = new_snl;
-
-          console.log(new_snl_html);
-          //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-          // this.default_data.snl = new_snl;
-          // console.log(new_snl);
-          //这里可以对default_data.snl进行监听
-
-          var temp_snl_html = "";
-          var words = new_snl.split(' ');
-          for(var word of words){
-            var type = this.TypeKeyWord(word);
-            var str = "";
-            if(type == -1){
-              str = '<span class="common">' + word + '</span>';
-            }
-            else if(type >= 0 && type <= 2){
-              str = '<span class="other">' + word + '</span>';
-            }
-            else if(type >= 3 && type <= 5){
-              str = '<span class="num_compare">' + word + '</span>';
-            }
-            else if(type >= 6 && type <= 9){
-              str = '<span class="logic_connect">' + word + '</span>';
-            }
-            temp_snl_html += str;
-            temp_snl_html += "&nbsp";
-          }
-          this.snl_html = temp_snl_html;
-        }
-
-
-        //对新的new_snl_html处理，使之展现正常颜色
-        // var last_span_pos = new_snl_html.lastIndexOf("</span>");
-        // var last_space_pos = new_snl_html.lastIndexOf("&nbsp;");
-        // var last_pos;
-        // if(last_span_pos > last_space_pos){
-        //   last_pos = last_span_pos + "</span>".length;
-        // }
-        // else if(last_span_pos < last_space_pos){
-        //   last_pos = last_space_pos + "&nbsp;".length;
-        // }
-        // else{
-        //   //此时用户清空输入框
-        //   last_pos = 0;
-        // }
-        // var add_str = new_snl_html.substr(last_pos, new_snl_html.length);
-        // if(add_str.indexOf(" ") != -1){
-        //   add_str.replace(" ", "");
-        //
-        //   var type = this.TypeKeyWord(add_str);
-        //   var str = "";
-        //   if(type == -1){
-        //     str = '<span class="common">' + add_str + '</span>';
-        //   }
-        //   else if(type >= 0 && type <= 2){
-        //     str = '<span class="other">' + add_str + '</span>';
-        //   }
-        //   else if(type >= 3 && type <= 5){
-        //     str = '<span class="num_compare">' + add_str + '</span>';
-        //   }
-        //   else if(type >= 6 && type <= 9){
-        //     str = '<span class="logic_connect">' + add_str + '</span>';
-        //   }
-        // }
-        // var _new_snl_html = new_snl_html.substring(0, last_pos) + str;
-        // this.snl_html = _new_snl_html;
-        //
-        //
-        // console.log(add_str);
-        // console.log(pos);
       }
 
     }
@@ -284,4 +263,15 @@
   background-color: green;
 
 }
+
+.el-dialog__headerbtn .el-dialog__close {
+    color: #909399;
+    display: none;
+}
+
+#snl_div{
+  border: 1px solid black;
+}
+
+
 </style>

@@ -79,21 +79,15 @@ export default {
       //3 点击某一行规则库名后的按钮触发的事件，
       //index是点击行在列表中的下标(从0开始)
       //data是点击该行存储的数据，具体内容可看console语句输出
-
-      // console.log(row);
-
       var id = row._id;
-
-        this.$router.push({
-          path: '/data',
-          name: "layout" ,
-          props: true,
-          query: {
-              id: id,
-          }
-        });
-
-
+      this.$router.push({
+        path: '/data',
+        name: "layout" ,
+        props: true,
+        query: {
+            id: id,
+        }
+      });
     },
     editConfig(index, data){
 

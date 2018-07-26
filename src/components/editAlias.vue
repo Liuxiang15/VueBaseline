@@ -169,4 +169,9 @@ import {HOST} from '../utils/config'
   left: 60%;
   top: 30%;
 }
+
+.el-dialog__headerbtn .el-dialog__close {
+    color: #909399;
+    display: none;
+}
 </style>
