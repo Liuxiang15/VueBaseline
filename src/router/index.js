@@ -22,7 +22,7 @@ export default new Router({
     },
 
     {
-      path: '/importExcel/:metadata_id',
+      path: '/importExcel',
       name: 'excel',
       component: () => import('@/pages/uploadExcel'),
       // props: true

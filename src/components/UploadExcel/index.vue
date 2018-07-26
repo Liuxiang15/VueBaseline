@@ -100,7 +100,7 @@
           return
         }
 
-        importExcel(this.rawFile, this.$route.params.metadata_id).then(result => {
+        importExcel(this.rawFile, this.$route.query.metadata_id).then(result => {
           // console.log(result);
           // debugger;
 
@@ -111,13 +111,10 @@
               path: '/data',
               name: "layout",
               props: true,
-              params: {
-                id: result.data.res._id
-              },
               query: {
-                meta_data: {metadata: result.data.res},
-                //node_data: node_data
+                id: result.data.res._id
               }
+
             });
 
           }
