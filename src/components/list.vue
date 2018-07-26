@@ -63,8 +63,10 @@
 
     <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
     <!-- <el-button type="success" icon="el-icon-check" @click="snlSave">保存</el-button> -->
-    <edit-dialogue :show = "edit_show" :default_data ="current_snl"
+    <edit-dialogue :show = "edit_show"
+    :default_data ="current_snl"
     :default_tags = "current_tags"
+    ref = "edit_dialog"
     @save = "save" @close="close" >
     </edit-dialogue>
   </div>
@@ -97,9 +99,9 @@ export default {
       list_data:[],
       current_node:{},
       current_snl:{
-        index: Number,
-        snl: String,
-        spl:[]
+        // index: Number,
+        // snl: String,
+        // spl:[]
       },
       current_tags:[],
       edit_show:false,
@@ -128,11 +130,14 @@ export default {
       // console.log(index);
       console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       console.log(row);
-      this.edit_show = true;
+
       this.current_snl.index = index;
       this.current_snl.snl = row.snl;
       this.current_snl.spl = [].concat(row.spl);
-      //this.current_tags = [].concat();
+      this.$refs.edit_dialog.updateDefaultData(this.current_snl);
+      this.edit_show = true;
+      console.log("22222222222222222222222222222222222222222222");
+      console.log(this.current_snl);
     },
 
     handleDelete(index, row){

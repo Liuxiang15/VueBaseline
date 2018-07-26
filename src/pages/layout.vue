@@ -5,11 +5,8 @@
     </el-header>
     <el-container>
       <el-aside>
-
-        <!-- <cascader></cascader> -->
         <left-tree  ref="mytree" id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
         </left-tree>
-
       </el-aside>
 
       <el-main>
@@ -17,10 +14,7 @@
         <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
       </el-main>
     </el-container>
-
   </div>
-
-
 </template>
 
 
@@ -53,10 +47,10 @@ export default {
   },
   created(){
     console.log("in layout create metadata = ");
-    this.meta_data = this.$route.query.meta_data;
+    this.meta_data = this.$route.params.meta_data;
 
     //console.log("in layout this.$route.query.meta_data = ");
-    console.log(this.$route.query.meta_data);
+    // console.log(this.$route.params.meta_data);
     //console.log(JSON.stringify(this.$route.query.meta_data.meta_data));
     // console.log("in layout this.$route.query.meta_data.data = ");
     // console.log(JSON.stringify(this.meta_data));
