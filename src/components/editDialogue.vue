@@ -88,7 +88,8 @@
       };
     },
     created(){
-      this.keepLastIndex();
+      //this.keepLastIndex();
+      this.new_snl = this.default_data.snl;
     },
     watch:{
       show(val){
@@ -106,7 +107,7 @@
       //2 调用父组件的close函数使的对话框消失
       close() {
         //this.dialogFormVisible = false;
-        //this.new_snl = "";
+        this.new_snl = this.default_data.snl;
         this.$emit('close');
       },
 
