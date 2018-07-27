@@ -11,7 +11,6 @@
       contenteditable="true"
       v-html="this.snl_html"
       @input = "changeText"
-      @onfocus="lastIndex"
       @click = "keepLastIndex"
       >
       <!-- {{this.default_data.snl}} -->
@@ -84,6 +83,7 @@
         ],
         formLabelWidth: '120px',
         snl_html:"",
+        _snl_html:"",
         new_snl:""//随时保存当下snl_html对应的snl
       };
     },
@@ -106,15 +106,23 @@
       //2 调用父组件的close函数使的对话框消失
       close() {
         //this.dialogFormVisible = false;
-        this.new_snl = "";
+        //this.new_snl = "";
         this.$emit('close');
       },
 
       save() {
         //this.dialogFormVisible = false
         // this.new_snl = this.new_snl.replace("&nbsp;", "");
-        this.default_data.snl = this.new_snl.replace("&nbsp;", "");;
-        // this.new_snl = "";
+
+
+        console.log("in saveFFFFFFFFFFFFFFFFFFFFFF this.new_snl is" + this.new_snl);
+        while(this.new_snl.indexOf("&gt;") != -1){
+          this.new_snl = this.new_snl.replace("&gt;", ">");
+        }
+        while(this.new_snl.indexOf("&lt;") != -1){
+          this.new_snl = this.new_snl.replace("&lt;", "<");
+        }
+        this.default_data.snl = this.new_snl;
         this.$emit('save', this.default_data);
       },
 
@@ -134,81 +142,127 @@
         }
         return -1;
       },
-      lastIndex(){
-        console.log("enter lastIndex 函数！！！！！！！！！！");
-        var e = event.srcElement;
-        var r =e.createTextRange();
-        r.moveStart('character',e.value.length);
-        r.collapse(true);
-        r.select();
-      },
 
       changeText(){
-        console.log(this.$el.innerHTML);
+        //console.log(this.$el.innerHTML);
         //解析html获取对话框显示的html元素
+        console.log("getSnlHtml处理过的代码是：AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         var new_snl_html = this.getSnlHtml(this.$el.innerHTML);
-        var label_array = new_snl_html.split("&nbsp;");
-        console.log("snl_html对应的标签数组是：");
-        console.log(label_array);
-        var word_array = [];
-        for(var label of label_array){
-          word_array.push(this.getWord(label));
+        if(new_snl_html.lastIndexOf("&nbsp;") == new_snl_html.length-"&nbsp;".length){
+          //保证用户输入了空格
+          console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+          console.log(new_snl_html);
+          var label_array = new_snl_html.split("&nbsp;");
+          console.log("snl_html对应的标签数组是：");
+          console.log(label_array);
+          var word_array = [];
+          for(var label of label_array){
+            word_array.push(this.getWord(label));
+          }
+
+          // for(var word of word_array){
+          //   var words = word.split(" ");
+          //   if(words.length >= 2){
+          //       // var index = word_array.indexOf(word);
+          //       word_array.splice($.inArray(2, word_array), 1);
+          //       //！！！这里其实假设了用户只有在最后输入空格
+          //       word_array = word_array.concat(words);
+          //       console.log("消除空格后的单词数组是：");
+          //       console.log(word_array);
+          //   }
+          // }
+          for(var word of word_array){
+            word = this.symbolDetection(word);
+          }
+          // console.log(new_snl_html);
+          var new_snl = "";
+          for(var word of word_array){
+            if(word.length > 0){
+              new_snl += word;
+              new_snl += " ";
+            }
+          }
+          console.log("new_snl是：");
+          console.log(new_snl);
+          if(new_snl.length > 0){
+              this.new_snl = new_snl;
+              console.log("in textchange new_snl is " + this.new_snl);
+          }
+          this.snl_html = this.snlToHtml(this.new_snl);
         }
-        // console.log(new_snl_html);
-        var new_snl = "";
-        // while(new_snl_html.indexOf("</span>&nbsp;") != -1){
-        //   var first_pos = new_snl_html.indexOf(">");
-        //   var word = new_snl_html.slice(first_pos+1, new_snl_html.indexOf("</span>&nbsp;"));
-        //   //这里要注意的就是word可能是符号的html化："=",">=",">","<=","<"
-        //   word = this.symbolDetection(word);
-        //   // if(word.length > 0){
-        //   new_snl += word;
-        //   new_snl += ' ';
-        //   var next_pos = new_snl_html.indexOf("</span>&nbsp;") + "</span>&nbsp;".length;
-        //   new_snl_html = new_snl_html.substr(next_pos, new_snl_html.length);
-        //   // console.log("in whileLoop new_snl = ");
-        //   // console.log(new_snl);
-        //   // }
-        // }
-        // if(new_snl_html.indexOf("</span>") != -1 ){
-        //   //考虑删除操作
-        //   var first_pos = new_snl_html.indexOf(">");
-        //   var word = new_snl_html.slice(first_pos+1, new_snl_html.indexOf("</span>"));
-        //   //这里要注意的就是word可能是符号的html编码"=",">=",">","<=","<"
-        //   word = this.symbolDetection(word);
-        //   if(word.length > 0){
-        //     new_snl += word;
-        //     new_snl += ' ';
-        //     var next_pos = new_snl_html.indexOf("</span>") + "</span>".length;
-        //     new_snl_html = new_snl_html.substr(next_pos, new_snl_html.length);
+
+        //转移光标到文字最后
+        var edit = document.getElementById("snl_div");
+        edit.onfocus = function () {
+          window.setTimeout(function () {
+            var sel, range;
+            if (window.getSelection && document.createRange) {
+              range = document.createRange();
+              range.selectNodeContents(edit);
+              range.collapse(true);
+              range.setEnd(edit, edit.childNodes.length);
+              range.setStart(edit, edit.childNodes.length);
+              sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(range);
+            } else if (document.body.createTextRange) {
+              range = document.body.createTextRange();
+              range.moveToElementText(edit);
+              range.collapse(true);
+              range.select();
+            }
+          }, 1)
+        };
+        edit.focus();
+
+
+        // var cursor = 0; // 光标位置
+        // document.onselectionchange = function () {
+        //   var range = document.selection.createRange();
+        //   var srcele = range.parentElement();//获取到当前元素
+        //   var copy = document.body.createTextRange();
+        //   copy.moveToElementText(srcele);
+        //
+        //   for (cursor = 0; copy.compareEndPoints("StartToStart", range) < 0; cursor++) {
+        //       copy.moveStart("character", 1);//改变光标位置，实际上我们是在记录cursor的数量.
         //   }
-        //
-        //   // console.log("in if span new_snl = ");
-        //   // console.log(new_snl);
         // }
-        // if(new_snl_html.indexOf("&nbsp;") != -1){
-        //   // console.log("enter nbsp new_snl = ");
-        //   // console.log(new_snl);
-        //
-        //   new_snl_html = new_snl_html.replace("&nbsp;", "");
-        //   //继续修改snl
-        //   //如果被替换后new_snl_html为空，那么此时new_snl不需要再多加空格
-        //   if(new_snl_html.length > 0){
-        //     new_snl += new_snl_html;
-        //     new_snl += ' ';
-        //     this.new_snl = new_snl;
-        //     // console.log("new_snl是--------------------------------");
-        //     // console.log(new_snl);
-        //     this.snl_html = this.snlToHtml(new_snl);
-        //   }
-        //
-        //   // console.log("after nbsp new_snl = ");
-        //   // console.log(new_snl);
-        // }
-        // this.new_snl = new_snl;
-        // console.log("after changeText ");
-        // console.log(new_snl);
+        // var snl_div = document.getElementById("snl_div");
+        // this.moveEnd(snl_div);
+
+        //转移光标到文字最后
+        // var snl_div = document.getElementById("snl_div");
+        // console.log("snl_div代码是");
+        // console.log(snl_div);
+        // snl_div.onfocus = function() {
+        //   window.setTimeout(function() {
+        //       var sel, range;
+        //       if (window.getSelection && document.createRange) {
+        //           range = document.createRange();
+        //           range.selectNodeContents(div);
+        //           range.collapse(true);
+        //           sel = window.getSelection();
+        //           sel.removeAllRanges();
+        //           sel.addRange(range);
+        //       }
+        //       else if (document.body.createTextRange) {
+        //           range = document.body.createTextRange();
+        //           range.moveToElementText(div);
+        //           range.collapse(true);
+        //           range.select();
+        //       }
+        //   }, 1);
+        // };
+        // snl_div.focus();
       },
+      // moveEnd(obj) {
+      //   obj.focus();
+      //   var r = document.selection.createRange();
+      //   //因为这里死从当前光标开始移动的(好像文本框的是从0算起.)所以我们需要拿到当前光标位置，然后就可以计算出要移动多少位了，这样就可以把光标移动到想要的位置了
+      //   r.moveStart('character', lyTXT1.innerText.length - cursor);
+      //   r.collapse(true);
+      //   r.select();
+      // },
       symbolDetection(word){
         //这里要注意的就是word可能是符号的html化版
         //"=",">=",">","<=","<"

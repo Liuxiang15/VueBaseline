@@ -171,6 +171,8 @@ export default {
         var y = e.clientY;
         this.current_data = nodedata;
         this.current_node = node;
+        console.log("this.current_data是：-------------------");
+        console.log(this.current_data);
       },
       close(){
         //所有对话框和菜单栏不可见
@@ -273,14 +275,25 @@ export default {
       newContent(node_data){
         //先传参进入newContent函数,之后可能通过data里的值传进来
         //新建元素的order属性需要判断node_data的children的order
-
-        this.operation = 1;
-        this.new_content_show = true;
+        if(this.current_data.is_rule){
+          this.menu_show = false;
+          alert("当前操作叶子结点不能新建目录");
+        }
+        else{
+          this.operation = 1;
+          this.new_content_show = true;
+        }
       },
       newRule(node_data, des, text){
         //新建叶子节点不同之处在于要
-        this.operation = 2;
-        this.new_rule_show = true;
+        if(this.current_data.is_rule){
+          this.menu_show = false;
+          alert("当前操作叶子结点不能新建规则");
+        }
+        else{
+          this.operation = 2;
+          this.new_rule_show = true;
+        }
       },
       deleleNode(){
         //删除该节点，修改双亲节点,注意参数是node
