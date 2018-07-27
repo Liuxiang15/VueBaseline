@@ -124,7 +124,8 @@ import {HOST} from '../utils/config'
         // console.log("被点击的这行数据是：");
         // console.log(row);
         //console.log(index, row);
-        this.editDialogue(index, row);
+        var real_index = (this.currentPage - 1) * this.currentPageSize + index;
+        this.editDialogue(real_index, row);
       },
       handleDelete(index, row) {
         // console.log("要删除的这行是");
