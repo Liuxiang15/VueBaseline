@@ -29,7 +29,7 @@
   import DemoHeader from '../components/demoHeader'
   import LeftTree from '../components/leftTree'
   import List from '../components/list'
-  import cascader from '../components/cascader.vue'
+
 
   export default {
     name: 'layout',
@@ -37,7 +37,6 @@
       DemoHeader,
       LeftTree,
       List,
-      cascader,
     },
     data() {
       return {
