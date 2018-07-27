@@ -11,6 +11,8 @@
       contenteditable="true"
       v-html="this.snl_html"
       @input = "changeText"
+      @onfocus="lastIndex"
+      @click = "keepLastIndex"
       >
       <!-- {{this.default_data.snl}} -->
       </div>
@@ -86,7 +88,7 @@
       };
     },
     created(){
-
+      this.keepLastIndex();
     },
     watch:{
       show(val){
@@ -110,7 +112,8 @@
 
       save() {
         //this.dialogFormVisible = false
-        this.default_data.snl = this.new_snl;
+        // this.new_snl = this.new_snl.replace("&nbsp;", "");
+        this.default_data.snl = this.new_snl.replace("&nbsp;", "");;
         // this.new_snl = "";
         this.$emit('save', this.default_data);
       },
@@ -131,79 +134,97 @@
         }
         return -1;
       },
+      lastIndex(){
+        console.log("enter lastIndex 函数！！！！！！！！！！");
+        var e = event.srcElement;
+        var r =e.createTextRange();
+        r.moveStart('character',e.value.length);
+        r.collapse(true);
+        r.select();
+      },
 
       changeText(){
-        // this.keepLastIndex(this.$el);
-
+        console.log(this.$el.innerHTML);
         //解析html获取对话框显示的html元素
-        var div_html = this.$el.innerHTML;
-        var str1 = div_html.match(/<div id="snl_div"([\s\S]*)/)[0];
-        var str2 = str1.match(/<span([\s\S]*)div>/)[0];
-        var pos = str2.indexOf("</div>");
-        var new_snl_html = str2.slice(0, pos);
-        // console.log("new_snl_html is ");
-        // console.log(new_snl_html);
+        var new_snl_html = this.getSnlHtml(this.$el.innerHTML)
         var new_snl = "";
+        console.log(new_snl_html);
         while(new_snl_html.indexOf("</span>&nbsp;") != -1){
           var first_pos = new_snl_html.indexOf(">");
           var word = new_snl_html.slice(first_pos+1, new_snl_html.indexOf("</span>&nbsp;"));
-          //这里要注意的就是word可能是符号的html化版
-          //"=",">=",">","<=","<"
-          if(word.indexOf("&lt;") != -1 ){
-            word = word.replace("&lt;", "<");
-            console.log("被处理过的符号是：" + word);
-          }
-          else if(word.indexOf("&gt;") != -1){
-            word = word.replace("&gt;", ">");
-            console.log("被处理过的符号是：" + word);
-          }
+          //这里要注意的就是word可能是符号的html化："=",">=",">","<=","<"
+          word = this.symbolDetection(word);
           // if(word.length > 0){
-            new_snl += word;
-            new_snl += ' ';
-            var next_pos = new_snl_html.indexOf("</span>&nbsp;") + "</span>&nbsp;".length;
-            new_snl_html = new_snl_html.substr(next_pos, new_snl_html.length);
+          new_snl += word;
+          new_snl += ' ';
+          var next_pos = new_snl_html.indexOf("</span>&nbsp;") + "</span>&nbsp;".length;
+          new_snl_html = new_snl_html.substr(next_pos, new_snl_html.length);
+          // console.log("in whileLoop new_snl = ");
+          // console.log(new_snl);
           // }
         }
-        if(new_snl_html.indexOf("</span>&nbsp;") == -1 && new_snl_html.indexOf("</span>") != -1){
+        if(new_snl_html.indexOf("</span>") != -1 ){
           //考虑删除操作
           var first_pos = new_snl_html.indexOf(">");
           var word = new_snl_html.slice(first_pos+1, new_snl_html.indexOf("</span>"));
-          //这里要注意的就是word可能是符号的html化版
-          //"=",">=",">","<=","<"
-          if(word.indexOf("&lt;") != -1 ){
-            word = word.replace("&lt;", "<");
-            console.log("被处理过的符号是：" + word);
-          }
-          else if(word.indexOf("&gt;") != -1){
-            word = word.replace("&gt;", ">");
-            console.log("被处理过的符号是：" + word);
-          }
-          // if(word.length > 0){
+          //这里要注意的就是word可能是符号的html编码"=",">=",">","<=","<"
+          word = this.symbolDetection(word);
+          if(word.length > 0){
             new_snl += word;
             new_snl += ' ';
             var next_pos = new_snl_html.indexOf("</span>") + "</span>".length;
             new_snl_html = new_snl_html.substr(next_pos, new_snl_html.length);
+          }
 
+          // console.log("in if span new_snl = ");
+          // console.log(new_snl);
         }
-        else if(new_snl_html.indexOf("&nbsp;") != -1){
-          new_snl_html = new_snl_html.replace("&nbsp;", "");
+        if(new_snl_html.indexOf("&nbsp;") != -1){
+          // console.log("enter nbsp new_snl = ");
+          // console.log(new_snl);
 
+          new_snl_html = new_snl_html.replace("&nbsp;", "");
           //继续修改snl
           //如果被替换后new_snl_html为空，那么此时new_snl不需要再多加空格
           if(new_snl_html.length > 0){
             new_snl += new_snl_html;
             new_snl += ' ';
             this.new_snl = new_snl;
-            console.log("new_snl是--------------------------------");
-            console.log(new_snl);
+            // console.log("new_snl是--------------------------------");
+            // console.log(new_snl);
             this.snl_html = this.snlToHtml(new_snl);
           }
+
+          // console.log("after nbsp new_snl = ");
+          // console.log(new_snl);
         }
+        this.new_snl = new_snl;
+        // console.log("after changeText ");
+        // console.log(new_snl);
       },
+      symbolDetection(word){
+        //这里要注意的就是word可能是符号的html化版
+        //"=",">=",">","<=","<"
+        var return_word;
+        if(word.indexOf("&lt;") != -1 ){
+          return_word = word.replace("&lt;", "<");
+          // console.log("被处理过的符号是：" + word);
+        }
+        else if(word.indexOf("&gt;") != -1){
+          return_word = word.replace("&gt;", ">");
+          // console.log("被处理过的符号是：" + word);
+        }
+        else{
+          return_word = word;
+        }
+        return return_word;
+      },
+
       snlToHtml(input_str){
         var words = input_str.split(' ');
         var snl_html = "";
         for(var word of words){
+          word = this.symbolDetection(word);
           var type = this.typeKeyWord(word);
           var str = "";
           if(type == -1){
@@ -222,6 +243,30 @@
           snl_html += "&nbsp";
         }
         return snl_html;
+      },
+      getSnlHtml(div_html){
+        var str1 = div_html.match(/<div id="snl_div"([\s\S]*)/)[0];
+        var str2 = str1.match(/<span([\s\S]*)div>/)[0];
+        var pos = str2.indexOf("</div>");
+        var new_snl_html = str2.slice(0, pos);
+        console.log("in getSnlHtml test new_snl_html is ------------------------------------");
+        console.log(new_snl_html);
+        return new_snl_html;
+      },
+
+      keepLastIndex(){
+
+        var oText = $("#snl_div");
+        var vLen = this.snl_html.length;
+        // if(oText.setSelectionRange){                    //非ie
+        //   oText.setSelectionRange(vLen,vLen);
+        // }
+        // else{                                         //ie
+          var a = oText.createTextRange();            //ie支持creatTextRange
+          a.moveStart('character',vLen);
+          a.collapse(true);
+          a.select();                                //选中操作
+        // }
       },
       //光标聚集在最后
       // keepLastIndex(obj) {

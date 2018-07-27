@@ -13,7 +13,7 @@
         <list ref="snlLists"></list>
         <div id="btn-group">
           <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
-          <el-button type="primary" icon="el-icon-download" @click="hello">下载SPL</el-button>
+          <el-button type="primary" icon="el-icon-download" @click="downloadSpl">下载SPL</el-button>
         </div>
       </el-main>
     </el-container>
@@ -50,9 +50,9 @@ export default {
   },
   created(){
     var id = this.$route.query.id;
-    console.log("传参id = ");
-    console.log(id);
-    console.log("in layout create metadata = ");
+    // console.log("传参id = ");
+    // console.log(id);
+    // console.log("in layout create metadata = ");
 
     this.$ajax({
       //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
@@ -60,8 +60,8 @@ export default {
       url:HOST+'/data/get_metadata',
       data: {"_id":id},
     }).then(response=>{
-      console.log("in index response.data =  ");
-      console.log(response.data);
+      // console.log("in index response.data =  ");
+      // console.log(response.data);
       this.meta_data = response.data;
     }).catch(function(err){
       console.log(err);
@@ -71,12 +71,12 @@ export default {
   methods:{
     showMsgFromChild(data){
       //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
-      console.log("enter showMsgFromChild函数");
-      console.log(data);
+      // console.log("enter showMsgFromChild函数");
+      // console.log(data);
       //////////////
       this.current_node = data;
-      console.log("in layout this.current_node  is ");
-      console.log(this.current_node);
+      // console.log("in layout this.current_node  is ");
+      // console.log(this.current_node);
       this.$refs.snlLists.showList(data);
 
     },
@@ -97,7 +97,7 @@ export default {
       }).then(response=>{
         //node_data = response.data.nodedata;
         //6 路由跳转并传递lib的id， meta_data， node_data
-        console.log(response.data);
+        // console.log(response.data);
         alert("保存成功");
 
       }).catch(function(err){
@@ -106,12 +106,16 @@ export default {
     },
     showMenu(){
       this.menu_show = true;
-      console.log("enter showMenu函数");
+      // console.log("enter showMenu函数");
 
     },
     closeMenu(){
       this.$refs.mytree.close();
       console.log("进入clickMenu函数");
+    },
+
+    downloadSpl(){
+
     }
 
   },
