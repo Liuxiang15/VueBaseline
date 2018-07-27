@@ -196,8 +196,8 @@ export default {
           new_item.snl_spl_pairs = [];
           new_item.tags = [];
           new_item.text = this.new_text;
-          console.log("this.current_data是：");
-          console.log(this.current_data);
+          // console.log("this.current_data是：");
+          // console.log(this.current_data);
           this.current_data.children.push(new_item);
         }
         else if(this.operation == 2){
@@ -219,8 +219,8 @@ export default {
           );
           new_item.tags = [];
           new_item.text = this.new_text;
-          console.log("this.current_data是：");
-          console.log(this.current_data);
+          // console.log("this.current_data是：");
+          // console.log(this.current_data);
           this.current_data.children.push(new_item);
         }
         else if(this.operation == 4){
@@ -237,8 +237,8 @@ export default {
         this.new_snl = "";
       },
       getData(){
-        console.log("in getData ");
-        console.log(this.meta_data);
+        // console.log("in getData ");
+        // console.log(this.meta_data);
         this.data = this.meta_data.metadata.data;
         // this.group = this.meta_data.metadata.tags;
       },

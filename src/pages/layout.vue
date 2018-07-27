@@ -16,7 +16,6 @@
           <el-button type="primary" icon="el-icon-download"><a :href="downloadLink()"
                                                                style='text-decoration:none;color:inherit;'>下载SPL </a>
           </el-button>
-          <!--<router-link v-bind:to="downloadLink()" tag="button" type="success" icon="el-icon-check" > 下载SPL</router-link>-->
         </div>
       </el-main>
     </el-container>
@@ -27,7 +26,6 @@
 <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script>
   import {HOST} from '../utils/config'
-
   import DemoHeader from '../components/demoHeader'
   import LeftTree from '../components/leftTree'
   import List from '../components/list'
@@ -46,41 +44,36 @@
         //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
         current_node: {},
         meta_data: {},
-
-
       }
     },
     created() {
       var id = this.$route.query.id;
-      console.log("传参id = ");
-      console.log(id);
-      console.log("in layout create metadata = ");
-
+      // console.log("传参id = ");
+      // console.log(id);
+      // console.log("in layout create metadata = ");
       this.$ajax({
         //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
         method: 'POST',
         url: HOST + '/data/get_metadata',
         data: {"_id": id},
       }).then(response => {
-        console.log("in index response.data =  ");
-        console.log(response.data);
+        // console.log("in index response.data =  ");
+        // console.log(response.data);
         this.meta_data = response.data;
       }).catch(function (err) {
         console.log(err);
       });
-
     },
     methods: {
       showMsgFromChild(data) {
         //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
-        console.log("enter showMsgFromChild函数");
-        console.log(data);
+        // console.log("enter showMsgFromChild函数");
+        // console.log(data);
         //////////////
         this.current_node = data;
-        console.log("in layout this.current_node  is ");
-        console.log(this.current_node);
+        // console.log("in layout this.current_node  is ");
+        // console.log(this.current_node);
         this.$refs.snlLists.showList(data);
-
       },
       // editDialogue(row){
       //   console.log("in layout editDialogue() current_node");
@@ -99,59 +92,26 @@
         }).then(response => {
           //node_data = response.data.nodedata;
           //6 路由跳转并传递lib的id， meta_data， node_data
-          console.log(response.data);
+          // console.log(response.data);
           alert("保存成功");
-
         }).catch(function (err) {
           console.log(err);
         });
       },
-
       downloadLink() {
         return HOST + '/data/download_spl_file/' + this.$route.query.id
       },
-
-      // splDownload() {
-      //
-      //   splDownloadByLibid(this.$route.query.id).then(response => {
-      //     //node_data = response.data.nodedata;
-      //     //6 路由跳转并传递lib的id， meta_data， node_data
-      //     console.log(response.data);
-      //     // debugger;
-      //
-      //
-      //     if (response.data.msg === undefined) {
-      //       let blob = new Blob([this.response], {type: "application/octet-stream"});
-      //       let fileName = "result.snl";
-      //
-      //
-      //
-      //       saveAs(blob, fileName);
-      //     } else {
-      //       alert(response.data.msg);
-      //
-      //     }
-      //
-      //
-      //   }).catch(function (err) {
-      //     console.log(err);
-      //   })
-      //
-      // },
-
       showMenu() {
         this.menu_show = true;
-        console.log("enter showMenu函数");
-
+        // console.log("enter showMenu函数");
       },
       closeMenu() {
         this.$refs.mytree.close();
         console.log("进入clickMenu函数");
+      },
+      downloadSpl() {
       }
-
     },
-
-
     watch: {
       meta_data() {
         //this.get_meta_node_data();
@@ -237,5 +197,4 @@
     position: relative;
     left: 60%;
   }
-
 </style>
