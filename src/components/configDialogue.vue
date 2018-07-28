@@ -11,7 +11,7 @@
   </el-form>
 
 
-    <div v-for = "(val,index) in default_data.data.value">
+    <div  v-for = "(val,index) in default_data.data.value" :key="index">
       <el-form>
         <el-form-item label="value" :label-width="formLabelWidth">
           <el-input type="textarea"  v-model="default_data.data.value[index]"

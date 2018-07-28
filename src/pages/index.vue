@@ -31,6 +31,7 @@
 import DemoHeader from '../components/demoHeader'
 import config from '../components/editConfig.vue'
 import alias from '../components/editAlias.vue'
+import {requestData} from '../api/import'
 
 import {HOST} from '../utils/config'
 
@@ -91,29 +92,24 @@ export default {
     },
     editConfig(index, data){
 
-      var id = "";
-      id = data._id;
-      this.$ajax({
-      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
-        method:'POST',
-        url:HOST+'/config/get_config',
-        data: {"_id":id},
-      }).then(response=>{
-        // console.log("config file is ");
-        // //console.log(response.data);
-        // console.log(response.data.config.config_list);
-        var config = response.data.config;
-        this.$router.push({
-          path: '/config',
-          name: "config" ,
-          props: true,
-          params:{
-            config: config,
-          }
-        });
-      }).catch(function(err){
-        console.log(err);
+      var id = data._id;
+
+      var GET_CONFIG_API = HOST+'/config/get_config';
+      var data = {"_id":id};
+      var response_data = requestData("POST", data, GET_CONFIG_API);
+
+      this.$router.push({
+        path: '/config',
+        name: "config" ,
+        props: true,
+        query:{
+          id:id
+        },
+        params:{
+          config: config,
+        }
       });
+
     },
     createRuleBase(){
       this.$ajax({

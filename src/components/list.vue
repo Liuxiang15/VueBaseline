@@ -23,7 +23,7 @@
   <div id="snl_container">
     <span>
       <span>tags:</span>
-        <el-tag v-for = "tag in current_node.tags" size="medium">
+        <el-tag v-for = "(tag, index) in current_node.tags" :key="index" size="medium">
           {{ tag }}
         </el-tag>
     </span>

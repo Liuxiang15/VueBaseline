@@ -17,7 +17,7 @@
       </div>
 
 
-      <div v-for = "(val,index) in default_data.spl">
+      <div v-for = "(val,index) in default_data.spl" :key="index">
         <el-form>
           <el-form-item label="spl" :label-width="formLabelWidth">
             <el-input v-model="default_data.spl[index]"
