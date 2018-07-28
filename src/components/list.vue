@@ -27,10 +27,6 @@
           {{ tag }}
         </el-tag>
     </span>
-
-
-    <!-- <h2>SNL语句</h2> -->
-
     <!--用于展示规则的列表-->
     <el-table
     :data="current_node.snl_spl_pairs"
