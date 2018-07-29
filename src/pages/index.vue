@@ -2,7 +2,9 @@
   <div>
     <demo-header></demo-header>
     <div id="container">
-      <h1>规则库列表</h1>
+      <div id="title">
+        <h1>规则库列表</h1>
+      </div>
       <el-table
         :data="lib_names"
         border
@@ -167,34 +169,39 @@ export default {
 </script>
 
 <style scoped>
+
+#title{
+  text-align: center;
+}
+
 #container{
   position: relative;
-  text-align: center;
+  /* text-align: center; */
   width:50%;
   left:25%;
 }
 
-.el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell {
+/* .el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell {
     padding-left: 10px;
     text-align: center !important;
-}
+} */
 
-.el-table th > .cell {
+/* .el-table th > .cell {
     text-align: center !important;
-}
+} */
 
 
-.el-table td, .el-table th.is-leaf {
+/* .el-table td, .el-table th.is-leaf {
     border-bottom: 1px solid #ebeef5;
-    text-align: center;
-}
+    text-align: left;
+} */
 
 ::-webkit-scrollbar {
   display:none;
 }
 
 
-.el-table .cell{
+/* .el-table .cell{
   text-align: center;
 }
 
@@ -204,5 +211,5 @@ export default {
 
 div{
   text-align: center !important;
-}
+} */
 </style>

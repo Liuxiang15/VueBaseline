@@ -10,7 +10,6 @@
         Excel导入
       </el-menu-item>
     </el-submenu>
-    <el-menu-item index="/">三页面</el-menu-item>
   </el-menu>
 
 </template>

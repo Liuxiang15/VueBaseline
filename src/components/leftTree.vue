@@ -29,17 +29,17 @@
     </new-content> -->
     <el-dialog title="新建目录" :visible.sync="new_content_show">
       <el-form>
-        <el-form-item label="text">
+        <el-form-item label="名称">
           <el-input v-model="new_text" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <el-form>
-        <el-form-item label="description">
+        <el-form-item label="规则详细描述">
           <el-input v-model="new_description" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <el-form>
-        <el-form-item label="order">
+        <el-form-item label="编号">
           <el-input v-model="new_order" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -51,17 +51,17 @@
 
     <el-dialog title="新建规则" :visible.sync="new_rule_show">
       <el-form>
-        <el-form-item label="text">
+        <el-form-item label="名称">
           <el-input v-model="new_text" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <el-form>
-        <el-form-item label="description">
+        <el-form-item label="规则详细描述">
           <el-input v-model="new_description" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <el-form>
-        <el-form-item label="order">
+        <el-form-item label="编号">
           <el-input v-model="new_order" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -78,7 +78,7 @@
 
     <el-dialog title="重命名" :visible.sync="rename_show">
       <el-form>
-        <el-form-item label="new name">
+        <el-form-item label="新名称">
           <el-input v-model="new_text" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>

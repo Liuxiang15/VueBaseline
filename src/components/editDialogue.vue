@@ -163,6 +163,9 @@
   background-color: yellow;
 }
 
+.common{
+  color:black;
+}
 
 
 .el-dialog__headerbtn .el-dialog__close {
