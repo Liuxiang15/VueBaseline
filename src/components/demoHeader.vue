@@ -1,7 +1,11 @@
 <template>
-
-  <!-- index	唯一标志	string -->
-  <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal" :router="true">
+  <el-header class="header">
+  <el-menu
+  class="menu"
+  default-active="1"
+  mode="horizontal"
+  :router="true"
+  background-color="#FFFFFF">
     <el-menu-item index="/">主页面</el-menu-item>
     <el-submenu index="/">
       <template slot="title">次页面</template>
@@ -11,7 +15,7 @@
       </el-menu-item>
     </el-submenu>
   </el-menu>
-
+</el-header>
 </template>
 
 <script>
@@ -29,16 +33,15 @@
   }
 </script>
 
-<style scoped>
-  .el-menu {
-    position: relative;
-    width: 100%;
-    padding-left: 20%;
-    padding-right: 20%;
-    padding-top: 1%;
-    padding-bottom: 1%;
-    background-color: #333;
-    border: none;
-    box-sizing: border-box;
-  }
+<style lang="stylus" scoped>
+.header
+  width 100%
+  background #FFFFFF
+  height 60px
+  box-shadow 0 1px 1px rgba(0,0,0,.08)
+  z-index 999
+  padding 0
+  .mune
+    margin auto
+
 </style>

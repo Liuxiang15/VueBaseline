@@ -1,8 +1,5 @@
 <template>
   <div class="container">
-    <el-header>
-      <demo-header></demo-header>
-    </el-header>
     <el-container>
       <el-aside>
         <left-tree ref="mytree" id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
