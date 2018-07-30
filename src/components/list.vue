@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <div id="snl_container">
+  <div  v-show="snl_show" id="snl_container">
     <span>
       <span>标签：</span>
         <el-tag v-for = "(tag, index) in current_node.tags" :key="index" size="medium">
@@ -50,8 +50,32 @@
       </el-table-column>
     </el-table>
 
-    <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
-    <!-- <el-button type="success" icon="el-icon-check" @click="snlSave">保存</el-button> -->
+    <el-button type="primary" icon="el-icon-edit" @click="newItem">新建SNL语句</el-button>
+
+    <el-table
+    :data="show_rules"
+    style="width: 100%">
+      <el-table-column label="SNL语句">
+        <template slot-scope="scope">
+          <div slot="reference" class="name-wrapper">
+            <el-tag size="medium">{{ scope.row.snl }}</el-tag>
+          </div>
+        </template>
+
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            @click="handleEdit(scope.$index, scope.row) ">编辑</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
     <edit-dialogue :show = "edit_show"
     :default_data ="current_snl"
     :default_tags = "current_tags"
@@ -95,7 +119,9 @@ export default {
       current_tags:[],
       edit_show:false,
       description_show:false,
-      show_snls:[]//储存显示的SNL数组，要注意的是目录下所有的孩子的SNL
+      snl_show:false,// 决定当前界面显示的是SNL列表，还是规则列表
+      show_snls:[],//储存显示的SNL数组，要注意的是目录下所有的孩子的SNL,
+      show_rules:[]
     }
   },
   methods:{
@@ -140,6 +166,7 @@ export default {
     showList(current_node){
       console.log("进入show_list函数");
       console.log(current_node);
+      this.snl_show = true;
       this.current_node = current_node;
       if(this.current_node.is_rule){
         //叶子节点处理
@@ -150,7 +177,8 @@ export default {
         //目录节点处理
         this.description_show = false;
         this.show_snls = [];//首先清空
-        this.getShowSnls(this.current_node.children);
+        this.getRules(current_node.children);
+        // this.getShowSnls(this.current_node.children);
       }
     },
     getShowSnls(arr){
@@ -174,6 +202,26 @@ export default {
       }
       console.log("this.show_snls是:");
       console.log(this.show_snls);
+    },
+    //
+    getRules(arr){
+      for(var child of arr){
+        if(child.is_rule){
+          //this.show_snls.push();
+          // console.log("parent 是 ");
+          // console.log(arr);
+          this.show_rules.push(child.text);
+          // console.log("孩子规则节点是：");
+          // console.log(child);
+        }
+        else{
+          // console.log("孩子目录节点是：");
+          // console.log(child.children);
+          this.getShowSnls(child.children);
+        }
+      }
+      console.log("this.rules是:");
+      console.log(this.show_rules);
     },
 
     close(){
