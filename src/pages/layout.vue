@@ -68,7 +68,6 @@
         //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
         // console.log("enter showMsgFromChild函数");
         // console.log(data);
-        //////////////
         this.current_node = data;
         // console.log("in layout this.current_node  is ");
         // console.log(this.current_node);
@@ -171,7 +170,7 @@
     box-sizing: border-box;
   }
 
-  
+
 
   .el-textarea__inner {
     width: 100%;

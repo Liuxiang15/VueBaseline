@@ -144,10 +144,11 @@ export default {
   methods: {
       handleNodeClick(node_data, node) {
         // 参数:传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node
+        console.log("被点击的node是");
+        console.log(node.data);
         this.$emit("listenToNodeClick", node.data);
         this.menu_show = false;
-        // console.log("被点击的node是");
-        // console.log(node.data);
+
         // console.log("被点击的nodedata是");
         // console.log(node_data);
         // console.log("被点击的node是");

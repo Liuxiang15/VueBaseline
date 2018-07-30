@@ -27,7 +27,7 @@
     </span>
     <!--用于展示规则的列表-->
     <el-table
-    :data="current_node.snl_spl_pairs"
+    :data="show_snls"
     style="width: 100%">
       <el-table-column label="SNL语句">
         <template slot-scope="scope">
@@ -94,7 +94,8 @@ export default {
       },
       current_tags:[],
       edit_show:false,
-      description_show:false
+      description_show:false,
+      show_snls:[]//储存显示的SNL数组，要注意的是目录下所有的孩子的SNL
     }
   },
   methods:{
@@ -127,28 +128,52 @@ export default {
     },
 
     handleDelete(index, row){
-      // console.log("进入handleDelet函数");
-      // console.log("被删除的row.snl是" + row.snl);
+      console.log("进入handleDelet函数");
+      console.log("被删除的row.snl是" + row.snl);
       // console.log("this.list_data.id" + this.list_data.id);
       // console.log("this.list_data.text" + this.list_data.text);
       // console.log("this.list_data.description" + this.list_data.description);
-      this.current_node.snl_spl_pairs.splice(index, 1);
+      this.show_snls.splice(index, 1);
       //alert("删除本行");
     },
 
     showList(current_node){
-      console.log(current_node);
       console.log("进入show_list函数");
+      console.log(current_node);
       this.current_node = current_node;
       if(this.current_node.is_rule){
+        //叶子节点处理
+        this.show_snls = current_node.snl_spl_pairs;
         this.description_show = true;
       }
       else{
+        //目录节点处理
         this.description_show = false;
+        this.show_snls = [];//首先清空
+        this.getShowSnls(this.current_node.children);
       }
-      console.log("in showList");
-      console.log(this.current_node);
-      //先将"description"赋值给text
+    },
+    getShowSnls(arr){
+      //递归实现
+      // console.log("进入getShowSnls函数");
+      // console.log(arr);
+      for(var child of arr){
+        if(child.is_rule){
+          //this.show_snls.push();
+          // console.log("parent 是 ");
+          // console.log(arr);
+          this.show_snls = this.show_snls.concat(child.snl_spl_pairs);
+          // console.log("孩子规则节点是：");
+          // console.log(child);
+        }
+        else{
+          // console.log("孩子目录节点是：");
+          // console.log(child.children);
+          this.getShowSnls(child.children);
+        }
+      }
+      console.log("this.show_snls是:");
+      console.log(this.show_snls);
     },
 
     close(){
