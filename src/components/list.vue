@@ -1,7 +1,7 @@
 <template>
 <div id="container">
-  <div id="text_container">
-    <h2>description</h2>
+  <div v-show="description_show" id="text_container">
+    <h2>自然语言描述</h2>
     <el-input
       type="textarea"
       id="text_area"
@@ -18,11 +18,9 @@
     </div>
   </div>
 
-
-
   <div id="snl_container">
     <span>
-      <span>tags:</span>
+      <span>标签：</span>
         <el-tag v-for = "(tag, index) in current_node.tags" :key="index" size="medium">
           {{ tag }}
         </el-tag>
@@ -33,12 +31,9 @@
     style="width: 100%">
       <el-table-column label="SNL语句">
         <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
-            <p>snl语句: {{ scope.row.snl }}</p>
-            <div slot="reference" class="name-wrapper">
-              <el-tag size="medium">{{ scope.row.snl }}</el-tag>
-            </div>
-          </el-popover>
+          <div slot="reference" class="name-wrapper">
+            <el-tag size="medium">{{ scope.row.snl }}</el-tag>
+          </div>
         </template>
 
       </el-table-column>
@@ -54,7 +49,6 @@
         </template>
       </el-table-column>
     </el-table>
-
 
     <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
     <!-- <el-button type="success" icon="el-icon-check" @click="snlSave">保存</el-button> -->
@@ -100,6 +94,7 @@ export default {
       },
       current_tags:[],
       edit_show:false,
+      description_show:false
     }
   },
   methods:{
@@ -142,9 +137,15 @@ export default {
     },
 
     showList(current_node){
-      // console.log(current_node);
-      // console.log("进入show_list函数");
+      console.log(current_node);
+      console.log("进入show_list函数");
       this.current_node = current_node;
+      if(this.current_node.is_rule){
+        this.description_show = true;
+      }
+      else{
+        this.description_show = false;
+      }
       console.log("in showList");
       console.log(this.current_node);
       //先将"description"赋值给text
@@ -169,11 +170,10 @@ export default {
       item.spl=[];
       this.current_node.snl_spl_pairs.push(item);
     },
-
   }
 }
 </script>
-<style>
+<style scoped>
 #container{
   width: 70%;
   position: relative;
@@ -197,8 +197,8 @@ p{
 }
 
 .el-table td, .el-table th.is-leaf {
-
-    background-color: ##EBEEF5;
+  background-color: #EBEEF5;
+  text-align: left;
 }
 
 #btns{

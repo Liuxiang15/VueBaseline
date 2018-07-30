@@ -171,10 +171,7 @@
     box-sizing: border-box;
   }
 
-  .el-table td, .el-table th.is-leaf {
-    text-align: center;
-    background-color: # #EBEEF5;
-  }
+  
 
   .el-textarea__inner {
     width: 100%;
