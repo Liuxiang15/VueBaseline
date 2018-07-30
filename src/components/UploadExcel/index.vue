@@ -104,7 +104,7 @@
           // console.log(result);
           // debugger;
 
-          if (result.data.errmsg !== undefined) {
+          if (result.data.code !== undefined) {
             this.$message.error(result.data.errmsg)
           } else {
             this.$router.push({
