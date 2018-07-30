@@ -29,7 +29,7 @@
   import DemoHeader from '../components/demoHeader'
   import LeftTree from '../components/leftTree'
   import List from '../components/list'
-  import cascader from '../components/cascader.vue'
+
 
   export default {
     name: 'layout',
@@ -37,7 +37,6 @@
       DemoHeader,
       LeftTree,
       List,
-      cascader,
     },
     data() {
       return {
@@ -172,10 +171,7 @@
     box-sizing: border-box;
   }
 
-  .el-table td, .el-table th.is-leaf {
-    text-align: center;
-    background-color: # #EBEEF5;
-  }
+  
 
   .el-textarea__inner {
     width: 100%;

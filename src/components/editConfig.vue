@@ -73,7 +73,7 @@ import {HOST} from '../utils/config'
             value:[],
           }
         },
-
+        id:"",//通过id来获取数据
         config:{},
         // total:0,
         currentPage: 1,
@@ -82,35 +82,37 @@ import {HOST} from '../utils/config'
       }
     },
     created(){
-      console.log("in editConfig ");
-      console.log(this.$route.params.config);
-      this.config = this.$route.params.config;
-      // this.config_list = this.$route.params.config.config_list;
-      //用于分页显示
-      // this.total = this.config.config_list.length;
-
-
+      this.id = this.$route.query.id;
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'POST',
+        url:HOST+'/config/get_config',
+        data: {"_id":this.id},
+      }).then(response=>{
+        this.config = response.data.config;
+        console.log("this.config is ");
+        console.log(this.config);
+      }).catch(function(err){
+        console.log(err);
+      });
     },
-    // watch:{
-    //   curr_data:{
-    //     handler: function (val) {
-    //       console.log("++++++++");
-    //       console.log(val);
-    //       this.config_list[val.index].key = val.data.key;
-    //       this.config_list[val.index].value = val.data.value;
-    //     },
-    //     deep: true
-    //   }
-    // },
+
     computed:{
       total(){
+        if(!this.config.config_list){
+          return 0;
+        }
         return this.config.config_list.length;
       },
 
       pagedData(){
+        if(!this.config.config_list){
+          return [];
+        }
         return this.config.config_list.slice((this.currentPage - 1) * this.currentPageSize, this.currentPage * this.currentPageSize)
       }
     },
+
     methods: {
       newItem() {
         var item = {};
