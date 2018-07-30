@@ -101,22 +101,23 @@
         }
 
         importExcel(this.rawFile, this.$route.query.metadata_id).then(result => {
-          // console.log(result);
-          // debugger;
 
-          if (result.data.code !== undefined) {
-            this.$message.error(result.data.errmsg)
-          } else {
+          if (!!result.data.code && result.data.code === 1000) {
+
+            let metadata = result.data.msg
+
             this.$router.push({
               path: '/data',
               name: "layout",
               props: true,
               query: {
-                id: result.data.res._id
+                id: metadata._id
               }
-
             });
 
+          } else {
+
+            this.$message.error(result.data.hint)
           }
         })
       },
