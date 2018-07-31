@@ -4,9 +4,9 @@
                             ref="upload-excel-component"></upload-excel-component>
 
     <el-container>
-      <el-aside>
-        <el-form>
-          <el-form-item  v-for="(item,index) in tableDef" v-bind:label="tableHeader[index]">
+      <el-aside v-show="showUpload()">
+        <el-form label-width="100px">
+          <el-form-item v-for="(item,index) in tableDef" v-bind:label="tableHeader[index]">
             <el-select v-model="tableDef[index]" placeholder="请选择">
               <el-option
                 v-for="item in options"
@@ -40,8 +40,8 @@
         </el-form>
       </el-aside>
       <el-main>
-        <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
-          <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item'
+        <el-table :data="tableData" border highlight-current-row style="width: 100%">
+          <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item' empty-text=" "
                            :render-header="renderHeader">
           </el-table-column>
         </el-table>
@@ -71,11 +71,11 @@
         tableData: [],
         tableHeader: [],
         tableDef: [],
-        options:[
-          {value:'subject',label:'主语'},
-          {value:'condition',label:'条件'},
-          {value:'conclusion',label:'结论'},
-          {value:'exclusion',label:'不包含'}
+        options: [
+          {value: 'subject', label: '主语'},
+          {value: 'condition', label: '条件'},
+          {value: 'conclusion', label: '结论'},
+          {value: 'exclusion', label: '不包含'}
         ]
       }
     },
@@ -101,11 +101,19 @@
       handleSuccess({results, header}) {
         this.tableData = results
         this.tableHeader = header
-        this.tableDef = new Array(this.tableHeader.length)
+        this.tableDef = new Array(this.tableHeader.length).fill('exclusion')
+
       },
       handleImportExcel() {
         console.log("click on import excel")
-        this.$refs["upload-excel-component"].upload2Server()
+
+
+        let def_map = {'exclusion': [], 'subject': [], 'condition': [], 'conclusion': [],'classification':[]};
+        for (let index = 0; index < this.tableHeader.length; index++) {
+          def_map[this.tableDef[index]].push(this.tableHeader[index])
+        }
+
+        this.$refs["upload-excel-component"].upload2Server(def_map)
       },
 
 
@@ -149,4 +157,7 @@
     padding: 20px;
   }
 
+  .el-aside {
+    padding: 20px;
+  }
 </style>

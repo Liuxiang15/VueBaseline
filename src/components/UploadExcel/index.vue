@@ -92,19 +92,26 @@
         this.rawFile = rawFile
       },
 
-      upload2Server() {
+      upload2Server(defMap) {
         // 使用then语法，或者新增callback参数
 
         if (this.rawFile == null) {
-          this.$message.error('Please select excel file first')
+          this.$message.error('请选择excel文件')
           return
         }
 
-        importExcel(this.rawFile, this.$route.query.metadata_id).then(result => {
+        if (!defMap||defMap.length===0){
+          this.$message.error('请修改列定义')
+          return
+        }
+
+
+
+        importExcel(this.rawFile, this.$route.query.metadata_id,defMap).then(result => {
 
           if (!!result.data.code && result.data.code === 1000) {
 
-            let metadata = result.data.msg
+            let metadata = result.data.msg;
 
             this.$router.push({
               path: '/data',
@@ -117,7 +124,7 @@
 
           } else {
 
-            this.$message.error(result.data.hint)
+            this.$message.error(result.data.hint + (result.data.code===2000?result.data.msg:''))
           }
         })
       },
