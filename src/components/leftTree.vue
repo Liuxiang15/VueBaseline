@@ -332,6 +332,7 @@ span{
 .el-tree{
   background-color: #DCDFE6;
   height: 100%;
+  width: 100%;
 }
 .el-tree-node {
     height: 100%;

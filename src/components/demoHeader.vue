@@ -4,9 +4,8 @@
   class="menu"
   default-active="1"
   mode="horizontal"
-  :router="true"
-  background-color="#FFFFFF">
-    <el-menu-item index="/">主页面</el-menu-item>
+  :router="true">
+    <el-menu-item calss="item" index="/">主页面</el-menu-item>
     <el-submenu index="/">
       <template slot="title">次页面</template>
       <!--<el-menu-item index="/">menu-item-2-1</el-menu-item>-->
@@ -41,7 +40,10 @@
   box-shadow 0 1px 1px rgba(0,0,0,.08)
   z-index 999
   padding 0
-  .mune
+  .menu
     margin auto
+    left 25%
+
+
 
 </style>
