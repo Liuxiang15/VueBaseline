@@ -101,7 +101,7 @@
       handleSuccess({results, header}) {
         this.tableData = results
         this.tableHeader = header
-        this.tableDef =
+        this.tableDef = new Array(this.tableHeader.length)
       },
       handleImportExcel() {
         console.log("click on import excel")
@@ -148,4 +148,5 @@
   .app-container {
     padding: 20px;
   }
+
 </style>
