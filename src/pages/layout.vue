@@ -116,7 +116,7 @@
 </script>
 
 <!-- 使用vue 引入一个组件时，组件中的css样式将作用域全局 ,解决方法-->
-<style scoped>
+<style lang="stylus" scoped>
   body {
     height: 100%;
   }
