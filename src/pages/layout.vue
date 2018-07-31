@@ -1,5 +1,4 @@
 <template>
-  <div class="container">
     <el-container>
       <el-aside>
         <left-tree ref="mytree" id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
@@ -16,7 +15,6 @@
         </div>
       </el-main>
     </el-container>
-  </div>
 </template>
 
 
@@ -125,12 +123,6 @@
     box-sizing: border-box;
   }
 
-  .container {
-    height: 100%;
-    box-sizing: border-box;
-    /* background-color: #DCDFE6 !important; */
-  }
-
   .el-header {
     height: 10% !important;
     /* 我们希望 header 采用固定的高度，只占用必须的空间 */
@@ -145,18 +137,17 @@
   }
 
   .el-container {
-    /* height: 80%; */
+    height: 90%;
     width: 100%;
-    min-height: 90%;
-    max-height: 90%;
+    /* min-height: 90%;
+    max-height: 90%; */
     flex: 1 0 auto;
     box-sizing: border-box;
   }
 
   .el-aside {
-    /* height: 100% !important; */
-    /* width: 30% !important; */
-    width: 30%;
+    width: 30% !important;
+
     max-height: 100%;
     background-color: #DCDFE6;
   }
