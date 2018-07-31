@@ -42,8 +42,8 @@
   padding 0
   .menu
     margin auto
-    .item
-      left 25%
+    left 25%
+
 
 
 </style>
