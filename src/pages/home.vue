@@ -1,6 +1,5 @@
 <template lang="html">
   <div class="container">
-    <home-header></home-header>   <!--  展示引入的header组件 -->
     <div class="content">
       <ul class="cont-ul">
           <!-- list组件展示区，并用v-for来将数据遍历，:xx="xxx" 是用来给子组件传递数据的 -->
@@ -58,8 +57,3 @@ export default {
     height: 0;
   }
 </style>
-
-作者：datura_lj
-链接：https://www.jianshu.com/p/7c5ccfac3fa8
-來源：简书
-简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
