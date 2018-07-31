@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="弹出对话框" :visible.sync="dialogFormVisible">
+    <el-dialog title="编辑SNL" :visible.sync="dialogFormVisible">
 
       <div id="html_div" v-html="this.snl_html"></div>
 
@@ -22,7 +22,6 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
       </div>

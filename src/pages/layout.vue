@@ -6,7 +6,8 @@
       </el-aside>
 
       <el-main>
-        <list ref="snlLists"></list>
+        <!-- <list ref="snlLists"></list> -->
+        <rule-click ref="snlLists"></rule-click>
         <div id="btn-group">
           <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
           <el-button type="primary" icon="el-icon-download"><a :href="downloadLink()"
@@ -24,7 +25,7 @@
   import DemoHeader from '../components/demoHeader'
   import LeftTree from '../components/leftTree'
   import List from '../components/list'
-
+  import ruleClick from "../components/ruleClick"
 
   export default {
     name: 'layout',
@@ -32,6 +33,8 @@
       DemoHeader,
       LeftTree,
       List,
+      ruleClick,
+
     },
     data() {
       return {
@@ -114,7 +117,7 @@
 </script>
 
 <!-- 使用vue 引入一个组件时，组件中的css样式将作用域全局 ,解决方法-->
-<style lang="stylus" scoped>
+<style  scoped>
   body {
     height: 100%;
   }
@@ -138,7 +141,7 @@
 
   .el-container {
     height: 90%;
-    width: 100%;
+    /* width: 100%; */
     /* min-height: 90%;
     max-height: 90%; */
     flex: 1 0 auto;
@@ -146,15 +149,15 @@
   }
 
   .el-aside {
-    width: 30% !important;
-
-    max-height: 100%;
+    min-width: 25%;
+    max-width: 30%;
+    height: 100%;
     background-color: #DCDFE6;
   }
 
   .el-main {
     /* height: 100%; */
-    /* width:50%; */
+    width:50%;
     box-sizing: border-box;
   }
 

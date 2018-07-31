@@ -116,22 +116,32 @@ export default {
     editConfig(index, data){
 
       var id = data._id;
-
-      var GET_CONFIG_API = HOST+'/config/get_config';
       var data = {"_id":id};
-      var response_data = requestData("POST", data, GET_CONFIG_API);
 
-      this.$router.push({
-        path: '/config',
-        name: "config" ,
-        props: true,
-        query:{
-          id:id
-        },
-        params:{
-          config: config,
-        }
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'POST',
+        url:HOST+'/config/get_config'
+      }).then(response=>{
+        console.log(response.data);
+        this.$router.push({
+          path: '/config',
+          name: "config" ,
+          props: true,
+          query:{
+            id:id
+          },
+          params:{
+            config: response.data.config,
+          }
+        });
+      }).catch(function(err){
+        console.log(err);
       });
+
+      //var response_data = requestData("POST", data, GET_CONFIG_API);
+
+
 
     },
     createRuleBase(){
