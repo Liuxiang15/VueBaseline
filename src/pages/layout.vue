@@ -6,8 +6,8 @@
       </el-aside>
 
       <el-main>
-        <!-- <list ref="snlLists"></list> -->
         <rule-click v-show="rule_click_show" ref="snlLists"></rule-click>
+        <content-click v-show="content_click_show" :rule_snls="rule_snls" ref="ruleLists"></content-click>
         <div  v-show="rule_click_show" id="btn-group">
           <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
           <el-button type="primary" icon="el-icon-download">
@@ -28,6 +28,7 @@
   import LeftTree from '../components/leftTree'
   import List from '../components/list'
   import ruleClick from "../components/ruleClick"
+  import contentClick from "../components/contentClick"
 
   export default {
     name: 'layout',
@@ -36,7 +37,7 @@
       LeftTree,
       List,
       ruleClick,
-
+      contentClick,
     },
     data() {
       return {
@@ -44,6 +45,9 @@
         current_node: {},
         meta_data: {},
         rule_click_show:false,
+        content_click_show:false,
+        rule_snls:[],//存储当前目录(分类)下所有的规则及其对应的SNL语句数组
+        rule_order:0,//存储单条规则在当下分类下的孩子排序
       }
     },
     created() {
@@ -67,26 +71,26 @@
     methods: {
       showMsgFromChild(data) {
         //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
-        console.log("enter showMsgFromChild函数");
-        console.log(data);
+        // console.log("enter showMsgFromChild函数");
+        // console.log(data);
         this.current_node = data;
         // console.log("in layout this.current_node  is ");
         // console.log(this.current_node);
         if(data.is_rule){
           this.$refs.snlLists.showList(data);
           this.rule_click_show = true;
+          this.content_click_show = false;
         }
         else{
+
+          this.rule_order = 0;//记住每次获取目录下所有rule_snls的时候必须清0
+          this.getRuleSNLs(data.children);
+          // this.$refs.ruleLists.showRules(this.rule_snls);
           this.rule_click_show = false;
+          this.content_click_show = true;
         }
       },
-      // editDialogue(row){
-      //   console.log("in layout editDialogue() current_node");
-      //   console.log(this.current_node);
-      //   console.log("进入showDialogue函数");
-      //   this.current_node.childern = row.childern;
-      //   this.snl_spl_pairs = [].concat(row.value);;
-      // },
+
       snlSave() {
         this.$ajax({
           //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
@@ -112,17 +116,31 @@
       },
       closeMenu() {
         this.$refs.mytree.close();
-        console.log("进入clickMenu函数");
+        // console.log("进入clickMenu函数");
       },
       downloadSpl() {
-      }
+      },
+
+      getRuleSNLs(arr){
+        for(var child of arr){
+          if(child.is_rule){
+            var new_item = {};
+            new_item.text = child.text;
+            new_item.order = this.rule_order;
+            new_item.snl = child.snl_spl_pairs;
+            //因为每条规则被单击后都有index这么一个属性，所以不需要单独存储
+            this.rule_order += 1;
+            this.rule_snls.push(new_item);
+          }
+          else{
+            this.getRuleSNLs(child.children);
+          }
+        }
+        console.log("in getRuleSNLs ");
+        console.log(this.rule_snls);
     },
-    watch: {
-      meta_data() {
-        //this.get_meta_node_data();
-      }
-    }
   }
+}
 </script>
 
 <!-- 使用vue 引入一个组件时，组件中的css样式将作用域全局 ,解决方法-->
