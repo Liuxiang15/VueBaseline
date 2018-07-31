@@ -1,36 +1,48 @@
 <template>
-  <div>
-    <demo-header></demo-header>
-    <div id="container">
-      <div id="title">
-        <h1>规则库列表</h1>
-      </div>
-      <el-table
-        :data="lib_names"
-        border
-        style="width: 100%">
-        <el-table-column prop="lib_names" label="规则库名字">
-          <template slot-scope="scope">
-            <i class="el-icon-document"></i>
-            <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
-          </template>
-        </el-table-column>
+  <el-main class="container">
+    <el-row type="flex" justify="space-around">
+      <el-col :xs="24" :sm="24" :lg="24">
+        <el-card
+        class="overview-panel"
+        :body-style="{ padding: '0px' }">
+          <div slot="header" class="title">
+            <el-row>
+              <el-col :span="18">
+                <i class="el-icon-document"></i>
+                <span>规则库列表</span>
+              </el-col>
+              <el-col :span="1">
+                <el-button @click.native ="createRuleBase()">创建规则库</el-button>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="overview-content">
+            <el-table
+            class="table"
+            :data="lib_names">
+              <el-table-column prop="lib_names" label="规则库名字">
+              <template slot-scope="scope">
+                <i class="el-icon-document"></i>
+                <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
+              </template>
+              </el-table-column>
 
-        <el-table-column label="操作">
-          <template slot-scope="props">
-            <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
-            <el-button @click.native ="editConfig(props.$index, props.row)">编辑config</el-button>
-            <el-button @click.native ="editAlias(props.$index, props.row)">编辑alias</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-button @click.native ="createRuleBase()">创建规则库</el-button>
-    </div>
-  </div>
+              <el-table-column label="操作">
+              <template slot-scope="props">
+                <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
+                <el-button @click.native ="editConfig(props.$index, props.row)">编辑config</el-button>
+                <el-button @click.native ="editAlias(props.$index, props.row)">编辑alias</el-button>
+              </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+  </el-main>
 </template>
 
 <script>
-import DemoHeader from '../components/demoHeader'
 import config from '../components/editConfig.vue'
 import alias from '../components/editAlias.vue'
 import {findLibList} from '../api/rulelib'
@@ -57,9 +69,6 @@ export default {
     }
   },
 
-  components:{
-    DemoHeader
-  },
   created() {
     //2 向指定网页发送get请求并接收存储metadata和nodedata的字典
 	  console.log("enter created 函数");
@@ -180,48 +189,15 @@ export default {
 }
 </script>
 
-<style scoped>
-
-#title{
-  text-align: center;
-}
-
-#container{
-  position: relative;
-  /* text-align: center; */
-  width:50%;
-  left:25%;
-}
-
-/* .el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell {
-    padding-left: 10px;
-    text-align: center !important;
-} */
-
-/* .el-table th > .cell {
-    text-align: center !important;
-} */
-
-
-/* .el-table td, .el-table th.is-leaf {
-    border-bottom: 1px solid #ebeef5;
-    text-align: left;
-} */
-
-::-webkit-scrollbar {
-  display:none;
-}
-
-
-/* .el-table .cell{
-  text-align: center;
-}
-
-.el-table th{
-  text-align: center !important;
-}
-
-div{
-  text-align: center !important;
-} */
+<style lang="stylus" scoped>
+.container
+  width 50%
+  position relative
+  left 25%
+  .overview-panel
+    width 100%
+    .overview-content
+      overflow auto
+      .table
+        width 100%
 </style>
