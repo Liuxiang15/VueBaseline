@@ -7,11 +7,13 @@
 
       <el-main>
         <!-- <list ref="snlLists"></list> -->
-        <rule-click ref="snlLists"></rule-click>
-        <div id="btn-group">
+        <rule-click v-show="rule_click_show" ref="snlLists"></rule-click>
+        <div  v-show="rule_click_show" id="btn-group">
           <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
-          <el-button type="primary" icon="el-icon-download"><a :href="downloadLink()"
-                                                               style='text-decoration:none;color:inherit;'>下载SPL </a>
+          <el-button type="primary" icon="el-icon-download">
+            <a :href="downloadLink()" style='text-decoration:none;color:inherit;'>
+              下载SPL
+            </a>
           </el-button>
         </div>
       </el-main>
@@ -41,6 +43,7 @@
         //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
         current_node: {},
         meta_data: {},
+        rule_click_show:false,
       }
     },
     created() {
@@ -64,12 +67,18 @@
     methods: {
       showMsgFromChild(data) {
         //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
-        // console.log("enter showMsgFromChild函数");
-        // console.log(data);
+        console.log("enter showMsgFromChild函数");
+        console.log(data);
         this.current_node = data;
         // console.log("in layout this.current_node  is ");
         // console.log(this.current_node);
-        this.$refs.snlLists.showList(data);
+        if(data.is_rule){
+          this.$refs.snlLists.showList(data);
+          this.rule_click_show = true;
+        }
+        else{
+          this.rule_click_show = false;
+        }
       },
       // editDialogue(row){
       //   console.log("in layout editDialogue() current_node");

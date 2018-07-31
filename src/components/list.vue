@@ -126,20 +126,20 @@ export default {
     }
   },
   methods:{
-    handleEditText(){
-      console.log("enter handleEditText函数");
-      this.disable_flag = false;
-    },
-
-    saveText(){
-      // console.log("enter saveText 函数");
-      var newInfo = {};
-      var strId = this.list_data["id"].toString();
-      newInfo[strId] = {};
-      newInfo[strId].text = this.text_area;
-      //var node_datas = this.node_data.data;
-      //newInfo[strId].snl = node_datas[strId]["snl"];
-    },
+    // handleEditText(){
+    //   console.log("enter handleEditText函数");
+    //   this.disable_flag = false;
+    // },
+    //
+    // saveText(){
+    //   // console.log("enter saveText 函数");
+    //   var newInfo = {};
+    //   var strId = this.list_data["id"].toString();
+    //   newInfo[strId] = {};
+    //   newInfo[strId].text = this.text_area;
+    //   //var node_datas = this.node_data.data;
+    //   //newInfo[strId].snl = node_datas[strId]["snl"];
+    // },
 
     handleEdit(index, row){
       //3 触发父组件对话框弹出

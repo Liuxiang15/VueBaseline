@@ -3,7 +3,6 @@
 
       <div id="html_div" v-html="this.snl_html"></div>
 
-
       <el-input
         type="textarea"
         :rows="4"
@@ -36,13 +35,14 @@
     //snl_html是snl的HTML版本，比如把关键词用span包围
     name:"editDialogue",
     props:[
-      "show", "default_data",
+      "show",
     ],
 
     data() {
       return {
         dialogTableVisible: this.show,
         dialogFormVisible: false,
+        default_data:{},
         key_words : [
           // other:
           ["的", ".", "。"],
@@ -104,7 +104,12 @@
       },
 
       save() {
-        this.$emit('save', this.default_data);
+        // this.default_data.snl = this.input_snl;
+        var temp = {};
+        temp.snl = this.input_snl;
+        temp.spl = [].concat(this.default_data.spl);
+        temp.index = this.default_data.index;
+        this.$emit('save', temp);
       },
 
       updateDefaultData(default_data){

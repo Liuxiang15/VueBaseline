@@ -39,22 +39,20 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row) ">编辑</el-button>
+              @click="snlEdit(scope.$index, scope.row) ">编辑</el-button>
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              @click="snlDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-button type="primary" icon="el-icon-edit" @click="newItem">新建SNL语句</el-button>
+      <el-button type="primary" icon="el-icon-edit" @click="newSNL">新建SNL语句</el-button>
 
-      <!-- <edit-dialogue :show = "edit_show"
-        :default_data ="current_snl"
-        :default_tags = "current_tags"
+      <edit-dialogue :show = "edit_show"
         ref = "edit_dialog"
         @save = "save" @close="close" >
-      </edit-dialogue> -->
+      </edit-dialogue>
     </div>
   </div>
 
@@ -81,6 +79,7 @@ export default {
       text_area:"",
       current_node:{},
       edit_show:false,
+      current_snl:{}
     }
   },
   methods:{
@@ -96,7 +95,45 @@ export default {
 
     saveDescription(){
       this.disable_flag = true;
-    }
+    },
+
+    snlEdit(index, row_data){
+
+      this.current_snl = this.current_node.snl_spl_pairs[index];
+      this.current_snl.index = index;
+      console.log("this.current_snl是");
+      console.log(this.current_snl);
+      this.$refs.edit_dialog.updateDefaultData(this.current_snl);
+      this.edit_show = true;
+    },
+
+    snlDelete(index, row_data){
+      // console.log("进入handleDelet函数");
+      // console.log(row);
+      this.current_node.snl_spl_pairs.splice(index, 1);
+    },
+
+    newSNL() {
+      var item = {
+        snl:"new",
+        spl:[],
+      };
+      // item.snl="new";
+      // item.spl=[];
+      this.current_node.snl_spl_pairs.push(item);
+    },
+
+    save(new_data){
+      this.edit_show = false;
+      console.log("进入ruleClick的save函数");
+      console.log(new_data.snl);
+      this.current_node.snl_spl_pairs[new_data.index].snl = new_data.snl;
+    },
+
+    close(){
+      this.edit_show = false;
+    },
+
 }
 }
 </script>
