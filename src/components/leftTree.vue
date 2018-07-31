@@ -18,10 +18,10 @@
       @node-click="handleNodeClick"
       @node-contextmenu="handleRightClick"
     >
-      <span class="custom-tree-node" slot-scope="{ node, data }">
-        <span>{{ node.label }}</span>
-        <span>{{ node.data.text }} </span>
-      </span>
+        <span class="custom-tree-node"  slot-scope="{ node, data }">
+          {{ node.label }} {{ node.data.text }}
+        </span>
+
     </el-tree>
     <!-- <new-content :default_data="hello"
     :show="new_content_show"
@@ -320,6 +320,12 @@ export default {
 </script>
 
 <style>
+span{
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
 #aside_container{
   height:100%;
 }

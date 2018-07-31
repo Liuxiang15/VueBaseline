@@ -1,38 +1,39 @@
 <template>
 <div id="container">
-  <div v-show="description_show" id="text_container">
-    <h2>自然语言描述</h2>
-    <el-input
-      type="textarea"
-      id="text_area"
-      placeholder="请输入内容"
-      v-model="current_node.description"
-      v-bind:disabled= "disable_flag"
-    >
-    </el-input>
-    </br>
-    <div id="btns">
-      <el-button type="primary" v-on:click='handleEditText()' >修改</el-button>
-      <el-button type="success" v-on:click='saveText()' >保存</el-button>
-      <p></p>
+  <div id="snl_box" v-show="snl_show">
+    <div id="text_container">
+      <h2>自然语言描述</h2>
+      <el-input
+        type="textarea"
+        id="text_area"
+        rows=6
+        placeholder="请输入内容"
+        v-model="current_node.description"
+        v-bind:disabled= "disable_flag"
+      >
+      </el-input>
+      <div id="btns">
+        <el-button type="primary" v-on:click='handleEditText()' >修改</el-button>
+        <el-button type="success" v-on:click='saveText()' >保存</el-button>
+      </div>
     </div>
-  </div>
 
-  <div  v-show="snl_show" id="snl_container">
-    <span>
-      <span>标签：</span>
-        <el-tag v-for = "(tag, index) in current_node.tags" :key="index" size="medium">
-          {{ tag }}
-        </el-tag>
-    </span>
+    <div id="snl_container">
+      <span>
+        <span>标签：</span>
+          <el-tag v-for = "(tag, index) in current_node.tags" :key="index" size="medium">
+            {{ tag }}
+          </el-tag>
+      </span>
     <!--用于展示规则的列表-->
     <el-table
-    :data="show_snls"
+    :data="this.current_node.snl_spl_pairs"
     style="width: 100%">
       <el-table-column label="SNL语句">
         <template slot-scope="scope">
           <div slot="reference" class="name-wrapper">
-            <el-tag size="medium">{{ scope.row.snl }}</el-tag>
+            <!-- <el-tag size="medium">{{ scope.row.snl }}</el-tag> -->
+            {{ scope.row.snl }}
           </div>
         </template>
 
@@ -51,38 +52,38 @@
     </el-table>
 
     <el-button type="primary" icon="el-icon-edit" @click="newItem">新建SNL语句</el-button>
-
+  </div>
+  </div>
+  <div id="rule_box" v-show="rules_show">
     <el-table
     :data="show_rules"
     style="width: 100%">
-      <el-table-column label="SNL语句">
+      <el-table-column label="规则列表">
         <template slot-scope="scope">
           <div slot="reference" class="name-wrapper">
-            <el-tag size="medium">{{ scope.row.snl }}</el-tag>
+            <!-- <el-tag size="large">{{ scope.row }}</el-tag> -->
+            {{ scope.row.text }}
           </div>
         </template>
-
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row) ">编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            @click="_handleEdit(scope.$index, scope.row) ">查看SNL
+          </el-button>
+
         </template>
       </el-table-column>
     </el-table>
-
-    <edit-dialogue :show = "edit_show"
-    :default_data ="current_snl"
-    :default_tags = "current_tags"
-    ref = "edit_dialog"
-    @save = "save" @close="close" >
-    </edit-dialogue>
   </div>
+
+  <edit-dialogue :show = "edit_show"
+  :default_data ="current_snl"
+  :default_tags = "current_tags"
+  ref = "edit_dialog"
+  @save = "save" @close="close" >
+  </edit-dialogue>
 </div>
 
 </template>
@@ -118,10 +119,11 @@ export default {
       },
       current_tags:[],
       edit_show:false,
-      description_show:false,
       snl_show:false,// 决定当前界面显示的是SNL列表，还是规则列表
+      rules_show:false,
       show_snls:[],//储存显示的SNL数组，要注意的是目录下所有的孩子的SNL,
-      show_rules:[]
+      show_rules:[],
+      rule_order:0,
     }
   },
   methods:{
@@ -153,6 +155,32 @@ export default {
       console.log(this.current_snl);
     },
 
+    _handleEdit(index, row){
+      //根据this.current_node和index 来找相应的规则下的SNL
+      console.log("in _handleEdit ")
+      console.log(this.current_node);
+      var target_rule = this.findRuleByIndex(this.current_node.children, index);
+      console.log("目标规则是：");
+      console.log(target_rule);
+      //this.handleEdit();
+    },
+    findRuleByIndex(arr, index){
+      for(var child of arr){
+        if(child.is_rule){
+          if(this.rule_order == index){
+            return child;
+          }
+          else{
+            this.rule_order++;
+          }
+        }
+        else{
+          this.getRules(child.children);
+        }
+      }
+      return -1;
+    },
+
     handleDelete(index, row){
       console.log("进入handleDelet函数");
       console.log("被删除的row.snl是" + row.snl);
@@ -166,58 +194,68 @@ export default {
     showList(current_node){
       console.log("进入show_list函数");
       console.log(current_node);
-      this.snl_show = true;
+      // this.snl_show = true;
       this.current_node = current_node;
       if(this.current_node.is_rule){
         //叶子节点处理
-        this.show_snls = current_node.snl_spl_pairs;
-        this.description_show = true;
+        this.snl_show = true;
+        this.rules_show = false;
+        // this.show_snls = current_node.snl_spl_pairs;
+        // this.description_show = true;
       }
       else{
         //目录节点处理
-        this.description_show = false;
-        this.show_snls = [];//首先清空
+        // this.description_show = false;
+        // this.show_snls = [];//首先清空
+        this.show_rules = [];
         this.getRules(current_node.children);
+        this.snl_show = false;
+        this.rules_show = true;
         // this.getShowSnls(this.current_node.children);
       }
     },
-    getShowSnls(arr){
-      //递归实现
-      // console.log("进入getShowSnls函数");
-      // console.log(arr);
-      for(var child of arr){
-        if(child.is_rule){
-          //this.show_snls.push();
-          // console.log("parent 是 ");
-          // console.log(arr);
-          this.show_snls = this.show_snls.concat(child.snl_spl_pairs);
-          // console.log("孩子规则节点是：");
-          // console.log(child);
-        }
-        else{
-          // console.log("孩子目录节点是：");
-          // console.log(child.children);
-          this.getShowSnls(child.children);
-        }
-      }
-      console.log("this.show_snls是:");
-      console.log(this.show_snls);
-    },
-    //
+    // getShowSnls(arr){
+    //   //递归实现
+    //   // console.log("进入getShowSnls函数");
+    //   // console.log(arr);
+    //   for(var child of arr){
+    //     if(child.is_rule){
+    //       //this.show_snls.push();
+    //       // console.log("parent 是 ");
+    //       // console.log(arr);
+    //       this.show_snls = this.show_snls.concat(child.snl_spl_pairs);
+    //       // console.log("孩子规则节点是：");
+    //       // console.log(child);
+    //     }
+    //     else{
+    //       // console.log("孩子目录节点是：");
+    //       // console.log(child.children);
+    //       this.getShowSnls(child.children);
+    //     }
+    //   }
+    //   console.log("this.show_snls是:");
+    //   console.log(this.show_snls);
+    // },
+    // //
     getRules(arr){
       for(var child of arr){
         if(child.is_rule){
           //this.show_snls.push();
           // console.log("parent 是 ");
           // console.log(arr);
-          this.show_rules.push(child.text);
+          var new_item = {};
+          new_item.text = child.text;
+          //因为每条规则被单击后都有index这么一个属性，所以不需要单独存储
+          // this.rule_order += 1;
+          // new_item.order = this.rule_order;
+          this.show_rules.push(new_item);
           // console.log("孩子规则节点是：");
           // console.log(child);
         }
         else{
           // console.log("孩子目录节点是：");
           // console.log(child.children);
-          this.getShowSnls(child.children);
+          this.getRules(child.children);
         }
       }
       console.log("this.rules是:");
@@ -257,7 +295,7 @@ export default {
   max-height: 70%;
   box-sizing: border-box;
   background-color: #F2F6FC;
-  padding:5% 10%;
+  padding:2% 2%;
 }
 
 #snl_container{
