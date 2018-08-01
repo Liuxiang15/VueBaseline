@@ -5,7 +5,7 @@
      shadow="hover"
      class="box-card">
       <div slot="header" class="clearfix">
-        <span>规则名:{{rule_snl.text}}</span>
+        <span>{{rule_snl.label}}{{rule_snl.text}}</span>
       </div>
       <div>
 

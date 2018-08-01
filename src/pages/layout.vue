@@ -132,6 +132,7 @@
             var new_item = {};
             new_item.text = child.text;
             new_item.order = this.rule_order;
+            new_item.label = child.order;
             new_item.snl = child.snl_spl_pairs;
             //因为每条规则被单击后都有index这么一个属性，所以不需要单独存储
             this.rule_order += 1;
