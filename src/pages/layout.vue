@@ -6,9 +6,12 @@
       </el-aside>
 
       <el-main>
+        <content-click v-show="content_click_show" :rule_snls="rule_snls"
+        @snlSaveFromContent="snlSaveFromContent"
+         ref="ruleLists"></content-click>
+
         <rule-click v-show="rule_click_show" ref="snlLists"></rule-click>
-        <content-click v-show="content_click_show" :rule_snls="rule_snls" ref="ruleLists"></content-click>
-        <div  v-show="rule_click_show" id="btn-group">
+        <div v-show="rule_click_show" id="btn-group">
           <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
           <el-button type="primary" icon="el-icon-download">
             <a :href="downloadLink()" style='text-decoration:none;color:inherit;'>
@@ -27,8 +30,8 @@
   import DemoHeader from '../components/demoHeader'
   import LeftTree from '../components/leftTree'
   import List from '../components/list'
-  import ruleClick from "../components/ruleClick"
-  import contentClick from "../components/contentClick"
+  import RuleClick from "../components/ruleClick"
+  import ContentClick from "../components/contentClick"
 
   export default {
     name: 'layout',
@@ -36,18 +39,19 @@
       DemoHeader,
       LeftTree,
       List,
-      ruleClick,
-      contentClick,
+      RuleClick,
+      ContentClick,
     },
     data() {
       return {
         //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
         current_node: {},
         meta_data: {},
-        rule_click_show:false,
-        content_click_show:false,
+        rule_click_show: false,
+        content_click_show: true,
         rule_snls:[],//存储当前目录(分类)下所有的规则及其对应的SNL语句数组
         rule_order:0,//存储单条规则在当下分类下的孩子排序
+        find_rule_order:0,
       }
     },
     created() {
@@ -84,8 +88,9 @@
         else{
 
           this.rule_order = 0;//记住每次获取目录下所有rule_snls的时候必须清0
+          this.rule_snls = [];
           this.getRuleSNLs(data.children);
-          // this.$refs.ruleLists.showRules(this.rule_snls);
+          this.$refs.ruleLists.showRules(this.rule_snls);
           this.rule_click_show = false;
           this.content_click_show = true;
         }
@@ -139,6 +144,31 @@
         console.log("in getRuleSNLs ");
         console.log(this.rule_snls);
     },
+
+    findTargetRule(arr, index_i){
+      for(var child of arr){
+        if(child.is_rule){
+          if(this.find_rule_order == index_i){
+              return child;
+          }
+          else{
+            this.find_rule_order++;
+          }
+        }
+        else{
+          this.findTargetRule(child.children);
+        }
+      }
+    },
+    snlSaveFromContent(new_data){
+      console.log("进入layout的的snlSaveFromContent函数");
+      console.log(new_data);
+      var target_rule = this.findTargetRule(this.current_node.children,new_data.parent_index)
+      console.log("要改动的规则就是：！！！！！！！！！！！！！！！！！！");
+      console.log(target_rule);
+      target_rule.snl_spl_pairs[new_data.index].snl = new_data.snl;
+      console.log("修改成功，请看测试");
+    }
   }
 }
 </script>

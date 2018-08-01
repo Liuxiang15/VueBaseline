@@ -36,9 +36,11 @@
     name:"editDialogue",
     props:[
       "show",
+      "parent"//存储它的父亲组件
     ],
 
     data() {
+
       return {
         dialogTableVisible: this.show,
         dialogFormVisible: false,
@@ -109,12 +111,22 @@
         temp.snl = this.input_snl;
         temp.spl = [].concat(this.default_data.spl);
         temp.index = this.default_data.index;
-        this.$emit('save', temp);
+        if(this.parent == "rule"){
+          this.$emit('save', temp);
+        }
+        else if(this.parent == "content"){
+          temp.parent_index = this.default_data.parent_index;
+          this.$emit('save', temp);
+        }
       },
 
       updateDefaultData(default_data){
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
+      },
+
+      snlSaveFromContent(new_data){
+
       },
       //遍历关键词数组返回词语类型,其实返回的数值就是数组中的下标，如果找不到，就返回最大下标+1，也就是this.key_words.length
       typeKeyWord(word){

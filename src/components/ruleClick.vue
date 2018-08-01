@@ -49,8 +49,10 @@
       </el-table>
       <el-button type="primary" icon="el-icon-edit" @click="newSNL">新建SNL语句</el-button>
 
-      <edit-dialogue :show = "edit_show"
+      <edit-dialogue
+        :show = "edit_show"
         ref = "edit_dialog"
+        :parent = "parent_name"
         @save = "save" @close="close" >
       </edit-dialogue>
     </div>
@@ -79,13 +81,18 @@ export default {
       text_area:"",
       current_node:{},
       edit_show:false,
-      current_snl:{}
+      current_snl:{},
+      parent_name:"rule"
     }
+  },
+
+  created(){
+    // console.log("进入ruleClick的create函数");
   },
   methods:{
     showList(current_node){
-      console.log("进入show_list函数");
-      console.log(current_node);
+      // console.log("进入show_list函数");
+      // console.log(current_node);
       this.current_node = current_node;
     },
 
