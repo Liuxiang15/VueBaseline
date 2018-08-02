@@ -191,7 +191,7 @@ export default {
   /* left: 20%; */
   padding-left: 20%;
   padding-right: 20%;
-  max-height: 40%;
+  max-height: 30%;
   width: 100%;
   box-sizing: border-box;
   /* background-color: #F2F6FC; */
@@ -211,7 +211,7 @@ export default {
 
 #snl_container{
   position: relative;
-  padding-top: 5%;
+  padding-top: 2%;
   padding-left: 5%;
   padding-right: 5%;
   width: 90%;
@@ -230,7 +230,7 @@ export default {
 #new-snl{
   position: relative;
   left: 85%;
-  top:50px;
+  top:20px;
 }
 /* p{
   text-align: center;
@@ -240,7 +240,7 @@ export default {
     /* width:80%;
     padding-left: 10%; */
     position: relative;
-    top:50px;
+    top:20px;
 }
 
 .el-table td {
@@ -263,6 +263,8 @@ export default {
 
 h2{
   text-align: center;
+  padding: 0 !important;
+  margin-top:0;
 }
 /* .el-tag{
   display:inline;
