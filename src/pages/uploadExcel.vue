@@ -1,50 +1,114 @@
 <template>
   <div class="app-container">
+
     <upload-excel-component :on-success='handleSuccess' :before-upload="beforeUpload"
                             ref="upload-excel-component"></upload-excel-component>
 
     <el-container>
-      <el-aside v-show="showUpload()">
-        <el-form label-width="100px">
-          <el-form-item v-for="(item,index) in tableDef" v-bind:label="tableHeader[index]">
-            <el-select v-model="tableDef[index]" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <!--<el-form-item label="类型">-->
-          <!--<el-select placeholder="请选择类定义">-->
-          <!--<el-option label="主语" value="subject"></el-option>-->
-          <!--<el-option label="条件" value="condition"></el-option>-->
-          <!--<el-option label="结论" value="conclusion"></el-option>-->
-          <!--</el-select>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="类型">-->
-          <!--<el-select placeholder="请选择类定义">-->
-          <!--<el-option label="主语" value="subject"></el-option>-->
-          <!--<el-option label="条件" value="condition"></el-option>-->
-          <!--<el-option label="结论" value="conclusion"></el-option>-->
-          <!--</el-select>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item label="类型">-->
-          <!--<el-select placeholder="请选择类定义">-->
-          <!--<el-option label="主语" value="subject"></el-option>-->
-          <!--<el-option label="条件" value="condition"></el-option>-->
-          <!--<el-option label="结论" value="conclusion"></el-option>-->
-          <!--</el-select>-->
-          <!--</el-form-item>-->
+      <el-aside v-show="showUpload()" style="width: 480px">
+        <el-form label-width="100px" label-position="left" v-for="(def,def_index) in templateDefs" style="padding: 5px">
+          <el-card v-show="def_index > 0">
+            <el-form-item label="逻辑关系">
+              <el-select v-model="def.relation">
+                <el-option key="and" label="并且"
+                           value="and"></el-option>
+                <el-option key="or" label="或者"
+                           value="or"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-card>
+
+          <el-card>
+            <el-form-item label="规则类型">
+              <el-select v-model="def.kind">
+                <el-option v-for="kind of templateKinds" :key="kind.key" :label="kind.value"
+                           :value="kind.key"></el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="主语" v-show="showPart(def.kind,'subject')">
+              <el-select v-model="def.subject" placeholder="未定义">
+                <el-option v-for="item of tableHeader" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="条件" v-for="(cond,index) in def.condition" v-show="showPart(def.kind,'condition')">
+
+
+              <el-select v-model="def.condition_connection[index]" v-show="index>0" placeholder="未定义">
+                <el-option key="and" label="并且"
+                           value="and"></el-option>
+                <el-option key="or" label="或者"
+                           value="or"></el-option>
+              </el-select>
+
+
+              <el-select v-model="def.condition[index]" placeholder="未定义">
+                <el-option v-for="item of tableHeader" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
+              <br/>
+              <el-button icon="el-icon-circle-plus-outline"
+                         @click="addSimple( def.condition,def.condition_connection,index)"></el-button>
+              <el-button icon="el-icon-remove-outline"
+                         @click="deleteSimple( def.condition,def.condition_connection,index)"
+                         v-show="def.condition.length>1"></el-button>
+            </el-form-item>
+
+
+            <el-form-item label="结论" v-for="(conclusion,index) in def.conclusion"
+                          v-show="showPart(def.kind,'conclusion')">
+
+
+              <el-select v-model="def.conclusion[index]" placeholder="未定义">
+                <el-option v-for="item of tableHeader" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
+
+              <br/>
+
+              <el-button icon="el-icon-circle-plus-outline"
+                         @click="addSimple( def.conclusion,def.conclusion_connection,index)"></el-button>
+              <el-button icon="el-icon-remove-outline"
+                         @click="deleteSimple( def.conclusion,def.conclusion_connection,index)"
+                         v-show="def.conclusion.length>1"></el-button>
+
+
+            </el-form-item>
+
+            <el-form-item>
+              <el-button @click="addDef(def_index)">增加</el-button>
+              <el-button @click="deleteDef(def_index)" v-show="templateDefs.length>1">删除</el-button>
+            </el-form-item>
+          </el-card>
+
         </el-form>
       </el-aside>
+
       <el-main>
-        <el-table :data="tableData" border highlight-current-row style="width: 100%">
-          <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item' empty-text=" "
-                           :render-header="renderHeader">
-          </el-table-column>
-        </el-table>
+
+        <!--<el-row>-->
+
+
+        <!--<el-form-item v-for="(item,index) in templateDefs" v-bind:label="tableHeader[index]">-->
+        <!--<el-select v-model="templateDefs[index]" placeholder="请选择">-->
+        <!--<el-option-->
+        <!--v-for="item in options"-->
+        <!--:key="item.value"-->
+        <!--:label="item.label"-->
+        <!--:value="item.value">-->
+        <!--</el-option>-->
+        <!--</el-select>-->
+        <!--</el-form-item>-->
+        <!--</el-form>-->
+
+        <!--</el-row>-->
+        <el-card>
+          <el-table :data="tableData" border highlight-current-row style="width: 100%">
+            <el-table-column v-for='item of tableHeader' :prop="item" :label="item" :key='item' empty-text=" "
+                             :render-header="renderHeader">
+            </el-table-column>
+          </el-table>
+
+        </el-card>
       </el-main>
 
     </el-container>
@@ -70,13 +134,23 @@
       return {
         tableData: [],
         tableHeader: [],
-        tableDef: [],
-        options: [
-          {value: 'subject', label: '主语'},
-          {value: 'condition', label: '条件'},
-          {value: 'conclusion', label: '结论'},
-          {value: 'exclusion', label: '不包含'}
-        ]
+        templateDefs: [],
+        templateKinds: [{key: 'if', value: '条件结论型'}, {key: 'regex', value: '命名规范型'}, {key: 'exists', value: '属性存在型'}],
+        showMask: {
+          'if': ['subject', 'condition', 'conclusion'],
+          'regex': ['subject', 'conclusion'],
+          'exists': ['subject', 'subject', 'conclusion']
+        }
+        // },
+        // defaultDef: {
+        //   kind: 'if',
+        //   relation: 'and',
+        //   subject: '',
+        //   condition: [''],
+        //   condition_connection: ['and'],
+        //   conclusion: [''],
+        //   conclusion_connection: ['and'],
+        // }
       }
     },
     // created() {
@@ -101,51 +175,66 @@
       handleSuccess({results, header}) {
         this.tableData = results
         this.tableHeader = header
-        this.tableDef = new Array(this.tableHeader.length).fill('exclusion')
+        this.templateDefs = [{
+          kind: 'if',
+          relation: 'and',
+          subject: '',
+          condition: [''],
+          condition_connection: ['and'],
+          conclusion: [''],
+          conclusion_connection: ['and'],
+        }]
 
       },
       handleImportExcel() {
         console.log("click on import excel")
 
 
-        let def_map = {'exclusion': [], 'subject': [], 'condition': [], 'conclusion': [],'classification':[]};
-        for (let index = 0; index < this.tableHeader.length; index++) {
-          def_map[this.tableDef[index]].push(this.tableHeader[index])
+        let def_map = {'exclusion': [], 'subject': '', 'condition': [], 'conclusion': [], 'classification': []};
+        for (let index = 0; index < this.templateDefs.length; index++) {
+          this.templateDefs[index] = Object.assign({}, def_map, this.templateDefs[index])
         }
 
-        this.$refs["upload-excel-component"].upload2Server(def_map)
+        this.$refs["upload-excel-component"].upload2Server(this.templateDefs)
       },
 
 
       renderHeader: function (createElement, {column, $index}) {
-        // debugger;
-
-        // console.log(column.label)
-        //
-        // return createElement('div', [
-        //   createElement('span', column.label),
-        //
-        //   createElement('el-select', [
-        //       createElement('el-option', '主语'),
-        //       createElement('el-option', '条件'),
-        //       createElement('el-option', '结论')
-        //     ]
-        //     // on: {
-        //     //   click: this.clickHandler
-        //     // },
-        //     // style: {
-        //     //   color: 'red',
-        //     //   fontSize: '14px'
-        //     // }
-        //   )
-        // ],' ')
-
         return column.label
       },
 
       showUpload() {
 
         return !!this.tableData && this.tableData.length;
+      },
+
+      addSimple(simples, relations, index) {
+        simples.splice(index + 1, 0, '');
+        relations.splice(index + 1, 0, 'and')
+      },
+
+      deleteSimple(simples, relations, index) {
+        simples.splice(index, 1);
+        relations.splice(index, 1)
+      },
+      addDef(index) {
+        this.templateDefs.splice(index + 1, 0, {
+          kind: 'if',
+          relation: 'and',
+          subject: '',
+          condition: [''],
+          condition_connection: ['and'],
+          conclusion: [''],
+          conclusion_connection: ['and'],
+        })
+      },
+      deleteDef(index) {
+        this.templateDefs.splice(index, 1)
+      },
+
+      showPart(kind, part) {
+        console.log(part)
+        return this.showMask[kind].indexOf(part) >= 0
       }
     },
 
@@ -158,6 +247,7 @@
   }
 
   .el-aside {
-    padding: 20px;
+    padding: 15px;
   }
+
 </style>
