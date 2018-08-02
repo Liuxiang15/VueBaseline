@@ -1,8 +1,8 @@
 <template>
 <div id="container">
   <div id="snl_box" v-show="snl_show">
-    <div id="text_container">
-      <h2>自然语言描述</h2>
+    <div id="description_container">
+      <h2>{{this.current_node.text}}的自然语言描述</h2>
       <el-input
         type="textarea"
         id="text_area"
@@ -25,43 +25,42 @@
             {{ tag }}
           </el-tag>
       </span>
-    <!--用于展示规则的列表-->
-    <el-table
-    :data="this.current_node.snl_spl_pairs"
-    style="width: 100%">
-      <el-table-column label="SNL语句">
-        <template slot-scope="scope">
-          <div slot="reference" class="name-wrapper">
-            <!-- <el-tag size="medium">{{ scope.row.snl }}</el-tag> -->
-            {{ scope.row.snl }}
-          </div>
-        </template>
+      <!--用于展示规则的列表-->
+      <el-table
+        :data="this.current_node.snl_spl_pairs"
+        style="width: 100%">
+        <el-table-column label="SNL语句">
+          <template slot-scope="scope">
+            <div slot="reference" class="name-wrapper">
+              <!-- <el-tag size="medium">{{ scope.row.snl }}</el-tag> -->
+              {{ scope.row.snl }}
+            </div>
+          </template>
 
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row) ">编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="handleEdit(scope.$index, scope.row) ">编辑</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-button type="primary" icon="el-icon-edit" @click="newItem">新建SNL语句</el-button>
+    </div>
+  </div>
 
-    <el-button type="primary" icon="el-icon-edit" @click="newItem">新建SNL语句</el-button>
-  </div>
-  </div>
-  <div id="rule_box" v-show="rules_show">
+  <!-- <div id="rule_box" v-show="rules_show">
     <el-table
     :data="show_rules"
     style="width: 100%">
       <el-table-column label="规则列表">
         <template slot-scope="scope">
           <div slot="reference" class="name-wrapper">
-            <!-- <el-tag size="large">{{ scope.row }}</el-tag> -->
             {{ scope.row.text }}
           </div>
         </template>
@@ -76,7 +75,7 @@
         </template>
       </el-table-column>
     </el-table>
-  </div>
+  </div> -->
 
   <edit-dialogue :show = "edit_show"
   :default_data ="current_snl"
@@ -127,20 +126,20 @@ export default {
     }
   },
   methods:{
-    handleEditText(){
-      console.log("enter handleEditText函数");
-      this.disable_flag = false;
-    },
-
-    saveText(){
-      // console.log("enter saveText 函数");
-      var newInfo = {};
-      var strId = this.list_data["id"].toString();
-      newInfo[strId] = {};
-      newInfo[strId].text = this.text_area;
-      //var node_datas = this.node_data.data;
-      //newInfo[strId].snl = node_datas[strId]["snl"];
-    },
+    // handleEditText(){
+    //   console.log("enter handleEditText函数");
+    //   this.disable_flag = false;
+    // },
+    //
+    // saveText(){
+    //   // console.log("enter saveText 函数");
+    //   var newInfo = {};
+    //   var strId = this.list_data["id"].toString();
+    //   newInfo[strId] = {};
+    //   newInfo[strId].text = this.text_area;
+    //   //var node_datas = this.node_data.data;
+    //   //newInfo[strId].snl = node_datas[strId]["snl"];
+    // },
 
     handleEdit(index, row){
       //3 触发父组件对话框弹出
@@ -291,7 +290,7 @@ export default {
   left: 15%;
 }
 
-#text_container{
+#description_container{
   max-height: 70%;
   box-sizing: border-box;
   background-color: #F2F6FC;
