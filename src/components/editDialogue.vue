@@ -19,8 +19,21 @@
           </el-form-item>
         </el-form>
       </div>
+      <el-alert  title="" v-show="right_show" type="success"
+        show-icon>
+        msg:{{this.check_result.msg}}
+      </el-alert>
+      <el-alert title="" v-show="wrong_show" type="error"
+        show-icon>
+        msg:{{this.check_result.msg}}
+        <br>
+        Output:{{this.check_result.output}}
+      </el-alert>
+
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="checkSNL"
+        >CheckOn</el-button>
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
       </div>
@@ -28,6 +41,7 @@
 </template>
 
 <script>
+  import {HOST} from '../utils/config'
   export default {
     // 1 dialogFormVisible决定了对话框是否显现，初始值在本组件里定义
     // 在layout.vue里实现了对该属性修改的函数
@@ -45,6 +59,9 @@
         dialogTableVisible: this.show,
         dialogFormVisible: false,
         default_data:{},
+        check_result:{},
+        right_show:false,
+        wrong_show:false,
         key_words : [
           // other:
           ["的", ".", "。"],
@@ -79,7 +96,8 @@
         ],
         formLabelWidth: '120px',
         snl_html:"",
-        input_snl:"hello",
+        input_snl:"",
+        snl_index:0,
         class_names:["other", "structure", "operation", "num_compare", "regex", "property_name", "logic_connect", "relation_compare", "four_operations", "quote", "common"]
       };
     },
@@ -107,22 +125,54 @@
 
       save() {
         // this.default_data.snl = this.input_snl;
+        console.log("enter save 函数");
         var temp = {};
         temp.snl = this.input_snl;
+        console.log("enter save 函数");
         temp.spl = [].concat(this.default_data.spl);
-        temp.index = this.default_data.index;
+        temp.index = this.snl_index;
         if(this.parent == "rule"){
-          this.$emit('save', temp);
+          this.$emit('save', temp, this.snl_index);
         }
         else if(this.parent == "content"){
           temp.parent_index = this.default_data.parent_index;
           this.$emit('save', temp);
         }
+        console.log("close save 函数");
+      },
+      checkSNL(){
+        this.$ajax({
+          //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+          // async:false,
+          // cache: false,
+          method: 'POST',
+          url: HOST + '/data/check_snl',
+          data: {"snl": this.input_snl},
+          // async: false  //要同步才能获取打返回的值
+        }).then(response => {
+          console.log("in editDialogue ");
+          console.log(response.data);
+          this.check_result = JSON.parse(response.data.data);
+          console.log("after check ");
+          console.log(this.check_result);
+          if(this.check_result.msg === "correct"){
+            this.right_show = true;
+            this.wrong_show = false;
+          }
+          else{
+            this.right_show = false;
+            this.wrong_show = true;
+          }
+        }).catch(function (err) {
+          console.log(err);
+        });
       },
 
-      updateDefaultData(default_data){
+      updateDefaultData(default_data, index){
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
+        this.snl_index = index;
+        console.log("in updateDefaultData snl_index = " + this.snl_index);
       },
 
       snlSaveFromContent(new_data){

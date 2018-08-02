@@ -132,6 +132,7 @@ export default {
     width: 480px;
   } */
   #ruleCards{
+    width: 100%;
     display: flex;
     flex-wrap:wrap;
     justify-content:space-around;

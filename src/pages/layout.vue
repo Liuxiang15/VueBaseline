@@ -6,19 +6,22 @@
       </el-aside>
 
       <el-main>
-        <content-click v-show="content_click_show" :rule_snls="rule_snls"
-        @snlSaveFromContent="snlSaveFromContent"
-         ref="ruleLists"></content-click>
 
-        <rule-click v-show="rule_click_show" ref="snlLists"></rule-click>
-        <div v-show="rule_click_show" id="btn-group">
+          <content-click v-show="content_click_show" :rule_snls="rule_snls"
+          @snlSaveFromContent="snlSaveFromContent"
+           ref="ruleLists"></content-click>
+          <rule-click v-show="rule_click_show" ref="snlLists"></rule-click>
+
+        <div id="btn-group">
           <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
           <el-button type="primary" icon="el-icon-download">
             <a :href="downloadLink()" style='text-decoration:none;color:inherit;'>
               下载SPL
             </a>
           </el-button>
+          <el-button id="ckeckout"  @click="checkAllSNLs">检查所有SNL语句</el-button>
         </div>
+
       </el-main>
     </el-container>
 </template>
@@ -47,7 +50,7 @@
         //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
         current_node: {},
         meta_data: {},
-        rule_click_show: false,
+        rule_click_show: true,
         content_click_show: true,
         rule_snls:[],//存储当前目录(分类)下所有的规则及其对应的SNL语句数组
         rule_order:0,//存储单条规则在当下分类下的孩子排序
@@ -95,8 +98,24 @@
           this.content_click_show = true;
         }
       },
+      checkAllSNLs(){
+        var id = this.$route.query.id;
+        this.$ajax({
+          //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+          method: 'POST',
+          url: HOST + '/data/check_snl_all',
+          data: {"_id": id},
+        }).then(response => {
+
+          console.log(response.data);
+        }).catch(function (err) {
+          console.log(err);
+        });
+      },
 
       snlSave() {
+        console.log("---------------------------------");
+        console.log(this.meta_data);
         this.$ajax({
           //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
           method: 'POST',
@@ -106,7 +125,7 @@
         }).then(response => {
           //node_data = response.data.nodedata;
           //6 路由跳转并传递lib的id， meta_data， node_data
-          // console.log(response.data);
+          console.log(response.data);
           alert("保存成功");
         }).catch(function (err) {
           console.log(err);
@@ -184,7 +203,7 @@
   }
 
   .el-header {
-    height: 10% !important;
+    /* height: 10% ; */
     /* 我们希望 header 采用固定的高度，只占用必须的空间 */
     /* 0 flex-grow, 0 flex-shrink, auto flex-basis */
     flex: 0 0 auto;
@@ -201,7 +220,7 @@
     /* width: 100%; */
     /* min-height: 90%;
     max-height: 90%; */
-    flex: 1 0 auto;
+    /* flex: 0 0 90%; */
     box-sizing: border-box;
   }
 
@@ -214,7 +233,8 @@
 
   .el-main {
     /* height: 100%; */
-    width:50%;
+    display: flex;
+    flex: 0 0 70%;
     box-sizing: border-box;
   }
 
@@ -238,6 +258,7 @@
 
   #btn-group {
     position: relative;
+    flex: 0 0  20%;
     left: 60%;
   }
 </style>

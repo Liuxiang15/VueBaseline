@@ -107,10 +107,10 @@ export default {
     snlEdit(index, row_data){
 
       this.current_snl = this.current_node.snl_spl_pairs[index];
-      this.current_snl.index = index;
+      // this.current_snl.index = index;
       console.log("this.current_snl是");
       console.log(this.current_snl);
-      this.$refs.edit_dialog.updateDefaultData(this.current_snl);
+      this.$refs.edit_dialog.updateDefaultData(this.current_snl, index);
       this.edit_show = true;
     },
 
@@ -133,8 +133,10 @@ export default {
     save(new_data){
       this.edit_show = false;
       console.log("进入ruleClick的save函数");
-      console.log(new_data.snl);
+      console.log(new_data);
+      console.log(this.current_node);
       this.current_node.snl_spl_pairs[new_data.index].snl = new_data.snl;
+      console.log(this.current_node);
     },
 
     close(){
@@ -145,6 +147,9 @@ export default {
 }
 </script>
 <style scoped>
+#snl_box{
+  width: 100%;
+}
 
 #description_container{
   max-height: 40%;

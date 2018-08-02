@@ -32,6 +32,12 @@
                 <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
                 <el-button @click.native ="editConfig(props.$index, props.row)">编辑config</el-button>
                 <el-button @click.native ="editAlias(props.$index, props.row)">编辑alias</el-button>
+                <el-button @click.native ="libDelete(props.$index, props.row)"
+                  type="danger"
+                >
+                  删除
+                </el-button>
+                <el-button @click.native ="libRename(props.$index, props.row)">重命名</el-button>
               </template>
               </el-table-column>
             </el-table>
@@ -39,6 +45,15 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <el-dialog title="规则库重命名" :visible.sync="rename_dialog_show">
+      <el-input v-model="new_libname">
+      </el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="danger" icon="el-icon-close" @click="closeDialog">关闭</el-button>
+        <el-button type="success" icon="el-icon-check" @click="saveRename">确定</el-button>
+      </div>
+    </el-dialog>
   </el-main>
 </template>
 
@@ -57,6 +72,9 @@ export default {
       //lib_names是存储包含id和snl_spl_pairs属性的字典的列表
       //lib_names_ids是包含lib_name和_id属性的字典的列表
       lib_names:[],
+      rename_dialog_show:false,
+      new_libname:"",
+      index:0,
     }
   },
 
@@ -167,6 +185,58 @@ export default {
 
     },
 
+    libDelete(index, data){
+      var id = "";
+      id = data._id;
+      this.lib_names.splice(index, 1);
+      console.log("id = " + id);
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'POST',
+        url:HOST+'/data/delete_metadata',
+        data: {"_id":id},
+      }).then(response=>{
+
+      }).catch(function(err){
+        console.log(err);
+      });
+    },
+    libRename(index, data){
+      this.index = index;
+      this.new_libname = this.lib_names[index].lib_name;
+      this.rename_dialog_show = true;
+    },
+    closeDialog(){
+      this.rename_dialog_show = false;
+    },
+
+    saveRename(){
+      // console.log(this.new_libname);
+      // console.log("FFFFFFFFFFFFFF");
+      // console.log(this.lib_names[this.index].lib_name );
+      this.rename_dialog_show = false;
+      this.lib_names[this.index].lib_name = this.new_libname;
+      // var data = {};
+      // data._id = this.lib_names[this.index]._id;
+      // data.lib_name = this.new_libname;
+      // data._id = this.lib_names[this.index].id;
+      //
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'POST',
+        data:{
+          "_id":this.lib_names[this.index]._id,
+          "lib_name":this.new_libname
+        },
+        url:HOST+'/data/change_lib_name'
+      }).then(response=>{
+        console.log(response.data);
+
+      }).catch(function(err){
+        console.log(err);
+      });
+    },
+
     editAlias(index, data){
 
       var id = "";
@@ -201,9 +271,9 @@ export default {
 
 <style lang="stylus" scoped>
 .container
-  width 50%
+  width 60%
   position relative
-  left 25%
+  left 20%
   .overview-panel
     width 100%
     .overview-content
