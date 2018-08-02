@@ -183,7 +183,7 @@ export default {
 /* #snl_box{
   width: 100%;
   /* border-top: 2px solid #DCDFE6; */
-/* } */ 
+/* } */
 
 #description_container{
 
@@ -214,7 +214,7 @@ export default {
   padding-top: 5%;
   padding-left: 5%;
   padding-right: 5%;
-  width: 80%;
+  width: 90%;
   max-height: 70%;
   box-sizing: border-box;
   border-top: 2px solid #DCDFE6;
@@ -243,9 +243,16 @@ export default {
     top:50px;
 }
 
-.el-table td, .el-table th.is-leaf {
+.el-table td {
   background-color: #EBEEF5;
   text-align: left;
+}
+
+.el-table th div {
+    padding-right: 10px;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
 }
 
 #btns{
