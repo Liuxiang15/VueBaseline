@@ -29,9 +29,9 @@
         >
           <el-option
             v-for="item in tag_options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item"
+            :label="item"
+            :value="item">
           </el-option>
         </el-select>
       </div>
@@ -167,13 +167,13 @@ export default {
       console.log(value);
       console.log("label 是" + this.label);
       //判断选中的标签是否已经存在标签中
-      if(this.current_node.tags.indexOf(this.tag_options[value].label) >= 0){
+      if(this.current_node.tags.indexOf(value) >= 0){
         console.log(value);
         console.log("标签已经存在于该规则中");
         alert("标签已经存在于该规则中");
       }
       else{
-        this.current_node.tags.push(this.tag_options[value].label);
+        this.current_node.tags.push(value);
       }
     },
   }

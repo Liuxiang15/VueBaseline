@@ -24,12 +24,11 @@
           <el-button type="primary" @click="manageLibTags">
             管理规则库标签
           </el-button>
-          <el-dialog title="管理标签" :visible.sync="tagsDialogShow">
-            <div>规则库标签：</div>
+          <el-dialog title="管理规则库标签" :visible.sync="tagsDialogShow">
             <el-tag  v-for = "(tag, index) in tag_options"
-              :key="tag.value" size="medium"  closable
+              :key="tag" size="medium"  closable
               @close="handleClose(tag)">
-              {{ tag.label }}
+              {{ tag }}
             </el-tag>
             <el-input
               class="input-new-tag"
@@ -41,16 +40,11 @@
               @blur="handleInputConfirm"
             >
             </el-input>
-            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+            <el-button v-else class="button-new-tag" size="small"
+              type="primary" icon="el-icon-edit"
+             @click="showInput">+ New Tag</el-button>
           </el-dialog>
-          <!-- <el-select v-model="value" filterable placeholder="规则库标签">
-            <el-option
-              v-for="item in tag_options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select> -->
+
           <el-button id="checkout" type="primary" @click="checkAllSNLs">检查所有SNL语句</el-button>
           <el-alert  title="" v-show="right_show" type="success"
             show-icon>
@@ -61,7 +55,6 @@
             msg:{{this.check_result.msg}}
             <br>
             <div v-for="info in check_result.output">
-            <!-- Output:{{this.check_result.output}} -->
             {{info}}
             </div>
           </el-alert>
@@ -124,12 +117,13 @@
         // console.log("in index response.data =  ");
         // console.log(response.data);
         this.meta_data = response.data;
-        for(var index in this.meta_data.metadata.tags){
-          var newtag = {
-            value:index,
-            label:this.meta_data.metadata.tags[index]
-          }
-          this.tag_options.push(newtag);
+        for(var tag of this.meta_data.metadata.tags){
+          // var newtag = {
+          //   value:index,
+          //   label:this.meta_data.metadata.tags[index]
+          // }
+          // this.tag_options.push(newtag);
+          this.tag_options.push(tag);
         }
 
 
@@ -191,10 +185,13 @@
         console.log("要删除的标签是：");
         console.log(tag);
         // this.current_node.tags.splice(this.current_node.tags.indexOf(tag), 1);
+        // this.tag_options.splice(this.tag_options.indexOf(tag), 1);
+        // this.meta_data.metadata.tags.splice(
+        //   this.meta_data.metadata.tags.indexOf(tag.label), 1
+        // );
         this.tag_options.splice(this.tag_options.indexOf(tag), 1);
         this.meta_data.metadata.tags.splice(
-          this.meta_data.metadata.tags.indexOf(tag.label), 1
-        );
+          this.meta_data.metadata.tags.indexOf(tag), 1);
       },
 
       manageLibTags(){
@@ -213,6 +210,7 @@
         let inputValue = this.inputValue;
         if (inputValue) {
           this.meta_data.metadata.tags.push(inputValue);
+          this.tag_options.push(inputValue);
         }
         this.inputVisible = false;
         this.inputValue = '';
