@@ -180,10 +180,10 @@ export default {
 }
 </script>
 <style scoped>
-#snl_box{
+/* #snl_box{
   width: 100%;
   /* border-top: 2px solid #DCDFE6; */
-}
+/* } */ 
 
 #description_container{
 

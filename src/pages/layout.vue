@@ -317,7 +317,8 @@
     text-align: center;
     line-height: 60px;
     box-sizing: border-box;
-    padding: 0 !important;
+    width: 100%;
+    /* padding: 0 !important; */
   }
 
   #main-content{
@@ -327,12 +328,23 @@
   }
 
   .el-container {
+    display: flex;
     height: 90%;
+    width: 100%;
     box-sizing: border-box;
+    overflow: hidden;
+    /* overflow: scroll;
+    &::-webkit-scrollbar{
+        background-color:transparent;
+    } */
+  }
+
+  ::-webkit-scrollbar{
+    display: none;
   }
 
   .el-aside {
-    min-width: 25%;
+    width: 25% !important;
     height: 100%;
     border-right: 2px solid #DCDFE6;
     /* background-color: #DCDFE6; */
@@ -340,7 +352,8 @@
 
   .el-main {
     /* height: 100%; */
-    display: flex;
+    width: 75% !important;
+    display: inline-flex;
     box-sizing: border-box;
 
   }
