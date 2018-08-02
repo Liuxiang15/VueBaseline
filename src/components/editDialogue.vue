@@ -132,7 +132,7 @@
         temp.spl = [].concat(this.default_data.spl);
         temp.index = this.snl_index;
         if(this.parent == "rule"){
-          this.$emit('save', temp, this.snl_index);
+          this.$emit('save', temp);
         }
         else if(this.parent == "content"){
           temp.parent_index = this.default_data.parent_index;

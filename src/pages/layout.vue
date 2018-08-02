@@ -6,12 +6,12 @@
       </el-aside>
 
       <el-main>
-
+        <div id="main-content">
           <content-click v-show="content_click_show" :rule_snls="rule_snls"
           @snlSaveFromContent="snlSaveFromContent"
            ref="ruleLists"></content-click>
           <rule-click v-show="rule_click_show" ref="snlLists"></rule-click>
-
+        </div>
         <div id="btn-group">
           <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
           <el-button type="primary" icon="el-icon-download">
@@ -19,7 +19,21 @@
               下载SPL
             </a>
           </el-button>
-          <el-button id="ckeckout"  @click="checkAllSNLs">检查所有SNL语句</el-button>
+          <el-button type="primary">新增标签</el-button>
+          <el-button id="checkout" type="primary" @click="checkAllSNLs">检查所有SNL语句</el-button>
+          <el-alert  title="" v-show="right_show" type="success"
+            show-icon>
+            msg:{{this.check_result.msg}}
+          </el-alert>
+          <el-alert title="" v-show="wrong_show" type="error"
+            show-icon>
+            msg:{{this.check_result.msg}}
+            <br>
+            <div v-for="info in check_result.output">
+            <!-- Output:{{this.check_result.output}} -->
+            {{info}}
+            </div>
+          </el-alert>
         </div>
 
       </el-main>
@@ -55,6 +69,9 @@
         rule_snls:[],//存储当前目录(分类)下所有的规则及其对应的SNL语句数组
         rule_order:0,//存储单条规则在当下分类下的孩子排序
         find_rule_order:0,
+        check_result:{},
+        right_show:false,
+        wrong_show:false,
       }
     },
     created() {
@@ -108,6 +125,15 @@
         }).then(response => {
 
           console.log(response.data);
+          this.check_result = JSON.parse(response.data.data);
+          if(this.check_result.msg === "correct"){
+            this.right_show = true;
+            this.wrong_show = false;
+          }
+          else{
+            this.right_show = false;
+            this.wrong_show = true;
+          }
         }).catch(function (err) {
           console.log(err);
         });
@@ -206,7 +232,8 @@
     /* height: 10% ; */
     /* 我们希望 header 采用固定的高度，只占用必须的空间 */
     /* 0 flex-grow, 0 flex-shrink, auto flex-basis */
-    flex: 0 0 auto;
+    /* flex: 0 1 auto; */
+    height: 10% ;
     background-color: #333;
     color: #333;
     text-align: center;
@@ -215,18 +242,19 @@
     padding: 0 !important;
   }
 
+  #main-content{
+      flex: 0 1 70%;
+      padding-right: 2%;
+      border-right: 2px solid #DCDFE6;;
+  }
+
   .el-container {
     height: 90%;
-    /* width: 100%; */
-    /* min-height: 90%;
-    max-height: 90%; */
-    /* flex: 0 0 90%; */
     box-sizing: border-box;
   }
 
   .el-aside {
     min-width: 25%;
-    max-width: 30%;
     height: 100%;
     background-color: #DCDFE6;
   }
@@ -234,18 +262,16 @@
   .el-main {
     /* height: 100%; */
     display: flex;
-    flex: 0 0 70%;
     box-sizing: border-box;
+
   }
-
-
 
   .el-textarea__inner {
     width: 100%;
   }
 
   .el-tag {
-    white-space: inherit !important;
+    white-space: inherit;
   }
 
   .el-tag--medium {
@@ -257,8 +283,16 @@
   }
 
   #btn-group {
+    display: inline-flex;
+    flex-direction: column;
     position: relative;
-    flex: 0 0  20%;
-    left: 60%;
+    left:5%;
+    top:5%;
+    flex: 0 0 10%;
+  }
+
+  button{
+    /* max-width: 50%; */
+    margin: 5%;
   }
 </style>

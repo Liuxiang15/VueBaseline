@@ -140,6 +140,7 @@ export default {
 
   .el-card {
       width: 40%;
+      margin-bottom: 5%;
   }
 
   a{

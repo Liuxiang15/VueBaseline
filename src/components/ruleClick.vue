@@ -1,11 +1,11 @@
 <template>
   <div id="snl_box">
     <div id="description_container">
-      <h2>{{this.current_node.text}}的自然语言描述</h2>
+      <h2>{{this.current_node.text}}自然语言描述</h2>
       <el-input
         type="textarea"
         id="text_area"
-        rows=6
+        rows=3
         v-model="current_node.description"
         v-bind:disabled= "disable_flag"
       >
@@ -24,9 +24,9 @@
         </el-tag>
       </div>
       <!--用于展示规则的列表-->
+      <el-button id="new-snl"type="primary" icon="el-icon-edit" @click="newSNL">新建SNL语句</el-button>
       <el-table
-        :data="this.current_node.snl_spl_pairs"
-        style="width: 100%">
+        :data="this.current_node.snl_spl_pairs">
         <el-table-column label="SNL语句">
           <template slot-scope="scope">
             <div slot="reference" class="name-wrapper">
@@ -47,7 +47,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-button type="primary" icon="el-icon-edit" @click="newSNL">新建SNL语句</el-button>
 
       <edit-dialogue
         :show = "edit_show"
@@ -152,27 +151,44 @@ export default {
 }
 
 #description_container{
+  position: relative;
+  left: 20%;
   max-height: 40%;
+  width: 60%;
   box-sizing: border-box;
   background-color: #F2F6FC;
   padding:2% 2%;
 }
 
 #snl_container{
+  position: relative;
+  padding-top: 5%;
+  padding-left: 5%;
+  padding-right: 5%;
+  width: 80%;
   max-height: 70%;
   box-sizing: border-box;
 }
 
 #tag-span{
   position: relative;
-  min-width: 30%;
-  max-width: 40%;
+  width: 80%;
   display: inline-flex;
   justify-content:space-around;
+}
+
+#new-snl{
+  position: relative;
+  left: 85%;
 }
 /* p{
   text-align: center;
 } */
+
+.el-table{
+    /* width:80%;
+    padding-left: 10%; */
+}
 
 .el-table td, .el-table th.is-leaf {
   background-color: #EBEEF5;
@@ -181,8 +197,10 @@ export default {
 
 #btns{
   position: relative;
-  width: 60%;
+  top:5%;
+  left:60%;
 }
+
 
 /* .el-tag{
   display:inline;
