@@ -10,16 +10,47 @@
           <content-click v-show="content_click_show" :rule_snls="rule_snls"
           @snlSaveFromContent="snlSaveFromContent"
            ref="ruleLists"></content-click>
-          <rule-click v-show="rule_click_show" ref="snlLists"></rule-click>
+          <rule-click
+            v-show="rule_click_show" ref="snlLists" :tag_options="tag_options">
+          </rule-click>
         </div>
         <div id="btn-group">
-          <el-button id="save_metadata" type="success" icon="el-icon-check" @click="snlSave">保存全部修改</el-button>
+          <el-button id="save_metadata" type="success" icon="el-icon-check" @click="metadataSend">保存全部修改</el-button>
           <el-button type="primary" icon="el-icon-download">
             <a :href="downloadLink()" style='text-decoration:none;color:inherit;'>
               下载SPL
             </a>
           </el-button>
-          <el-button type="primary">新增标签</el-button>
+          <el-button type="primary" @click="manageLibTags">
+            管理规则库标签
+          </el-button>
+          <el-dialog title="管理标签" :visible.sync="tagsDialogShow">
+            <div>规则库标签：</div>
+            <el-tag  v-for = "(tag, index) in tag_options"
+              :key="tag.value" size="medium"  closable
+              @close="handleClose(tag)">
+              {{ tag.label }}
+            </el-tag>
+            <el-input
+              class="input-new-tag"
+              v-if="inputVisible"
+              v-model="inputValue"
+              ref="saveTagInput"
+              size="small"
+              @keyup.enter.native="handleInputConfirm"
+              @blur="handleInputConfirm"
+            >
+            </el-input>
+            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+          </el-dialog>
+          <!-- <el-select v-model="value" filterable placeholder="规则库标签">
+            <el-option
+              v-for="item in tag_options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select> -->
           <el-button id="checkout" type="primary" @click="checkAllSNLs">检查所有SNL语句</el-button>
           <el-alert  title="" v-show="right_show" type="success"
             show-icon>
@@ -72,6 +103,11 @@
         check_result:{},
         right_show:false,
         wrong_show:false,
+        tag_options:[],
+        value:"",
+        tagsDialogShow:false,//为了展示tag对话框
+        inputVisible: false,
+        inputValue: '',//都是对话框的属性
       }
     },
     created() {
@@ -88,7 +124,16 @@
         // console.log("in index response.data =  ");
         // console.log(response.data);
         this.meta_data = response.data;
-      }).catch(function (err) {
+        for(var index in this.meta_data.metadata.tags){
+          var newtag = {
+            value:index,
+            label:this.meta_data.metadata.tags[index]
+          }
+          this.tag_options.push(newtag);
+        }
+
+
+        }).catch(function (err) {
         console.log(err);
       });
     },
@@ -97,6 +142,8 @@
         //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
         // console.log("enter showMsgFromChild函数");
         // console.log(data);
+        // console.log("---------------------------------------");
+        // console.log(this.meta_data);
         this.current_node = data;
         // console.log("in layout this.current_node  is ");
         // console.log(this.current_node);
@@ -114,11 +161,12 @@
           this.rule_click_show = false;
           this.content_click_show = true;
         }
+
+
       },
       checkAllSNLs(){
         var id = this.$route.query.id;
         this.$ajax({
-          //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
           method: 'POST',
           url: HOST + '/data/check_snl_all',
           data: {"_id": id},
@@ -139,7 +187,38 @@
         });
       },
 
-      snlSave() {
+      handleClose(tag){
+        console.log("要删除的标签是：");
+        console.log(tag);
+        // this.current_node.tags.splice(this.current_node.tags.indexOf(tag), 1);
+        this.tag_options.splice(this.tag_options.indexOf(tag), 1);
+        this.meta_data.metadata.tags.splice(
+          this.meta_data.metadata.tags.indexOf(tag.label), 1
+        );
+      },
+
+      manageLibTags(){
+        console.log(this.tag_options);
+        this.tagsDialogShow = true;
+      },
+
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.meta_data.metadata.tags.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
+      },
+
+      metadataSend() {
         console.log("---------------------------------");
         console.log(this.meta_data);
         this.$ajax({
@@ -213,7 +292,8 @@
       console.log(target_rule);
       target_rule.snl_spl_pairs[new_data.index].snl = new_data.snl;
       console.log("修改成功，请看测试");
-    }
+    },
+
   }
 }
 </script>
@@ -294,5 +374,21 @@
   button{
     /* max-width: 50%; */
     margin: 5%;
+  }
+
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
   }
 </style>

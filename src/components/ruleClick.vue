@@ -19,9 +19,21 @@
     <div id="snl_container">
       <div id="tag-span">
         <span>标签：</span>
-        <el-tag v-for = "(tag, index) in current_node.tags" :key="index" size="medium">
+        <el-tag  v-for = "(tag, index) in current_node.tags"
+          :key="tag" size="medium"  closable
+          @close="handleClose(tag)">
           {{ tag }}
         </el-tag>
+        <el-select v-model="label" filterable placeholder="新增规则库标签"
+          @change="selectTag(label)"
+        >
+          <el-option
+            v-for="item in tag_options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </div>
       <!--用于展示规则的列表-->
       <el-button id="new-snl"type="primary" icon="el-icon-edit" @click="newSNL">新建SNL语句</el-button>
@@ -65,6 +77,7 @@ import {HOST} from '../utils/config'
 
 export default {
 
+  props:["tag_options"],
   components:{
     editDialogue,
   },
@@ -81,7 +94,8 @@ export default {
       current_node:{},
       edit_show:false,
       current_snl:{},
-      parent_name:"rule"
+      parent_name:"rule",
+      label:""//v-model的值为当前被选中的el-option的 value 属性值
     }
   },
 
@@ -142,7 +156,27 @@ export default {
       this.edit_show = false;
     },
 
-}
+    handleClose(tag){
+      console.log("要删除的标签是：");
+      console.log(tag);
+      this.current_node.tags.splice(this.current_node.tags.indexOf(tag), 1);
+    },
+
+    selectTag(value){
+      console.log("被选中的标签是：");
+      console.log(value);
+      console.log("label 是" + this.label);
+      //判断选中的标签是否已经存在标签中
+      if(this.current_node.tags.indexOf(this.tag_options[value].label) >= 0){
+        console.log(value);
+        console.log("标签已经存在于该规则中");
+        alert("标签已经存在于该规则中");
+      }
+      else{
+        this.current_node.tags.push(this.tag_options[value].label);
+      }
+    },
+  }
 }
 </script>
 <style scoped>
@@ -172,7 +206,7 @@ export default {
 
 #tag-span{
   position: relative;
-  width: 80%;
+  width: 100%;
   display: inline-flex;
   justify-content:space-around;
 }
@@ -180,6 +214,7 @@ export default {
 #new-snl{
   position: relative;
   left: 85%;
+  top:50px;
 }
 /* p{
   text-align: center;
@@ -188,6 +223,8 @@ export default {
 .el-table{
     /* width:80%;
     padding-left: 10%; */
+    position: relative;
+    top:50px;
 }
 
 .el-table td, .el-table th.is-leaf {
