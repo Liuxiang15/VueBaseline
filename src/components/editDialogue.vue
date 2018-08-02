@@ -214,20 +214,46 @@
 </script>
 <style>
 
-.other, .structure, .operation {
-  color: red;
+.other{
 
 }
 
-.num_compare, .regex,  .property_name  {
+.structure{
+    color: red;
+}
+
+.operation{
+    color:red;
+}
+
+
+.num_compare {
+  color: blue;
+
+}
+.regex{
+
+}
+.property_name{
+
+}
+
+.logic_connect {
   color: blue;
 
 }
 
-.logic_connect, .relation_compare,.four_operations, .quote {
-  color: purple;
-  background-color: yellow;
-}
+.relation_compare{
+   color:blue;
+ }
+
+ .four_operations{
+
+ }
+
+ .quote{
+
+ }
 
 .common{
   color:black;
@@ -243,6 +269,7 @@
   height: 100%;
   resize: vertical;
   padding: 5px 15px;
+  margin-bottom: 5%;
   line-height: 1.5;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
