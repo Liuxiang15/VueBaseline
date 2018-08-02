@@ -330,7 +330,7 @@ span{
   height:100%;
 }
 .el-tree{
-  background-color: #DCDFE6;
+  /* background-color: #DCDFE6; */
   height: 100%;
   width: 100%;
 }

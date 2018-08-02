@@ -182,16 +182,31 @@ export default {
 <style scoped>
 #snl_box{
   width: 100%;
+  /* border-top: 2px solid #DCDFE6; */
 }
 
 #description_container{
+
   position: relative;
-  left: 20%;
+  /* left: 20%; */
+  padding-left: 20%;
+  padding-right: 20%;
   max-height: 40%;
-  width: 60%;
+  width: 100%;
   box-sizing: border-box;
-  background-color: #F2F6FC;
+  /* background-color: #F2F6FC; */
   padding:2% 2%;
+  border-bottom: 2px solid #DCDFE6;
+}
+
+/* #text_area{
+  max-width: 60% !important;
+} */
+
+.el-textarea{
+  position: relative;
+  width: 60%;
+  left: 20%;
 }
 
 #snl_container{
@@ -202,6 +217,7 @@ export default {
   width: 80%;
   max-height: 70%;
   box-sizing: border-box;
+  border-top: 2px solid #DCDFE6;
 }
 
 #tag-span{
@@ -235,10 +251,12 @@ export default {
 #btns{
   position: relative;
   top:5%;
-  left:60%;
+  left:80%;
 }
 
-
+h2{
+  text-align: center;
+}
 /* .el-tag{
   display:inline;
 } */

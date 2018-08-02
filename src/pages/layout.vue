@@ -323,7 +323,7 @@
   #main-content{
       flex: 0 1 70%;
       padding-right: 2%;
-      border-right: 2px solid #DCDFE6;;
+      border-right: 2px solid #DCDFE6;
   }
 
   .el-container {
@@ -334,7 +334,8 @@
   .el-aside {
     min-width: 25%;
     height: 100%;
-    background-color: #DCDFE6;
+    border-right: 2px solid #DCDFE6;
+    /* background-color: #DCDFE6; */
   }
 
   .el-main {
@@ -344,9 +345,7 @@
 
   }
 
-  .el-textarea__inner {
-    width: 100%;
-  }
+
 
   .el-tag {
     white-space: inherit;
