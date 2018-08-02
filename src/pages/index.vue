@@ -32,11 +32,7 @@
                 <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
                 <el-button @click.native ="editConfig(props.$index, props.row)">编辑config</el-button>
                 <el-button @click.native ="editAlias(props.$index, props.row)">编辑alias</el-button>
-                <el-button @click.native ="libDelete(props.$index, props.row)"
-                  type="danger"
-                >
-                  删除
-                </el-button>
+                <el-button type="danger" @click.native ="libDelete(props.$index, props.row)">删除</el-button>
                 <el-button @click.native ="libRename(props.$index, props.row)">重命名</el-button>
               </template>
               </el-table-column>
