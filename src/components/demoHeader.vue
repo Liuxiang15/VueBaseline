@@ -6,11 +6,6 @@
     mode="horizontal"
     :router="true">
       <el-menu-item calss="item" index="/">主页面</el-menu-item>
-      <el-submenu index="/">
-        <template slot="title">规则页面</template>
-        <!--<el-menu-item index="/">menu-item-2-1</el-menu-item>-->
-      
-      </el-submenu>
     </el-menu>
   </el-header>
 </template>
@@ -40,6 +35,8 @@
   margin-bottom 0px
   .menu
     margin auto
+    .el-menu-item
+      font-size 24px
 
 
 

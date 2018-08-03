@@ -7,7 +7,7 @@ const GET_CONFIG_API = HOST+'/config/get_config'
 const CREATE_LIB_API = HOST+'/data/create_metadata'
 const LIB_DELETE_API = HOST+'/data/delete_metadata'
 const LIBNAME_CHANGE_API = HOST+'/data/change_lib_name'
-
+const GET_METADAtA_BYID_API = HOST + '/data/get_metadata'
 
 export function findLibList(callback){
   return axios.get(DATA_INDEX_API).then(callback);
@@ -23,4 +23,8 @@ export function _libDelete(post_data){
 
 export function changeLibName(post_data){
   return axios.post(LIBNAME_CHANGE_API, post_data);
+}
+
+export function getMetadataById(post_data, callback){
+  return axios.post(GET_METADAtA_BYID_API, post).then(callback);
 }

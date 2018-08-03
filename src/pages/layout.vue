@@ -90,6 +90,9 @@
   import RuleClick from "../components/ruleClick"
   import ContentClick from "../components/contentClick"
 
+
+  import {getMetadataById} from '../api/rulelib'
+
   export default {
     name: 'layout',
     components: {
@@ -104,7 +107,7 @@
         //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录和snl的json内容
         current_node: {},
         meta_data: {},
-        rule_click_show: true,
+        rule_click_show: false,
         content_click_show: true,
         rule_snls:[],//存储当前目录(分类)下所有的规则及其对应的SNL语句数组
         rule_order:0,//存储单条规则在当下分类下的孩子排序
@@ -125,6 +128,8 @@
       // console.log("传参id = ");
       // console.log(id);
       // console.log("in layout create metadata = ");
+
+
       this.$ajax({
         //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
         method: 'POST',
@@ -134,7 +139,7 @@
           this.meta_data = response.data;
           for(var tag of this.meta_data.metadata.tags){
           this.tag_options.push(tag);
-        }
+          }
         }).catch(function (err) {
         console.log(err);
       });

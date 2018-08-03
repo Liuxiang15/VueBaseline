@@ -132,16 +132,19 @@
 
       save() {
         // this.default_data.snl = this.input_snl;
-        console.log("enter save 函数");
+        //this.current_snl.index
         var temp = {};
         temp.snl = this.input_snl;
         console.log("enter save 函数");
+        console.log(temp);
         temp.spl = [].concat(this.default_data.spl);
+        console.log(this.snl_index);
         temp.index = this.snl_index;
         if(this.parent == "rule"){
           this.$emit('save', temp);
         }
         else if(this.parent == "content"){
+          console.log("PPPPPPPPPPPPPPPPPPPP");
           temp.parent_index = this.default_data.parent_index;
           this.$emit('save', temp);
         }
@@ -224,7 +227,7 @@
             _class="attribute";
             this.attrbute_flag = false;
           }
-          
+
           if(word == "的"){
             //两者关系是互斥的
             this.attrbute_flag = true;

@@ -68,9 +68,9 @@ export default {
     cardClick(e){
       // var e=e||window.event;
       // var tg=e.target||e.srcElement;
-      console.log("被点击的card是： ");
-      // console.log(tg);
-      console.log(e);
+      // console.log("被点击的card是： ");
+      // // console.log(tg);
+      // console.log(e);
     },
     getDom(event){
       console.log("被点击的card是： ");
@@ -86,9 +86,9 @@ export default {
       console.log(index);
       console.log(row_data);
       this.current_snl = row_data;
-      this.current_snl.index = index;
+      // this.current_snl.index = index;
       this.current_snl.parent_index = index_i;
-      this.$refs.edit_dialog.updateDefaultData(this.current_snl);
+      this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, []);
       this.edit_show = true;
       // alert("hello");
     },
@@ -96,8 +96,8 @@ export default {
     save(new_data){
       this.edit_show = false;
       console.log("进入contentrClick的save函数");
+      console.log(new_data);
       this.$emit('snlSaveFromContent', new_data);
-
       // console.log(new_data.snl);
       // this.current_node.snl_spl_pairs[new_data.index].snl = new_data.snl;
     },
