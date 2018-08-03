@@ -1,8 +1,7 @@
 <template>
-    <el-dialog title="弹出对话框" :visible.sync="dialogFormVisible">
+    <el-dialog title="编辑SNL" :visible.sync="dialogFormVisible">
 
       <div id="html_div" v-html="this.snl_html"></div>
-
 
       <el-input
         type="textarea"
@@ -20,9 +19,21 @@
           </el-form-item>
         </el-form>
       </div>
+      <el-alert  title="" v-show="right_show" type="success"
+        show-icon>
+        msg:{{this.check_result.msg}}
+      </el-alert>
+      <el-alert title="" v-show="wrong_show" type="error"
+        show-icon>
+        msg:{{this.check_result.msg}}
+        <br>
+        Output:{{this.check_result.output}}
+      </el-alert>
+
 
       <div slot="footer" class="dialog-footer">
-
+        <el-button @click="checkSNL"
+        >CheckOn</el-button>
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
       </div>
@@ -30,6 +41,7 @@
 </template>
 
 <script>
+  import {HOST} from '../utils/config'
   export default {
     // 1 dialogFormVisible决定了对话框是否显现，初始值在本组件里定义
     // 在layout.vue里实现了对该属性修改的函数
@@ -37,13 +49,19 @@
     //snl_html是snl的HTML版本，比如把关键词用span包围
     name:"editDialogue",
     props:[
-      "show", "default_data",
+      "show",
+      "parent"//存储它的父亲组件
     ],
 
     data() {
+
       return {
         dialogTableVisible: this.show,
         dialogFormVisible: false,
+        default_data:{},
+        check_result:{},
+        right_show:false,
+        wrong_show:false,
         key_words : [
           // other:
           ["的", ".", "。"],
@@ -78,7 +96,8 @@
         ],
         formLabelWidth: '120px',
         snl_html:"",
-        input_snl:"hello",
+        input_snl:"",
+        snl_index:0,
         class_names:["other", "structure", "operation", "num_compare", "regex", "property_name", "logic_connect", "relation_compare", "four_operations", "quote", "common"]
       };
     },
@@ -105,12 +124,59 @@
       },
 
       save() {
-        this.$emit('save', this.default_data);
+        // this.default_data.snl = this.input_snl;
+        console.log("enter save 函数");
+        var temp = {};
+        temp.snl = this.input_snl;
+        console.log("enter save 函数");
+        temp.spl = [].concat(this.default_data.spl);
+        temp.index = this.snl_index;
+        if(this.parent == "rule"){
+          this.$emit('save', temp);
+        }
+        else if(this.parent == "content"){
+          temp.parent_index = this.default_data.parent_index;
+          this.$emit('save', temp);
+        }
+        console.log("close save 函数");
+      },
+      checkSNL(){
+        this.$ajax({
+          //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+          // async:false,
+          // cache: false,
+          method: 'POST',
+          url: HOST + '/data/check_snl',
+          data: {"snl": this.input_snl},
+          // async: false  //要同步才能获取打返回的值
+        }).then(response => {
+          console.log("in editDialogue ");
+          console.log(response.data);
+          this.check_result = JSON.parse(response.data.data);
+          console.log("after check ");
+          console.log(this.check_result);
+          if(this.check_result.msg === "correct"){
+            this.right_show = true;
+            this.wrong_show = false;
+          }
+          else{
+            this.right_show = false;
+            this.wrong_show = true;
+          }
+        }).catch(function (err) {
+          console.log(err);
+        });
       },
 
-      updateDefaultData(default_data){
+      updateDefaultData(default_data, index){
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
+        this.snl_index = index;
+        console.log("in updateDefaultData snl_index = " + this.snl_index);
+      },
+
+      snlSaveFromContent(new_data){
+
       },
       //遍历关键词数组返回词语类型,其实返回的数值就是数组中的下标，如果找不到，就返回最大下标+1，也就是this.key_words.length
       typeKeyWord(word){
@@ -148,20 +214,46 @@
 </script>
 <style>
 
-.other, .structure, .operation {
-  color: red;
+.other{
 
 }
 
-.num_compare, .regex,  .property_name  {
+.structure{
+    color: red;
+}
+
+.operation{
+    color:red;
+}
+
+
+.num_compare {
+  color: blue;
+
+}
+.regex{
+
+}
+.property_name{
+
+}
+
+.logic_connect {
   color: blue;
 
 }
 
-.logic_connect, .relation_compare,.four_operations, .quote {
-  color: purple;
-  background-color: yellow;
-}
+.relation_compare{
+   color:blue;
+ }
+
+ .four_operations{
+
+ }
+
+ .quote{
+
+ }
 
 .common{
   color:black;
@@ -177,6 +269,7 @@
   height: 100%;
   resize: vertical;
   padding: 5px 15px;
+  margin-bottom: 5%;
   line-height: 1.5;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
