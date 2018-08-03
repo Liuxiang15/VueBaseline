@@ -40,6 +40,7 @@
   box-shadow 0 1px 1px rgba(0,0,0,.08)
   z-index 999
   padding 0
+  margin-bottom 0px
   .menu
     margin auto
     left 25%
