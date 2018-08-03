@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="编辑SNL" :visible.sync="dialogFormVisible">
+    <el-dialog title="在线编辑SNL" :visible.sync="dialogFormVisible">
 
       <div id="html_div" v-html="this.snl_html"></div>
 
@@ -32,8 +32,8 @@
 
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="checkSNL"
-        >CheckOn</el-button>
+        <el-button type="primary" @click="checkSNL"
+        >检查</el-button>
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
       </div>
@@ -50,7 +50,8 @@
     name:"editDialogue",
     props:[
       "show",
-      "parent"//存储它的父亲组件
+      "parent",//存储它的父亲组件
+      // "config_keys"
     ],
 
     data() {
@@ -62,6 +63,7 @@
         check_result:{},
         right_show:false,
         wrong_show:false,
+        attrbute_flag:false,
         key_words : [
           // other:
           ["的", ".", "。"],
@@ -92,13 +94,18 @@
           // four_operations:
           ["+","-","*","/"],
           // quote:
-          ["'", '"', '“','”']
+          ["'", '"', '“','”'],
+          //subject
+
         ],
         formLabelWidth: '120px',
         snl_html:"",
         input_snl:"",
         snl_index:0,
-        class_names:["other", "structure", "operation", "num_compare", "regex", "property_name", "logic_connect", "relation_compare", "four_operations", "quote", "common"]
+        class_names:["other", "structure", "operation", "num_compare", "regex", "property_name", "logic_connect", "relation_compare", "four_operations", "quote", "subject","common"],
+        newline_words:["如果","if","那么","then"],//需要换行的word
+        line_order:1,//存储当前编辑的行数,
+        config_keys:[],
       };
     },
     created(){
@@ -168,11 +175,14 @@
         });
       },
 
-      updateDefaultData(default_data, index){
+      updateDefaultData(default_data, index, config_keys){
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
         this.snl_index = index;
         console.log("in updateDefaultData snl_index = " + this.snl_index);
+        this.key_words.push(config_keys);
+        console.log(config_keys);
+        console.log(this.key_words);
       },
 
       snlSaveFromContent(new_data){
@@ -197,10 +207,29 @@
           var type = this.typeKeyWord(word);
           var str = "";
           var _class = "";
-          if(word == "那么" || word == "then"){
+          if(this.newline_words.indexOf(word) != -1){
+            // if(this.line_order == 1){
+            //     this.line_order += 1;
+            // }
+            // else{
+            //   str += "<br/>";
+            //   this.line_order += 1;
+            // }
             str += "<br/>";
           }
+
           _class = this.class_names[type];
+
+          if(this.attrbute_flag){
+            _class="attribute";
+            this.attrbute_flag = false;
+          }
+          
+          if(word == "的"){
+            //两者关系是互斥的
+            this.attrbute_flag = true;
+          }
+
 
           str += '<span class="' + _class + '">' + word + '</span>';
           snl_html += str;
@@ -255,10 +284,16 @@
 
  }
 
+.subject{
+  color:red;
+}
 .common{
   color:black;
 }
 
+.attribute{
+  color:blue;
+}
 
 .el-dialog__headerbtn .el-dialog__close {
     color: #909399;

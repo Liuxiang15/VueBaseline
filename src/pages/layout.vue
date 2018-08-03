@@ -11,10 +11,19 @@
           @snlSaveFromContent="snlSaveFromContent"
            ref="ruleLists"></content-click>
           <rule-click
-            v-show="rule_click_show" ref="snlLists" :tag_options="tag_options">
+            v-show="rule_click_show" ref="snlLists"
+            :id="this.$route.query.id"
+            :tag_options="tag_options"
+            :config_keys="config_keys"
+            >
           </rule-click>
         </div>
         <div id="btn-group">
+
+          <el-button @click = "showImportExcel()" icon="el-icon-upload">
+            Excel导入
+          </el-button>
+
           <el-button id="save_metadata" type="success" icon="el-icon-check" @click="metadataSend">保存全部修改</el-button>
           <el-button type="primary" icon="el-icon-download">
             <a :href="downloadLink()" style='text-decoration:none;color:inherit;'>
@@ -46,6 +55,9 @@
           </el-dialog>
 
           <el-button id="checkout" type="primary" @click="checkAllSNLs">检查所有SNL语句</el-button>
+
+
+
           <el-alert  title="" v-show="right_show" type="success"
             show-icon>
             msg:{{this.check_result.msg}}
@@ -101,6 +113,7 @@
         tagsDialogShow:false,//为了展示tag对话框
         inputVisible: false,
         inputValue: '',//都是对话框的属性
+        config_keys:[],//存储config里key便于高亮
       }
     },
     created() {
@@ -114,20 +127,26 @@
         url: HOST + '/data/get_metadata',
         data: {"_id": id},
       }).then(response => {
-        // console.log("in index response.data =  ");
-        // console.log(response.data);
-        this.meta_data = response.data;
-        for(var tag of this.meta_data.metadata.tags){
-          // var newtag = {
-          //   value:index,
-          //   label:this.meta_data.metadata.tags[index]
-          // }
-          // this.tag_options.push(newtag);
+          this.meta_data = response.data;
+          for(var tag of this.meta_data.metadata.tags){
           this.tag_options.push(tag);
         }
-
-
         }).catch(function (err) {
+        console.log(err);
+      });
+
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'POST',
+        data:{"_id":id},
+        url:HOST+'/config/get_config'
+      }).then(response=>{
+        // console.log(response.data);
+        for(var config of response.data.config.config_list){
+          this.config_keys.push(config.key);
+        }
+        // console.log(this.config_keys);
+      }).catch(function(err){
         console.log(err);
       });
     },
@@ -209,8 +228,13 @@
       handleInputConfirm() {
         let inputValue = this.inputValue;
         if (inputValue) {
-          this.meta_data.metadata.tags.push(inputValue);
-          this.tag_options.push(inputValue);
+          if(this.tag_options.indexOf(inputValue) != -1){
+            alert("你新添加的标签已存在于规则库中，请重新添加");
+          }
+          else{
+            this.meta_data.metadata.tags.push(inputValue);
+            this.tag_options.push(inputValue);
+          }
         }
         this.inputVisible = false;
         this.inputValue = '';
@@ -237,6 +261,17 @@
       downloadLink() {
         return HOST + '/data/download_spl_file/' + this.$route.query.id
       },
+      showImportExcel() {
+
+        this.$router.push({
+          path: '/importExcel',
+          props: true,
+          query:{
+            metadata_id:this.$route.query.id
+          }
+        });
+      },
+
       showMenu() {
         this.menu_show = true;
         // console.log("enter showMenu函数");

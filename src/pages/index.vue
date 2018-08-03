@@ -133,8 +133,8 @@ export default {
       var data = {"_id":id};
 
       this.$ajax({
-      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
         method:'POST',
+        data:data,
         url:HOST+'/config/get_config'
       }).then(response=>{
         console.log(response.data);

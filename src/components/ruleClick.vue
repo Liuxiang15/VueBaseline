@@ -64,6 +64,7 @@
         :show = "edit_show"
         ref = "edit_dialog"
         :parent = "parent_name"
+        :config_keys="config_keys"
         @save = "save" @close="close" >
       </edit-dialogue>
     </div>
@@ -77,7 +78,8 @@ import {HOST} from '../utils/config'
 
 export default {
 
-  props:["tag_options"],
+  //id是用来查询规则库的标识
+  props:["tag_options", "id", "config_keys"],
   components:{
     editDialogue,
   },
@@ -107,6 +109,22 @@ export default {
       // console.log("进入show_list函数");
       // console.log(current_node);
       this.current_node = current_node;
+      console.log("id is --------------------------------");
+
+      console.log(this.id);
+      // this.$ajax({
+      // //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+      //   method:'POST',
+      //   data:{"_id":this.id},
+      //   url:HOST+'/config/get_config'
+      // }).then(response=>{
+      //   console.log("in editDialogue get config is ")
+      //   console.log(response.data);
+      //
+      // }).catch(function(err){
+      //   console.log(err);
+      // });
+
     },
 
     editDescription(){
@@ -123,7 +141,8 @@ export default {
       // this.current_snl.index = index;
       console.log("this.current_snl是");
       console.log(this.current_snl);
-      this.$refs.edit_dialog.updateDefaultData(this.current_snl, index);
+      console.log(this.config_keys);
+      this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, this.config_keys);
       this.edit_show = true;
     },
 

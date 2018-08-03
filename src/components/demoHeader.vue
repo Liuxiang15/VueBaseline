@@ -9,9 +9,7 @@
       <el-submenu index="/">
         <template slot="title">规则页面</template>
         <!--<el-menu-item index="/">menu-item-2-1</el-menu-item>-->
-        <el-menu-item index="/":route="{path:'/importExcel?metadata_id='+importExcelPath()}" v-if="showExcelImport()">
-          Excel导入
-        </el-menu-item>
+      
       </el-submenu>
     </el-menu>
   </el-header>
@@ -21,9 +19,7 @@
   export default {
     name: 'DemoHeader',
     methods: {
-      showExcelImport: function () {
-        return this.$route.path === '/data';
-      },
+
 
       importExcelPath: function () {
         return this.$route.query.id;
@@ -43,7 +39,7 @@
   padding 0
   .menu
     margin auto
-  
+
 
 
 
