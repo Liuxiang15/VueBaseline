@@ -8,12 +8,9 @@
         <span>规则名:{{rule_snl.text}}</span>
       </div>
       <div>
-
         <el-table :data="rule_snl.snl">
           <el-table-column label="SNL语句">
             <template slot-scope="scope">
-              <!-- <div slot="reference" class="name-wrapper" v-on:click="snlEdit(scope.$index, scope.row)
-              > -->
               <a
                 href="javascript:void(0);"
                 v-on:click="turnToSNLEdit(scope.$index, scope.row, index, $event)">
@@ -65,31 +62,31 @@ export default {
       console.log(rule_snls);
     },
 
-    cardClick(e){
-      // var e=e||window.event;
-      // var tg=e.target||e.srcElement;
-      // console.log("被点击的card是： ");
-      // // console.log(tg);
-      // console.log(e);
-    },
     getDom(event){
       console.log("被点击的card是： ");
       console.log(event.target);
     },
 
-    turnToSNLEdit(index, row_data, index_i, event){
-      console.log("index");
-      console.log(index_i);
-      console.log("in contentClick.vue ");
-      console.log(event.target);
-      console.log(event.currentTarget);
-      console.log(index);
+    turnToSNLEdit(index, row_data, parent_index, event){
+      // console.log("in turnToSNLEdit this.current_snl  是：");
+      console.log("rowdata 是");
       console.log(row_data);
-      this.current_snl = row_data;
+      // this.current_snl = row_data;    //z!!!!!这个赋值语句会改变rule_snls
+        this.current_snl.snl = row_data.snl;
+        this.current_snl.spl = [].concat(row_data.spl);
+
       // this.current_snl.index = index;
-      this.current_snl.parent_index = index_i;
+      this.current_snl.parent_index = parent_index;
+      console.log(this.current_snl);
       this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, []);
       this.edit_show = true;
+      // console.log("index");
+      // console.log(index_i);
+      // console.log("in contentClick.vue ");
+      // console.log(event.target);
+      // console.log(event.currentTarget);
+      // console.log(index);
+      // console.log(row_data);
       // alert("hello");
     },
 
