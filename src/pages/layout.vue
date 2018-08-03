@@ -24,6 +24,10 @@
             Excel导入
           </el-button>
 
+          <el-button @click.native ="editConfig()">编辑config</el-button>
+
+          <el-button @click.native ="editAlias()">编辑alias</el-button>
+
           <el-button id="save_metadata" type="success" icon="el-icon-check" @click="metadataSend">保存全部修改</el-button>
           <el-button type="primary" icon="el-icon-download">
             <a :href="downloadLink()" style='text-decoration:none;color:inherit;'>
@@ -327,6 +331,59 @@
       console.log("修改成功，请看测试");
     },
 
+    editConfig(){
+
+      var id = this.meta_data.metadata._id;
+      var data = {"_id":id};
+
+      this.$ajax({
+        method:'POST',
+        data:data,
+        url:HOST+'/config/get_config'
+      }).then(response=>{
+        console.log(response.data);
+        this.$router.push({
+          path: '/config',
+          name: "config" ,
+          props: true,
+          query:{
+            id:id
+          },
+          params:{
+            config: response.data.config,
+          }
+        });
+      }).catch(function(err){
+        console.log(err);
+      });
+    },
+
+    editAlias(index, data){
+
+      var id = this.meta_data.metadata._id;
+      console.log("id = " + id);
+      this.$ajax({
+      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+        method:'POST',
+        url:HOST+'/alias/get_alias',
+        data: {"_id":id},
+      }).then(response=>{
+        console.log("alias file is ");
+        console.log(response.data);
+        // console.log(response.data.config.alias_list);
+        // var alias_list = response.data.config.alias_list;
+        this.$router.push({
+          path: '/alias',
+          name: "alias" ,
+          props: true,
+          params:{
+            response: response.data,
+          }
+        });
+      }).catch(function(err){
+        console.log(err);
+      });
+    },
   }
 }
 </script>
