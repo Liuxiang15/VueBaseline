@@ -12,8 +12,8 @@
               <el-select v-model="def.relation">
                 <el-option key="and" label="并且"
                            value="and"></el-option>
-                <el-option key="or" label="或者"
-                           value="or"></el-option>
+                <!--<el-option key="or" label="或者"-->
+                           <!--value="or"></el-option>-->
               </el-select>
             </el-form-item>
           </el-card>
