@@ -65,11 +65,6 @@
           <el-input v-model="new_order" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
-      <el-form>
-        <el-form-item label="SNL语句">
-          <el-input v-model="new_snl" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
@@ -330,7 +325,7 @@ span{
   height:100%;
 }
 .el-tree{
-  background-color: #DCDFE6;
+  /* background-color: #DCDFE6; */
   height: 100%;
   width: 100%;
 }

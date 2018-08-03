@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="编辑SNL" :visible.sync="dialogFormVisible">
+    <el-dialog title="在线编辑SNL" :visible.sync="dialogFormVisible">
 
       <div id="html_div" v-html="this.snl_html"></div>
 
@@ -19,8 +19,21 @@
           </el-form-item>
         </el-form>
       </div>
+      <el-alert  title="" v-show="right_show" type="success"
+        show-icon>
+        msg:{{this.check_result.msg}}
+      </el-alert>
+      <el-alert title="" v-show="wrong_show" type="error"
+        show-icon>
+        msg:{{this.check_result.msg}}
+        <br>
+        Output:{{this.check_result.output}}
+      </el-alert>
+
 
       <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="checkSNL"
+        >检查</el-button>
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
       </div>
@@ -28,6 +41,7 @@
 </template>
 
 <script>
+  import {HOST} from '../utils/config'
   export default {
     // 1 dialogFormVisible决定了对话框是否显现，初始值在本组件里定义
     // 在layout.vue里实现了对该属性修改的函数
@@ -36,7 +50,8 @@
     name:"editDialogue",
     props:[
       "show",
-      "parent"//存储它的父亲组件
+      "parent",//存储它的父亲组件
+      // "config_keys"
     ],
 
     data() {
@@ -45,6 +60,10 @@
         dialogTableVisible: this.show,
         dialogFormVisible: false,
         default_data:{},
+        check_result:{},
+        right_show:false,
+        wrong_show:false,
+        attrbute_flag:false,
         key_words : [
           // other:
           ["的", ".", "。"],
@@ -75,12 +94,18 @@
           // four_operations:
           ["+","-","*","/"],
           // quote:
-          ["'", '"', '“','”']
+          ["'", '"', '“','”'],
+          //subject
+
         ],
         formLabelWidth: '120px',
         snl_html:"",
-        input_snl:"hello",
-        class_names:["other", "structure", "operation", "num_compare", "regex", "property_name", "logic_connect", "relation_compare", "four_operations", "quote", "common"]
+        input_snl:"",
+        snl_index:0,
+        class_names:["other", "structure", "operation", "num_compare", "regex", "property_name", "logic_connect", "relation_compare", "four_operations", "quote", "subject","common"],
+        newline_words:["如果","if","那么","then"],//需要换行的word
+        line_order:1,//存储当前编辑的行数,
+        config_keys:[],
       };
     },
     created(){
@@ -107,22 +132,65 @@
 
       save() {
         // this.default_data.snl = this.input_snl;
+        //this.current_snl.index
         var temp = {};
         temp.snl = this.input_snl;
-        temp.spl = [].concat(this.default_data.spl);
-        temp.index = this.default_data.index;
+        // console.log("enter save 函数");
+        // console.log(temp);
+        // temp.spl = this.default_data.spl;
+        console.log(this.snl_index);
+        temp.index = this.snl_index;
         if(this.parent == "rule"){
           this.$emit('save', temp);
         }
         else if(this.parent == "content"){
+          console.log("PPPPPPPPPPPPPPPPPPPP");
           temp.parent_index = this.default_data.parent_index;
           this.$emit('save', temp);
         }
+        console.log("close save 函数");
+      },
+      checkSNL(){
+        this.$ajax({
+          //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
+          // async:false,
+          // cache: false,
+          method: 'POST',
+          url: HOST + '/data/check_snl',
+          data: {"snl": this.input_snl},
+          // async: false  //要同步才能获取打返回的值
+        }).then(response => {
+          console.log("in editDialogue ");
+          console.log(response.data);
+          this.check_result = JSON.parse(response.data.data);
+          console.log("after check ");
+          console.log(this.check_result);
+          if(this.check_result.msg === "correct"){
+            this.right_show = true;
+            this.wrong_show = false;
+          }
+          else{
+            this.right_show = false;
+            this.wrong_show = true;
+          }
+        }).catch(function (err) {
+          console.log(err);
+        });
       },
 
-      updateDefaultData(default_data){
+      updateDefaultData(default_data, index, config_keys){
+        console.log("in updateDefaultData default_data 是");
+        console.log(default_data);
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
+        this.snl_index = index;
+        console.log("in updateDefaultData snl_index = " + this.snl_index);
+        if(!this.default_data["parent_index"]){
+          //如果传参default_data没有这个属性
+            this.key_words.push(config_keys);
+        }
+        // console.log(config_keys);
+        // console.log(this.key_words);
       },
 
       snlSaveFromContent(new_data){
@@ -147,10 +215,29 @@
           var type = this.typeKeyWord(word);
           var str = "";
           var _class = "";
-          if(word == "那么" || word == "then"){
+          if(this.newline_words.indexOf(word) != -1){
+            // if(this.line_order == 1){
+            //     this.line_order += 1;
+            // }
+            // else{
+            //   str += "<br/>";
+            //   this.line_order += 1;
+            // }
             str += "<br/>";
           }
+
           _class = this.class_names[type];
+
+          if(this.attrbute_flag){
+            _class="attribute";
+            this.attrbute_flag = false;
+          }
+
+          if(word == "的"){
+            //两者关系是互斥的
+            this.attrbute_flag = true;
+          }
+
 
           str += '<span class="' + _class + '">' + word + '</span>';
           snl_html += str;
@@ -164,25 +251,57 @@
 </script>
 <style>
 
-.other, .structure, .operation {
-  color: red;
+.other{
 
 }
 
-.num_compare, .regex,  .property_name  {
+.structure{
+    color: red;
+}
+
+.operation{
+    color:red;
+}
+
+
+.num_compare {
+  color: blue;
+
+}
+.regex{
+
+}
+.property_name{
+
+}
+
+.logic_connect {
   color: blue;
 
 }
 
-.logic_connect, .relation_compare,.four_operations, .quote {
-  color: purple;
-  background-color: yellow;
-}
+.relation_compare{
+   color:blue;
+ }
 
+ .four_operations{
+
+ }
+
+ .quote{
+
+ }
+
+.subject{
+  color:red;
+}
 .common{
   color:black;
 }
 
+.attribute{
+  color:blue;
+}
 
 .el-dialog__headerbtn .el-dialog__close {
     color: #909399;
@@ -193,6 +312,7 @@
   height: 100%;
   resize: vertical;
   padding: 5px 15px;
+  margin-bottom: 5%;
   line-height: 1.5;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;

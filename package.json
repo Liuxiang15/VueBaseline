@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "element-ui": "^2.4.5",
-    "vue": "^2.5.2",
+    "vue": "^2.5.17",
     "vue-contextmenu": "^1.4.8",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
@@ -35,7 +35,7 @@
     "babel-register": "^6.22.0",
     "chai": "^4.1.2",
     "chalk": "^2.0.1",
-    "chromedriver": "^2.27.2",
+    "chromedriver": "^2.41.0",
     "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^5.0.1",
     "cross-spawn": "^5.0.1",
@@ -76,11 +76,11 @@
     "url-loader": "^0.5.8",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
-    "vue-template-compiler": "^2.5.2",
+    "vue-template-compiler": "^2.5.17",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.4"
   },
   "engines": {
     "node": ">= 6.0.0",
