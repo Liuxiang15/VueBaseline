@@ -37,6 +37,7 @@
   height 10% !important
   box-shadow 0 1px 1px rgba(0,0,0,.08)
   padding 0
+  margin-bottom 0px
   .menu
     margin auto
 

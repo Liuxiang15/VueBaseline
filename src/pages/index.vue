@@ -4,7 +4,7 @@
       <el-col :xs="24" :sm="24" :lg="24">
         <el-card
         class="overview-panel"
-        :body-style="{ padding: '0px' }">
+        :body-style="{ padding: '20px' }">
           <div slot="header" class="title">
             <el-row>
               <el-col :span="18">
