@@ -1,11 +1,16 @@
 <template>
   <div id="ruleCards">
     <el-card v-for="(rule_snl, index) in rule_snls" :key="index"
-     v-on:click="getDom($event)"
+
      shadow="hover"
      class="box-card">
       <div slot="header" class="clearfix">
         <span>{{rule_snl.label}}{{rule_snl.text}}</span>
+        <span>
+           <el-button @click = "turnToRule(index)" >
+            查看规则
+          </el-button>
+        </span>
       </div>
       <div>
         <el-table :data="rule_snl.snl">
@@ -62,10 +67,7 @@ export default {
       console.log(rule_snls);
     },
 
-    getDom(event){
-      console.log("被点击的card是： ");
-      console.log(event.target);
-    },
+
 
     turnToSNLEdit(index, row_data, parent_index, event){
       // console.log("in turnToSNLEdit this.current_snl  是：");
@@ -80,14 +82,13 @@ export default {
       console.log(this.current_snl);
       this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, []);
       this.edit_show = true;
-      // console.log("index");
-      // console.log(index_i);
       // console.log("in contentClick.vue ");
       // console.log(event.target);
       // console.log(event.currentTarget);
-      // console.log(index);
-      // console.log(row_data);
-      // alert("hello");
+    },
+
+    turnToRule(index){
+      this.$emit('showRuleFromContent', index);
     },
 
     save(new_data){
