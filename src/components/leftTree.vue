@@ -2,7 +2,7 @@
   <!-- 屏蔽页面右键默认显示的工具菜单
   为元素绑定一个 oncontextmenu 事件 -->
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
-  <div id="aside_container">
+  <div id="aside_container" >
     <el-tree
       oncontextmenu="return false"
       draggable
@@ -161,26 +161,34 @@ export default {
         // console.log("被点击的node是");
         // console.log(node);
       },
-      handleRightClick(e, nodedata, node, self){
+      handleRightClick(event, nodedata, node, self){
         // console.log("进入handleRightClick函数");
-        // alert("弹出新增目录或者节点对话框");og(0)
-        // console.log("event是");
-        // console.log(e);
+        console.log("event是");
+        console.log(event);
         // console.log("nodedata是");
         // console.log(nodedata);
         // console.log("node是");
         // console.log(node);
         // console.log(self);
-        this.menu_show = true;
         // this.new_content_show = true;
         /*1捕获鼠标右键*/
-        e.preventDefault();
-        var x = e.clientX;
-        var y = e.clientY;
+        // e.preventDefault();
+        if(!this.menu_show){
+          //将弹出的菜单定位在鼠标点击附近
+          var menu = $("#action_menu");
+          menu.css("left", event.clientX);
+          menu.css("top", event.clientY);
+          this.menu_show = true;
+        }
+
         this.current_data = nodedata;
         this.current_node = node;
         console.log("this.current_data是：-------------------");
         console.log(this.current_data);
+      },
+
+      hideMenu(){
+        this.menu_show = false;
       },
       close(){
         //所有对话框和菜单栏不可见

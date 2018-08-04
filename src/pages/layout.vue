@@ -1,12 +1,12 @@
 <template>
-    <el-container>
-      <el-aside>
+    <el-container @click.native="divClick" >
+      <el-aside >
         <left-tree ref="mytree" id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
         </left-tree>
       </el-aside>
 
       <el-main>
-        <div id="main-content">
+        <div id="main-content" >
           <content-click v-show="content_click_show" :rule_snls="rule_snls"
           @snlSaveFromContent="snlSaveFromContent"
            ref="ruleLists"></content-click>
@@ -251,6 +251,12 @@
         this.inputValue = '';
       },
 
+      divClick(){
+        console.log("div被点击了");
+        this.$refs.mytree.hideMenu();
+        // alert("hello");
+      },
+
       metadataSend() {
         console.log("---------------------------------");
         console.log(this.meta_data);
@@ -313,6 +319,7 @@
         console.log("in getRuleSNLs ");
         console.log(this.rule_snls);
     },
+
 
     findTargetRule(arr, index_i, index, snl){
       console.log("index_i是！！！！！！！！！！！！！！！！！！！！！！！！");
