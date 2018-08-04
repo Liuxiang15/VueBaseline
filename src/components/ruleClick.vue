@@ -67,6 +67,19 @@
         :config_keys="config_keys"
         @save = "save" @close="close" >
       </edit-dialogue>
+
+      <el-dialog
+        title="删除提示"
+        :visible.sync="snl_delete_show"
+        center>
+        <span>您确定删除选中的SNL语句吗？</span>
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="snlCancelDelete">取 消</el-button>
+        <el-button type="primary" @click="snlSureDelete">确 定</el-button>
+      </span>
+      </el-dialog>
+
+
     </div>
   </div>
 
@@ -95,9 +108,12 @@ export default {
       text_area:"",
       current_node:{},
       edit_show:false,
+      snl_delete_show:false,
       current_snl:{},
       parent_name:"rule",
-      label:""//v-model的值为当前被选中的el-option的 value 属性值
+      label:"",//v-model的值为当前被选中的el-option的 value 属性值
+
+
     }
   },
 
@@ -147,9 +163,22 @@ export default {
     },
 
     snlDelete(index, row_data){
-      // console.log("进入handleDelet函数");
-      // console.log(row);
+      console.log("进入SNL删除函数");
+      this.current_snl = this.current_node.snl_spl_pairs[index];
+      this.snl_delete_show = true;
+      console.log(this.current_snl);
+      console.log(this.current_node);
+      // this.current_node.snl_spl_pairs.splice(index, 1);
+    },
+
+    snlSureDelete(){
+      let index = this.current_node.snl_spl_pairs.indexOf(this.current_snl);
       this.current_node.snl_spl_pairs.splice(index, 1);
+      this.snl_delete_show = false;
+    },
+
+    snlCancelDelete(){
+      this.snl_delete_show = false;
     },
 
     newSNL() {

@@ -91,6 +91,17 @@
       <el-menu-item index="1-4" @click.native="rename">重命名</el-menu-item>
     </el-menu>
 
+    <el-dialog
+      title="删除提示"
+      :visible.sync="node_delete_show"
+      center>
+      <span>您确定删除选中的节点吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="nodeCancelDelete">取 消</el-button>
+        <el-button type="primary" @click="nodeSureDelete">确 定</el-button>
+        </span>
+    </el-dialog>
+
 
 </div>
 </template>
@@ -128,7 +139,8 @@ export default {
         new_order:"0",
         new_snl:"",
         current_data:{},
-        current_node:{}
+        current_node:{},
+        node_delete_show:false,
         //注释    opera `1234分别为新建目录， 新建叶子节点， 删除该节点， 重命名`
 
       }
@@ -294,12 +306,26 @@ export default {
       deleleNode(){
         //删除该节点，修改双亲节点,注意参数是node
         this.operation = 3;
+        // const parent = this.current_node.parent;
+        // const children = parent.data.children || parent.data;
+        // const index = children.findIndex(d => d.id === this.current_data.id);
+        // children.splice(index, 1);
+        this.node_delete_show = true;
+        this.menu_show = false;
+      },
+
+      nodeCancelDelete(){
+        this.node_delete_show = false;
+      },
+
+      nodeSureDelete(){
+        this.node_delete_show = false;
         const parent = this.current_node.parent;
         const children = parent.data.children || parent.data;
         const index = children.findIndex(d => d.id === this.current_data.id);
         children.splice(index, 1);
-        this.menu_show = false;
       },
+
       rename(){
         this.operation = 4;
         this.rename_show = true;
