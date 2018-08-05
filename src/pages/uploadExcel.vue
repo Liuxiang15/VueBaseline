@@ -6,7 +6,7 @@
 
     <el-container>
       <el-aside v-show="showUpload()" style="width: 480px">
-        <el-form label-width="100px" label-position="left" v-for="(def,def_index) in templateDefs" style="padding: 5px">
+        <el-form label-width="100px" label-position="left" v-for="(def,def_index) in templateDefs" :key="def_index"style="padding: 5px">
           <el-card v-show="def_index > 0">
             <el-form-item label="逻辑关系">
               <el-select v-model="def.relation">
@@ -32,7 +32,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="条件" v-for="(cond,cond_index) in def.condition" v-show="showPart(def.kind,'condition')">
+            <el-form-item label="条件" v-for="(cond,cond_index) in def.condition" :key="cond_index" v-show="showPart(def.kind,'condition')">
 
 
               <el-select v-model="def.condition_connection[cond_index]" v-show="cond_index>0" placeholder="未定义">
@@ -56,6 +56,7 @@
 
 
             <el-form-item label="结论" v-for="(con,conclusion_index) in def.conclusion"
+            :key="conclusion_index"
                           v-show="showPart(def.kind,'conclusion')">
 
               <el-select v-model="def.conclusion_connection[conclusion_index]" v-show="conclusion_index>0" placeholder="未定义">

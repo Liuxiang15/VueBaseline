@@ -38,11 +38,11 @@
       <!--用于展示规则的列表-->
       <el-button id="new-snl"type="primary" icon="el-icon-edit" @click="newSNL">新建SNL语句</el-button>
       <el-table
-        :data="this.current_node.snl_spl_pairs">
+        :data="this.snl_html_lists">
         <el-table-column label="SNL语句">
           <template slot-scope="scope">
-            <div slot="reference" class="name-wrapper">
-              {{ scope.row.snl }}
+            <div slot="reference" class="name-wrapper" v-html="scope.row">
+              <!--{{ scope.row.snl }}-->
             </div>
           </template>
 
@@ -67,6 +67,19 @@
         :config_keys="config_keys"
         @save = "save" @close="close" >
       </edit-dialogue>
+
+      <el-dialog
+        title="删除提示"
+        :visible.sync="snl_delete_show"
+        center>
+        <span>您确定删除选中的SNL语句吗？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="snlCancelDelete">取 消</el-button>
+          <el-button type="primary" @click="snlSureDelete">确 定</el-button>
+        </span>
+      </el-dialog>
+
+
     </div>
   </div>
 
@@ -95,9 +108,15 @@ export default {
       text_area:"",
       current_node:{},
       edit_show:false,
+      snl_delete_show:false,
       current_snl:{},
+      current_snl_html:"",
       parent_name:"rule",
-      label:""//v-model的值为当前被选中的el-option的 value 属性值
+      label:"",//v-model的值为当前被选中的el-option的 value 属性值
+
+      snl_html_lists:[]
+
+
     }
   },
 
@@ -109,22 +128,14 @@ export default {
       // console.log("进入show_list函数");
       // console.log(current_node);
       this.current_node = current_node;
-      console.log("id is --------------------------------");
-
-      console.log(this.id);
-      // this.$ajax({
-      // //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
-      //   method:'POST',
-      //   data:{"_id":this.id},
-      //   url:HOST+'/config/get_config'
-      // }).then(response=>{
-      //   console.log("in editDialogue get config is ")
-      //   console.log(response.data);
-      //
-      // }).catch(function(err){
-      //   console.log(err);
-      // });
-
+      //清空数组
+      this.snl_html_lists = [];
+      for(var snl_spl of this.current_node.snl_spl_pairs){
+        var snl_html = this.$refs.edit_dialog.snlToHtml(snl_spl.snl);
+        // this.snl_html_lists.push({"snl":snl_html});
+        //为了更容易地获取index,选择用table
+        this.snl_html_lists.push(snl_html);
+      }
     },
 
     editDescription(){
@@ -143,23 +154,41 @@ export default {
       console.log(this.current_snl);
       console.log(this.config_keys);
       this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, this.config_keys);
+
+      // this.current_snl = this.current_node.snl_spl_pairs[index];
       this.edit_show = true;
     },
 
     snlDelete(index, row_data){
-      // console.log("进入handleDelet函数");
-      // console.log(row);
+      console.log("进入SNL删除函数");
+      this.current_snl = this.current_node.snl_spl_pairs[index];
+      this.snl_delete_show = true;
+      console.log(this.current_snl);
+      console.log(this.current_node);
+      // this.current_node.snl_spl_pairs.splice(index, 1);
+    },
+
+    snlSureDelete(){
+      let index = this.current_node.snl_spl_pairs.indexOf(this.current_snl);
       this.current_node.snl_spl_pairs.splice(index, 1);
+      //删除了单条SNL，那么必须把这个还原，这样的话就可以更新了
+      this.current_snl = {};
+      this.snl_delete_show = false;
+    },
+
+    snlCancelDelete(){
+      this.snl_delete_show = false;
     },
 
     newSNL() {
-      var item = {
+      var new_item = {
         snl:"new",
         spl:[],
       };
       // item.snl="new";
       // item.spl=[];
-      this.current_node.snl_spl_pairs.push(item);
+      this.current_node.snl_spl_pairs.push(new_item);
+      this.current_snl = new_item;//激发变化
     },
 
     save(new_data){
@@ -168,7 +197,7 @@ export default {
       console.log(new_data);
       console.log(this.current_node);
       this.current_node.snl_spl_pairs[new_data.index].snl = new_data.snl;
-      console.log(this.current_node);
+      this.current_snl = this.current_node.snl_spl_pairs[new_data.index].snl;
     },
 
     close(){
@@ -195,6 +224,20 @@ export default {
         this.current_node.tags.push(value);
       }
     },
+  },
+
+  watch:{
+    current_snl(){
+      //每当current_snl变化时，重新渲染，因为在编辑的时候它会变化
+      this.snl_html_lists = [];
+      for(var snl_spl of this.current_node.snl_spl_pairs){
+        var snl_html = this.$refs.edit_dialog.snlToHtml(snl_spl.snl);
+        // this.snl_html_lists.push({"snl":snl_html});
+        //为了更容易地获取index,选择用table
+        this.snl_html_lists.push(snl_html);
+      }
+    },
+
   }
 }
 </script>
@@ -288,6 +331,58 @@ h2{
 /* .el-tag{
   display:inline;
 } */
+
+.other{
+
+}
+
+.structure{
+  color: red;
+}
+
+.operation{
+  color:red;
+}
+
+
+.num_compare {
+  color: blue;
+
+}
+.regex{
+
+}
+.property_name{
+
+}
+
+.logic_connect {
+  color: blue;
+
+}
+
+.relation_compare{
+  color:blue;
+}
+
+.four_operations{
+
+}
+
+.quote{
+
+}
+
+.subject{
+  color:red;
+}
+.common{
+  color:black;
+}
+
+.attribute{
+  color:blue;
+}
 
 
 

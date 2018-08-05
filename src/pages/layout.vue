@@ -1,14 +1,15 @@
 <template>
-    <el-container>
-      <el-aside>
+    <el-container @click.native="divClick" >
+      <el-aside >
         <left-tree ref="mytree" id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
         </left-tree>
       </el-aside>
 
       <el-main>
-        <div id="main-content">
+        <div id="main-content" >
           <content-click v-show="content_click_show" :rule_snls="rule_snls"
           @snlSaveFromContent="snlSaveFromContent"
+                         @showRuleFromContent="showRuleFromContent"
            ref="ruleLists"></content-click>
           <rule-click
             v-show="rule_click_show" ref="snlLists"
@@ -166,9 +167,10 @@
         // console.log(data);
         // console.log("---------------------------------------");
         // console.log(this.meta_data);
+        console.log("in layout this.current_node  is ");
+
         this.current_node = data;
-        // console.log("in layout this.current_node  is ");
-        // console.log(this.current_node);
+        console.log(this.current_node);
         if(data.is_rule){
           this.$refs.snlLists.showList(data);
           this.rule_click_show = true;
@@ -179,6 +181,8 @@
           this.rule_order = 0;//记住每次获取目录下所有rule_snls的时候必须清0
           this.rule_snls = [];
           this.getRuleSNLs(data.children);
+          console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++");
+          console.log(this.rule_snls);
           this.$refs.ruleLists.showRules(this.rule_snls);
           this.rule_click_show = false;
           this.content_click_show = true;
@@ -249,6 +253,12 @@
         this.inputValue = '';
       },
 
+      divClick(){
+        console.log("div被点击了");
+        this.$refs.mytree.hideMenu();
+        // alert("hello");
+      },
+
       metadataSend() {
         console.log("---------------------------------");
         console.log(this.meta_data);
@@ -298,6 +308,7 @@
             var new_item = {};
             new_item.text = child.text;
             new_item.order = this.rule_order;
+            new_item.label = child.order;
             new_item.snl = child.snl_spl_pairs;
             //因为每条规则被单击后都有index这么一个属性，所以不需要单独存储
             this.rule_order += 1;
@@ -311,30 +322,70 @@
         console.log(this.rule_snls);
     },
 
-    findTargetRule(arr, index_i){
+
+    findTargetSNL(arr, index_i, index, snl){
+        //根据点击节点的孩子数组，index_i是这条规则在所有子孙中的排序，index是snl语句的顺序
+      console.log("index_i是！！！！！！！！！！！！！！！！！！！！！！！！");
+      console.log(index_i);
       for(var child of arr){
+
         if(child.is_rule){
           if(this.find_rule_order == index_i){
-              return child;
+            console.log("要改动的规则就是：-----------------------");
+            console.log(child);
+            child.snl_spl_pairs[index].snl = snl;
+            return true;
           }
           else{
             this.find_rule_order++;
           }
         }
         else{
-          this.findTargetRule(child.children);
+          this.findTargetSNL(child.children, index_i,index, snl);
         }
       }
+      return false;
+      console.log("index_i是！！！！！！！！！！！！！！！！！！！！！！！！");
+      console.log(index_i);
     },
+
+      findTargetRule(arr, index){
+        console.log("index 是！！！！！！！！！！！！！！！");
+        console.log(index);
+        for(var child of arr){
+          if(child.is_rule){
+            if(this.find_rule_order == index){
+              this.$refs.snlLists.showList(child);
+              this.rule_click_show = true;
+              this.content_click_show = false;
+              return;
+            }
+            else{
+              this.find_rule_order++;
+            }
+          }
+          else{
+            this.findTargetRule(child.children, index);
+          }
+        }
+      },
+
     snlSaveFromContent(new_data){
       console.log("进入layout的的snlSaveFromContent函数");
+      console.log();
       console.log(new_data);
-      var target_rule = this.findTargetRule(this.current_node.children,new_data.parent_index)
-      console.log("要改动的规则就是：！！！！！！！！！！！！！！！！！！");
-      console.log(target_rule);
-      target_rule.snl_spl_pairs[new_data.index].snl = new_data.snl;
+      this.find_rule_order = 0;
+      var result =  this.findTargetSNL(this.current_node.children,new_data.parent_index, new_data.index,new_data.snl);
+      // console.log("要改动的规则就是：！！！！！！！！！！！！！！！！！！");
+      // console.log(target_rule);
+      // target_rule.snl_spl_pairs[new_data.index].snl = new_data.snl;
       console.log("修改成功，请看测试");
     },
+
+      showRuleFromContent(index){
+        this.find_rule_order = 0;
+        this.findTargetRule(this.current_node.children, index);
+      },
 
     editConfig(){
 

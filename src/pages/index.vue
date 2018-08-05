@@ -48,6 +48,16 @@
         <el-button type="success" icon="el-icon-check" @click.native="saveRename">确定</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      title="删除提示"
+      :visible.sync="centerDialogVisible"
+      center>
+      <span>您确定删除选中的规则库吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancalDelete">取 消</el-button>
+        <el-button type="primary" @click="SureDelete">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-main>
 </template>
 
@@ -70,7 +80,9 @@ export default {
       lib_names:[],
       rename_dialog_show:false,
       new_libname:"",
-      index:0,
+      current_index:0,
+      centerDialogVisible:false,
+
     }
   },
 
@@ -114,12 +126,23 @@ export default {
     },
 
     libDelete(index, data){
-      this.lib_names.splice(index, 1);
-      _libDelete({"_id":data._id});
+      this.centerDialogVisible = true;
+      this.current_index = index;
+    },
+    SureDelete(){
+      this.centerDialogVisible = false;
+      //这个先后顺序不能换
+      _libDelete({"_id":this.lib_names[this.current_index]._id});
+      this.lib_names.splice(this.current_index, 1);
+    },
+
+    cancalDelete(){
+      this.centerDialogVisible = false;
+      this.current_index = -1;
     },
 
     libRename(index, data){
-      this.index = index;
+      this.current_index = index;
       this.new_libname = this.lib_names[index].lib_name;
       this.rename_dialog_show = true;
     },

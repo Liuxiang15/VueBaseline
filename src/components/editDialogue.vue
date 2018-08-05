@@ -135,9 +135,9 @@
         //this.current_snl.index
         var temp = {};
         temp.snl = this.input_snl;
-        console.log("enter save 函数");
-        console.log(temp);
-        temp.spl = [].concat(this.default_data.spl);
+        // console.log("enter save 函数");
+        // console.log(temp);
+        // temp.spl = this.default_data.spl;
         console.log(this.snl_index);
         temp.index = this.snl_index;
         if(this.parent == "rule"){
@@ -179,13 +179,18 @@
       },
 
       updateDefaultData(default_data, index, config_keys){
+        console.log("in updateDefaultData default_data 是");
+        console.log(default_data);
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
         this.snl_index = index;
         console.log("in updateDefaultData snl_index = " + this.snl_index);
-        this.key_words.push(config_keys);
-        console.log(config_keys);
-        console.log(this.key_words);
+        if(!this.default_data["parent_index"]){
+          //如果传参default_data没有这个属性
+            this.key_words.push(config_keys);
+        }
+        // console.log(config_keys);
+        // console.log(this.key_words);
       },
 
       snlSaveFromContent(new_data){
