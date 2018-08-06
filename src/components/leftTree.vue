@@ -3,7 +3,7 @@
   为元素绑定一个 oncontextmenu 事件 -->
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
   <div id="aside_container" >
-    
+
     <el-tree
 
       oncontextmenu="return false"
@@ -250,6 +250,8 @@ export default {
           this.current_data.order = this.new_order;
           this.new_order = "";
         }
+        console.log("++++++++++++++++++++++++++++++++++++");
+        this.$emit("metadataSend");
 
         this.menu_show = false;
 
@@ -260,8 +262,8 @@ export default {
         this.new_snl = "";
       },
       getData(){
-        // console.log("in getData ");
-        // console.log(this.meta_data);
+        console.log("in getData ");
+        console.log(this.meta_data);
         this.data = this.meta_data.metadata.data;
         // this.group = this.meta_data.metadata.tags;
       },
@@ -334,9 +336,22 @@ export default {
       nodeSureDelete(){
         this.node_delete_show = false;
         const parent = this.current_node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === this.current_data.id);
-        children.splice(index, 1);
+        console.log("删除节点的父亲是：");
+        console.log(parent);
+        // const children = parent.data.children || parent.data;
+        const children = parent.childNodes;
+        // console.log("删除节点的兄弟有：");
+        // console.log(children);
+        // console.log("删除节点是：");
+        // console.log(this.current_node);
+        const index = children.findIndex(d => d.id === this.current_node.id);
+        // console.log("删除节点的index是：");
+        // console.log(index);
+        // children.splice(index, 1);
+
+        const children_data = parent.data.children || parent.data;
+        children_data.splice(index, 1);
+        this.$emit("metadataSend");
       },
 
       rename(){
@@ -350,7 +365,6 @@ export default {
     meta_data(){
       //2 随时监听meta_data的变化，因为meta_data是在layout文件里给赋值的
       this.getData();
-
     },
 
     filterText(val) {

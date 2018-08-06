@@ -1,7 +1,8 @@
 <template>
     <el-container @click.native="divClick" >
       <el-aside >
-        <left-tree ref="mytree" id="left_tree" :meta_data="meta_data" v-on:listenToNodeClick="showMsgFromChild">
+        <left-tree ref="mytree" id="left_tree" :meta_data="meta_data" @metadataSend="metadataSend"
+                   v-on:listenToNodeClick="showMsgFromChild">
         </left-tree>
       </el-aside>
 
