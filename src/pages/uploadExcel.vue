@@ -21,14 +21,14 @@
           <el-card>
             <el-form-item label="规则类型">
               <el-select v-model="def.kind">
-                <el-option v-for="(kind,temkind_index) of templateKinds" :key="kind.key" :label="kind.value"
+                <el-option v-for="(kind,temkind_index) of templateKinds" :key="temkind_index" :label="kind.value"
                            :value="kind.key"></el-option>
               </el-select>
             </el-form-item>
 
             <el-form-item label="主语" v-show="showPart(def.kind,'subject')">
               <el-select v-model="def.subject" placeholder="未定义">
-                <el-option v-for="(item,head_index) of tableHeader" :key="item" :label="item" :value="item"></el-option>
+                <el-option v-for="(item,head_index) of tableHeader" :key="head_index" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
 
@@ -44,7 +44,7 @@
 
 
               <el-select v-model="def.condition[cond_index]" placeholder="未定义">
-                <el-option v-for="(item,head_index) of tableHeader" :key="item" :label="item" :value="item"></el-option>
+                <el-option v-for="(item,head_index) of tableHeader" :key="head_index" :label="item" :value="item"></el-option>
               </el-select>
               <br/>
               <el-button icon="el-icon-circle-plus-outline"
@@ -56,7 +56,7 @@
 
 
             <el-form-item label="结论" v-for="(con,conclusion_index) in def.conclusion"
-            :key="conclusion_index"
+            :key="conclusion_index+'con'"
                           v-show="showPart(def.kind,'conclusion')">
 
               <el-select v-model="def.conclusion_connection[conclusion_index]" v-show="conclusion_index>0" placeholder="未定义">
@@ -67,7 +67,7 @@
               </el-select>
 
               <el-select v-model="def.conclusion[conclusion_index]" placeholder="未定义">
-                <el-option v-for="(item,head_index) of tableHeader" :key="item" :label="item" :value="item"></el-option>
+                <el-option v-for="(item,head_index) of tableHeader" :key="head_index" :label="item" :value="item"></el-option>
               </el-select>
 
               <br/>
@@ -94,7 +94,7 @@
 
         <el-card>
           <el-table :data="tableData" border highlight-current-row style="width: 100%">
-            <el-table-column v-for='(item,head_index) of tableHeader' :prop="item" :label="item" :key='item'
+            <el-table-column v-for='(item,head_index) of tableHeader' :prop="item" :label="item" :key='head_index'
                              empty-text=" "
                              :render-header="renderHeader">
             </el-table-column>
@@ -127,11 +127,11 @@
         tableData: [],
         tableHeader: [],
         templateDefs: [],
-        templateKinds: [{key: 'if', value: '条件结论型'}, {key: 'regex', value: '命名规范型'}, {key: 'exists', value: '属性存在型'}],
+        templateKinds: [{key: 'if', value: '条件结论型'}, {key: 'regex', value: '命名规范型'}, {key: 'exists_attr', value: '属性存在型'}],
         showMask: {
           'if': ['subject', 'condition', 'conclusion'],
           'regex': ['subject', 'conclusion'],
-          'exists': ['subject', 'subject', 'conclusion']
+          'exists_attr': ['subject', 'subject', 'conclusion']
         }
         // },
         // defaultDef: {
