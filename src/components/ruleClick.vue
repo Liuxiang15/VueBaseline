@@ -5,7 +5,7 @@
       <el-input
         type="textarea"
         id="text_area"
-        rows=3
+        rows=2
         v-model="current_node.description"
         v-bind:disabled= "disable_flag"
       >
@@ -144,15 +144,22 @@ export default {
 
     saveDescription(){
       this.disable_flag = true;
+      this.$emit("metadataSend");
+
     },
 
     snlEdit(index, row_data){
-
+      console.log("进入snlEdit函数");
+      console.log(this.edit_show);
+      this.edit_show = false;
+      this.close();
+      console.log(this.edit_show);
+      // this.edit_show = true;
       this.current_snl = this.current_node.snl_spl_pairs[index];
       // this.current_snl.index = index;
-      console.log("this.current_snl是");
-      console.log(this.current_snl);
-      console.log(this.config_keys);
+      // console.log("this.current_snl是");
+      // console.log(this.current_snl);
+      // console.log(this.config_keys);
       this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, this.config_keys);
 
       // this.current_snl = this.current_node.snl_spl_pairs[index];
@@ -174,6 +181,7 @@ export default {
       //删除了单条SNL，那么必须把这个还原，这样的话就可以更新了
       this.current_snl = {};
       this.snl_delete_show = false;
+      this.$emit("metadataSend");
     },
 
     snlCancelDelete(){
@@ -189,6 +197,8 @@ export default {
       // item.spl=[];
       this.current_node.snl_spl_pairs.push(new_item);
       this.current_snl = new_item;//激发变化
+
+      this.$emit("metadataSend");
     },
 
     save(new_data){
@@ -198,6 +208,7 @@ export default {
       console.log(this.current_node);
       this.current_node.snl_spl_pairs[new_data.index].snl = new_data.snl;
       this.current_snl = this.current_node.snl_spl_pairs[new_data.index].snl;
+      this.$emit("metadataSend");
     },
 
     close(){
@@ -208,6 +219,7 @@ export default {
       console.log("要删除的标签是：");
       console.log(tag);
       this.current_node.tags.splice(this.current_node.tags.indexOf(tag), 1);
+      this.$emit("metadataSend");
     },
 
     selectTag(value){
@@ -222,6 +234,7 @@ export default {
       }
       else{
         this.current_node.tags.push(value);
+        this.$emit("metadataSend");
       }
     },
   },
@@ -319,7 +332,7 @@ export default {
 
 #btns{
   position: relative;
-  top:5%;
+  top:-10%;
   left:80%;
 }
 

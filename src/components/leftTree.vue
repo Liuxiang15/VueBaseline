@@ -3,7 +3,13 @@
   为元素绑定一个 oncontextmenu 事件 -->
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
   <div id="aside_container" >
+    <el-input
+      placeholder="输入关键字进行过滤"
+      v-model="filterText">
+    </el-input>
     <el-tree
+      :filter-node-method="filterNode"
+      class="filter-tree"
       oncontextmenu="return false"
       draggable
       :data="data"
@@ -77,6 +83,11 @@
           <el-input v-model="new_text" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
+      <el-form>
+        <el-form-item label="编号">
+          <el-input v-model="new_order" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
@@ -120,6 +131,7 @@ export default {
   },
   data () {
       return {
+        filterText: '',
         data: [],
         config: "",
         // group: "",
@@ -141,6 +153,7 @@ export default {
         current_data:{},
         current_node:{},
         node_delete_show:false,
+        filterText:"",
         //注释    opera `1234分别为新建目录， 新建叶子节点， 删除该节点， 重命名`
 
       }
@@ -149,6 +162,11 @@ export default {
   //之所以没有任何操作，是因为要传入的meta_data也是在layout里函数获取后才赋值的，所以此时不能赋值
   },
   methods: {
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
+
       handleNodeClick(node_data, node) {
         // 参数:传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node
         console.log("被点击的node是");
@@ -162,17 +180,7 @@ export default {
         // console.log(node);
       },
       handleRightClick(event, nodedata, node, self){
-        // console.log("进入handleRightClick函数");
-        console.log("event是");
-        console.log(event);
-        // console.log("nodedata是");
-        // console.log(nodedata);
-        // console.log("node是");
-        // console.log(node);
-        // console.log(self);
-        // this.new_content_show = true;
-        /*1捕获鼠标右键*/
-        // e.preventDefault();
+
         if(!this.menu_show){
           //将弹出的菜单定位在鼠标点击附近
           var menu = $("#action_menu");
@@ -229,12 +237,6 @@ export default {
           new_item.is_rule = true;
           new_item.order = this.new_order;
           new_item.snl_spl_pairs = [];
-          new_item.snl_spl_pairs.push(
-            {
-              snl: this.new_snl,
-              spl: []
-            }
-          );
           new_item.tags = [];
           new_item.text = this.new_text;
           // console.log("this.current_data是：");
@@ -244,7 +246,11 @@ export default {
         else if(this.operation == 4){
           this.rename_show = false;
           this.current_data.text = this.new_text;
+          this.current_data.order = this.new_order;
+          this.new_order = "";
         }
+        console.log("++++++++++++++++++++++++++++++++++++");
+        this.$emit("metadataSend");
 
         this.menu_show = false;
 
@@ -255,8 +261,8 @@ export default {
         this.new_snl = "";
       },
       getData(){
-        // console.log("in getData ");
-        // console.log(this.meta_data);
+        console.log("in getData ");
+        console.log(this.meta_data);
         this.data = this.meta_data.metadata.data;
         // this.group = this.meta_data.metadata.tags;
       },
@@ -329,21 +335,56 @@ export default {
       nodeSureDelete(){
         this.node_delete_show = false;
         const parent = this.current_node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === this.current_data.id);
-        children.splice(index, 1);
+        console.log("删除节点的父亲是：");
+        console.log(parent);
+        // const children = parent.data.children || parent.data;
+        const children = parent.childNodes;
+        // console.log("删除节点的兄弟有：");
+        // console.log(children);
+        // console.log("删除节点是：");
+        // console.log(this.current_node);
+        const index = children.findIndex(d => d.id === this.current_node.id);
+        // console.log("删除节点的index是：");
+        // console.log(index);
+        // children.splice(index, 1);
+
+        const children_data = parent.data.children || parent.data;
+        children_data.splice(index, 1);
+        this.$emit("metadataSend");
       },
 
       rename(){
         this.operation = 4;
+        this.new_text = this.current_data.text;
+        this.new_order = this.current_data.order;
         this.rename_show = true;
       },
+
+    filterNode(value, data) {
+      // if (!value) return true;
+      // return data.label.indexOf(value) !== -1;
+      //根据description order text
+
+      if (!value) return true;
+      return (data.description.toLowerCase().search(value.toLowerCase()) !== -1)
+        || (data.order.toLowerCase().search(value.toLowerCase()) !== -1)
+        || (data.text.toLowerCase().search(value.toLowerCase()) !== -1);
+      // if(data.description.search(value) !== -1)
+      // console.log("输入value是");
+      // console.log(value);
+      // console.log(data);
+    },
+
   },
   watch:{
     meta_data(){
       //2 随时监听meta_data的变化，因为meta_data是在layout文件里给赋值的
       this.getData();
-    }
+    },
+
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    },
   }
 }
 </script>
