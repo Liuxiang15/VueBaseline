@@ -176,6 +176,7 @@ export default {
       //删除了单条SNL，那么必须把这个还原，这样的话就可以更新了
       this.current_snl = {};
       this.snl_delete_show = false;
+      this.$emit("metadataSend");
     },
 
     snlCancelDelete(){
