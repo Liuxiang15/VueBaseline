@@ -16,6 +16,7 @@
             :id="this.$route.query.id"
             :tag_options="tag_options"
             :config_keys="config_keys"
+            @metadataSend="metadataSend"
             >
           </rule-click>
         </div>
@@ -29,7 +30,7 @@
 
           <el-button @click.native ="editAlias()">编辑alias</el-button>
 
-          <el-button id="save_metadata" type="success" icon="el-icon-check" @click="metadataSend">保存全部修改</el-button>
+          <!--<el-button id="save_metadata" type="success" icon="el-icon-check" @click="metadataSend">保存全部修改</el-button>-->
           <el-button type="primary" icon="el-icon-download">
             <a :href="downloadLink()" style='text-decoration:none;color:inherit;'>
               下载SPL
@@ -224,6 +225,7 @@
         this.tag_options.splice(this.tag_options.indexOf(tag), 1);
         this.meta_data.metadata.tags.splice(
           this.meta_data.metadata.tags.indexOf(tag), 1);
+        this.metadataSend();
       },
 
       manageLibTags(){
@@ -247,6 +249,7 @@
           else{
             this.meta_data.metadata.tags.push(inputValue);
             this.tag_options.push(inputValue);
+            this.metadataSend();
           }
         }
         this.inputVisible = false;
@@ -260,7 +263,7 @@
       },
 
       metadataSend() {
-        console.log("---------------------------------");
+        console.log("要传输的数据是-------------------------------------------------------------");
         console.log(this.meta_data);
         this.$ajax({
           //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
@@ -272,10 +275,11 @@
           //node_data = response.data.nodedata;
           //6 路由跳转并传递lib的id， meta_data， node_data
           console.log(response.data);
-          alert("保存成功");
+          // alert("保存成功");
         }).catch(function (err) {
           console.log(err);
         });
+        alert("您做的修改已保存到服务器！");
       },
       downloadLink() {
         return HOST + '/data/download_spl_file/' + this.$route.query.id
@@ -376,6 +380,8 @@
       console.log(new_data);
       this.find_rule_order = 0;
       var result =  this.findTargetSNL(this.current_node.children,new_data.parent_index, new_data.index,new_data.snl);
+      this.metadataSend();
+
       // console.log("要改动的规则就是：！！！！！！！！！！！！！！！！！！");
       // console.log(target_rule);
       // target_rule.snl_spl_pairs[new_data.index].snl = new_data.snl;

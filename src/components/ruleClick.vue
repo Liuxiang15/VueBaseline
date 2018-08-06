@@ -5,7 +5,7 @@
       <el-input
         type="textarea"
         id="text_area"
-        rows=3
+        rows=2
         v-model="current_node.description"
         v-bind:disabled= "disable_flag"
       >
@@ -144,6 +144,8 @@ export default {
 
     saveDescription(){
       this.disable_flag = true;
+      this.$emit("metadataSend");
+
     },
 
     snlEdit(index, row_data){
@@ -189,6 +191,8 @@ export default {
       // item.spl=[];
       this.current_node.snl_spl_pairs.push(new_item);
       this.current_snl = new_item;//激发变化
+
+      this.$emit("metadataSend");
     },
 
     save(new_data){
@@ -198,6 +202,7 @@ export default {
       console.log(this.current_node);
       this.current_node.snl_spl_pairs[new_data.index].snl = new_data.snl;
       this.current_snl = this.current_node.snl_spl_pairs[new_data.index].snl;
+      this.$emit("metadataSend");
     },
 
     close(){
