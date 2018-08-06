@@ -280,7 +280,7 @@
         }).catch(function (err) {
           console.log(err);
         });
-        alert("您做的修改已保存到服务器！");
+        // alert("您做的修改已保存到服务器！");
       },
       downloadLink() {
         return HOST + '/data/download_spl_file/' + this.$route.query.id
