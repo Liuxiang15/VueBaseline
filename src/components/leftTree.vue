@@ -232,12 +232,6 @@ export default {
           new_item.is_rule = true;
           new_item.order = this.new_order;
           new_item.snl_spl_pairs = [];
-          new_item.snl_spl_pairs.push(
-            {
-              snl: this.new_snl,
-              spl: []
-            }
-          );
           new_item.tags = [];
           new_item.text = this.new_text;
           // console.log("this.current_data是：");
