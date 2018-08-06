@@ -59,6 +59,12 @@
             :key="conclusion_index"
                           v-show="showPart(def.kind,'conclusion')">
 
+              <el-select v-model="def.conclusion_connection[conclusion_index]" v-show="conclusion_index>0" placeholder="未定义">
+                <el-option key="and" label="并且"
+                           value="and"></el-option>
+                <el-option key="or" label="或者"
+                           value="or"></el-option>
+              </el-select>
 
               <el-select v-model="def.conclusion[conclusion_index]" placeholder="未定义">
                 <el-option v-for="(item,head_index) of tableHeader" :key="item" :label="item" :value="item"></el-option>
