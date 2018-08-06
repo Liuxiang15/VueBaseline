@@ -213,6 +213,7 @@ export default {
       console.log("要删除的标签是：");
       console.log(tag);
       this.current_node.tags.splice(this.current_node.tags.indexOf(tag), 1);
+      this.$emit("metadataSend");
     },
 
     selectTag(value){
@@ -227,6 +228,7 @@ export default {
       }
       else{
         this.current_node.tags.push(value);
+        this.$emit("metadataSend");
       }
     },
   },

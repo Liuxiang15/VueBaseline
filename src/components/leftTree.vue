@@ -77,6 +77,11 @@
           <el-input v-model="new_text" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
+      <el-form>
+        <el-form-item label="编号">
+          <el-input v-model="new_order" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
@@ -162,17 +167,7 @@ export default {
         // console.log(node);
       },
       handleRightClick(event, nodedata, node, self){
-        // console.log("进入handleRightClick函数");
-        console.log("event是");
-        console.log(event);
-        // console.log("nodedata是");
-        // console.log(nodedata);
-        // console.log("node是");
-        // console.log(node);
-        // console.log(self);
-        // this.new_content_show = true;
-        /*1捕获鼠标右键*/
-        // e.preventDefault();
+
         if(!this.menu_show){
           //将弹出的菜单定位在鼠标点击附近
           var menu = $("#action_menu");
@@ -244,6 +239,8 @@ export default {
         else if(this.operation == 4){
           this.rename_show = false;
           this.current_data.text = this.new_text;
+          this.current_data.order = this.new_order;
+          this.new_order = "";
         }
 
         this.menu_show = false;
@@ -336,6 +333,8 @@ export default {
 
       rename(){
         this.operation = 4;
+        this.new_text = this.current_data.text;
+        this.new_order = this.current_data.order;
         this.rename_show = true;
       },
   },
