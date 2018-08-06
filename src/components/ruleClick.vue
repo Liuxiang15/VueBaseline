@@ -149,12 +149,17 @@ export default {
     },
 
     snlEdit(index, row_data){
-
+      console.log("进入snlEdit函数");
+      console.log(this.edit_show);
+      this.edit_show = false;
+      this.close();
+      console.log(this.edit_show);
+      // this.edit_show = true;
       this.current_snl = this.current_node.snl_spl_pairs[index];
       // this.current_snl.index = index;
-      console.log("this.current_snl是");
-      console.log(this.current_snl);
-      console.log(this.config_keys);
+      // console.log("this.current_snl是");
+      // console.log(this.current_snl);
+      // console.log(this.config_keys);
       this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, this.config_keys);
 
       // this.current_snl = this.current_node.snl_spl_pairs[index];
@@ -327,7 +332,7 @@ export default {
 
 #btns{
   position: relative;
-  top:5%;
+  top:-10%;
   left:80%;
 }
 

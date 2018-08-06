@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="在线编辑SNL" :visible.sync="dialogFormVisible">
+    <el-dialog title="在线编辑SNL" :visible.sync="show">
 
       <div id="html_div" v-html="this.snl_html"></div>
 
@@ -57,8 +57,7 @@
     data() {
 
       return {
-        dialogTableVisible: this.show,
-        dialogFormVisible: false,
+
         default_data:{},
         check_result:{},
         right_show:false,
@@ -113,7 +112,7 @@
     },
      watch:{
       show(val){
-       this.dialogFormVisible = val;
+       // this.dialogFormVisible = val;
        this.input_snl = this.default_data.snl;
       },
 
@@ -179,12 +178,14 @@
       },
 
       updateDefaultData(default_data, index, config_keys){
-        console.log("in updateDefaultData default_data 是");
-        console.log(default_data);
+        // console.log("in updateDefaultData default_data 是");
+        // console.log(default_data);
+        console.log("this.show = ________________----------------------");
+        console.log(this.show);
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
         this.snl_index = index;
-        console.log("in updateDefaultData snl_index = " + this.snl_index);
+        // console.log("in updateDefaultData snl_index = " + this.snl_index);
         if(!this.default_data["parent_index"]){
           //如果传参default_data没有这个属性
             this.key_words.push(config_keys);
