@@ -3,9 +3,13 @@
   为元素绑定一个 oncontextmenu 事件 -->
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
   <div id="aside_container" >
-
+    <el-input
+      placeholder="输入关键字进行过滤"
+      v-model="filterText">
+    </el-input>
     <el-tree
-
+      :filter-node-method="filterNode"
+      class="filter-tree"
       oncontextmenu="return false"
       draggable
       :data="data"
@@ -149,6 +153,7 @@ export default {
         current_data:{},
         current_node:{},
         node_delete_show:false,
+        filterText:"",
         //注释    opera `1234分别为新建目录， 新建叶子节点， 删除该节点， 重命名`
 
       }
@@ -354,6 +359,22 @@ export default {
         this.new_order = this.current_data.order;
         this.rename_show = true;
       },
+
+    filterNode(value, data) {
+      // if (!value) return true;
+      // return data.label.indexOf(value) !== -1;
+      //根据description order text
+
+      if (!value) return true;
+      return (data.description.toLowerCase().search(value.toLowerCase()) !== -1)
+        || (data.order.toLowerCase().search(value.toLowerCase()) !== -1)
+        || (data.text.toLowerCase().search(value.toLowerCase()) !== -1);
+      // if(data.description.search(value) !== -1)
+      // console.log("输入value是");
+      // console.log(value);
+      // console.log(data);
+    },
+
   },
   watch:{
     meta_data(){
