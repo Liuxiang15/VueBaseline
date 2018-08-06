@@ -45,7 +45,7 @@
       </el-input>
       <div slot="footer" class="dialog-footer">
         <el-button type="danger" icon="el-icon-close" @click="closeDialog">关闭</el-button>
-        <el-button type="success" icon="el-icon-check" @click.native="saveRename">确定</el-button>
+        <el-button type="success" icon="el-icon-check" @click.native="saveRename()">确定</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -153,9 +153,11 @@ export default {
 
     saveRename(){
       this.rename_dialog_show = false;
-      this.lib_names[this.index].lib_name = this.new_libname;
+      console.log("进入saveRename函数");
+      console.log(this.lib_names[this.current_index]);
+      this.lib_names[this.current_index].lib_name = this.new_libname;
       changeLibName({
-        "_id":this.lib_names[this.index]._id,
+        "_id":this.lib_names[this.current_index]._id,
         "lib_name":this.new_libname
       });
     },

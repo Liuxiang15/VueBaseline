@@ -3,7 +3,9 @@
   为元素绑定一个 oncontextmenu 事件 -->
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
   <div id="aside_container" >
+    
     <el-tree
+
       oncontextmenu="return false"
       draggable
       :data="data"
@@ -125,6 +127,7 @@ export default {
   },
   data () {
       return {
+        filterText: '',
         data: [],
         config: "",
         // group: "",
@@ -154,6 +157,11 @@ export default {
   //之所以没有任何操作，是因为要传入的meta_data也是在layout里函数获取后才赋值的，所以此时不能赋值
   },
   methods: {
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
+
       handleNodeClick(node_data, node) {
         // 参数:传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node
         console.log("被点击的node是");
@@ -342,7 +350,12 @@ export default {
     meta_data(){
       //2 随时监听meta_data的变化，因为meta_data是在layout文件里给赋值的
       this.getData();
-    }
+
+    },
+
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    },
   }
 }
 </script>
