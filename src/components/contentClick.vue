@@ -6,11 +6,11 @@
      class="box-card">
       <div slot="header" class="clearfix">
         <span>{{rule_snl.label}}{{rule_snl.text}}</span>
-        <span>
-           <el-button @click = "turnToRule(index)" >
+
+           <el-button class="rule-btn" @click = "turnToRule(index)" >
             查看规则
           </el-button>
-        </span>
+
       </div>
       <div>
         <el-table :data="rule_snl.snl">
@@ -154,8 +154,12 @@ export default {
     display: none !important;
   }
 
-  .el-table__header-wrapper {
-    overflow: hidden;
-    display: none;
+
+
+  .rule-btn{
+    float:right !important;
+    padding: 9px 15px !important;
   }
+
+
 </style>

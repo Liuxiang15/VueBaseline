@@ -8,6 +8,9 @@
       v-model="filterText">
     </el-input>
     <el-tree
+
+      expand-on-click-node = "false"
+      :default-expanded-keys="expanded_keys"
       :filter-node-method="filterNode"
       class="filter-tree"
       oncontextmenu="return false"
@@ -29,26 +32,19 @@
         </span>
 
     </el-tree>
-    <!-- <new-content :default_data="hello"
-    :show="new_content_show"
-    @save="save" @close="close" >
-    </new-content> -->
+
     <el-dialog title="新建目录" :visible.sync="new_content_show">
-      <el-form>
-        <el-form-item label="名称">
-          <el-input v-model="new_text" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <el-form>
-        <el-form-item label="规则详细描述">
-          <el-input v-model="new_description" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
       <el-form>
         <el-form-item label="编号">
           <el-input v-model="new_order" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
+      <el-form>
+        <el-form-item label="名称">
+          <el-input v-model="new_text" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
@@ -57,6 +53,11 @@
 
     <el-dialog title="新建规则" :visible.sync="new_rule_show">
       <el-form>
+        <el-form-item label="编号">
+          <el-input v-model="new_order" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-form>
         <el-form-item label="名称">
           <el-input v-model="new_text" auto-complete="off"></el-input>
         </el-form-item>
@@ -66,11 +67,7 @@
           <el-input v-model="new_description" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
-      <el-form>
-        <el-form-item label="编号">
-          <el-input v-model="new_order" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
@@ -154,6 +151,7 @@ export default {
         current_node:{},
         node_delete_show:false,
         filterText:"",
+        expanded_keys:"[1]",
         //注释    opera `1234分别为新建目录， 新建叶子节点， 删除该节点， 重命名`
 
       }
@@ -174,6 +172,10 @@ export default {
         this.$emit("listenToNodeClick", node.data);
         this.menu_show = false;
 
+        console.log(this.$refs.tree.store);
+        for(var i=0;i<this.$refs.tree.store._getAllNodes().length;i++){
+          this.$refs.treeX.store._getAllNodes()[i].expanded=true;
+        }
         // console.log("被点击的nodedata是");
         // console.log(node_data);
         // console.log("被点击的node是");
@@ -216,7 +218,7 @@ export default {
           //还要保存输入结果
           const new_item = {};
           new_item.children = [];
-          new_item.description = this.new_description;
+          new_item.description = "None";
           new_item.is_rule = false;
           new_item.order = this.new_order;
           new_item.snl_spl_pairs = [];
@@ -385,11 +387,15 @@ export default {
     filterText(val) {
       this.$refs.tree.filter(val);
     },
+
+    expanded_keys(){
+      this.expanded_keys = [1];
+    }
   }
 }
 </script>
 
-<style>
+<style scoped>
 span{
   overflow:hidden;
   white-space:nowrap;
