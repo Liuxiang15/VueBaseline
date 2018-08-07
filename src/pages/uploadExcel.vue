@@ -62,7 +62,8 @@
               <el-select v-model="def.conclusion_connection[conclusion_index]" v-show="conclusion_index>0" placeholder="未定义">
                 <el-option key="and" label="并且"
                            value="and"></el-option>
-                <el-option key="or" label="或者"
+                <!--v-show处理了不完整的一阶逻辑-->
+                <el-option key="or" label="或者"  v-show="def.condition.length>1"
                            value="or"></el-option>
               </el-select>
 
@@ -127,7 +128,11 @@
         tableData: [],
         tableHeader: [],
         templateDefs: [],
-        templateKinds: [{key: 'if', value: '条件结论型'}, {key: 'regex', value: '命名规范型'}, {key: 'exists_attr', value: '属性存在型'}],
+        templateKinds: [
+          {key: 'if', value: '条件结论型'},
+          // {key: 'regex', value: '命名规范型'},
+          {key: 'exists_attr', value: '属性存在型'}
+        ],
         showMask: {
           'if': ['subject', 'condition', 'conclusion'],
           'regex': ['subject', 'conclusion'],
@@ -232,6 +237,7 @@
       },
 
       addSimple(simples, relations, index) {
+        debugger
         simples.splice(index + 1, 0, '');
         relations.splice(index + 1, 0, 'and')
       },
