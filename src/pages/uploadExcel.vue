@@ -194,7 +194,7 @@
           // 过滤
           let filtered_condition = [], filtered_condition_connection = [];
           for (let i = 0; i < def_item['condition'].length; i++) {
-            if (def_item['condition'][i] !== '') {
+            if (def_item['condition'][i] !== '' && def_item['kind']==='if') {
               filtered_condition.push(def_item['condition'][i])
               filtered_condition_connection.push(def_item['condition_connection'][i])
             }
