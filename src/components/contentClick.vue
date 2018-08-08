@@ -123,12 +123,12 @@ export default {
         }
         this.rule_snls_htmls.push(snl_htmls);
       }
-      console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-      console.log(this.rule_snls_htmls);
+      // console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+      // console.log(this.rule_snls_htmls);
 
       this.rule_snls = rule_snls;
-      console.log("in showRules HAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-      console.log(rule_snls);
+      // console.log("in showRules HAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+      // console.log(rule_snls);
     },
 
 
@@ -136,13 +136,9 @@ export default {
     turnToSNLEdit(index, row_data, parent_index, event){
       console.log("in turnToSNLEdit this.edit_show  是：");
       console.log(this.edit_show);
-      // console.log("rowdata 是");
-      // console.log(row_data);
-      // this.current_snl = row_data;    //z!!!!!这个赋值语句会改变rule_snls
-        this.current_snl.snl = row_data.snl;
-        this.current_snl.spl = [].concat(row_data.spl);
-
-      // this.current_snl.index = index;
+      console.log(this.rule_snls[parent_index].snl[index].snl);
+      this.current_snl.snl = this.rule_snls[parent_index].snl[index].snl;
+      this.current_snl.spl = [];
       this.current_snl.parent_index = parent_index;
       console.log(this.current_snl);
       this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, this.config_keys);
@@ -176,8 +172,8 @@ export default {
     },
 
     snlToHtml(input_str){
-      console.log("在snl转化成HTML的过程中，snl是");
-      console.log(input_str);
+      // console.log("在snl转化成HTML的过程中，snl是");
+      // console.log(input_str);
       var words = input_str.split(' ');
       var snl_html = "";
       for(var word of words){
@@ -195,14 +191,15 @@ export default {
           this.attrbute_flag = false;
         }
 
-        if(word == "的"){
+        if(word == "的" || word=="有属性"){
           //两者关系是互斥的
           this.attrbute_flag = true;
+          _class = "structure";
         }
 
-        console.log("word 是");
-        console.log(word);
-        console.log(_class);
+        // console.log("word 是");
+        // console.log(word);
+        // console.log(_class);
 
         str += '<span class="' + _class + '">' + word + '</span>';
         snl_html += str;

@@ -290,9 +290,10 @@ export default {
           this.attrbute_flag = false;
         }
 
-        if(word == "的"){
+        if(word == "的" || word=="有属性"){
           //两者关系是互斥的
           this.attrbute_flag = true;
+          _class = "structure";
         }
 
         console.log("word 是");

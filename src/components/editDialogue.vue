@@ -239,14 +239,12 @@
             this.attrbute_flag = false;
           }
 
-          if(word == "的"){
+          if(word == "的" || word=="有属性"){
             //两者关系是互斥的
             this.attrbute_flag = true;
+            _class = "structure";
           }
 
-          console.log("word 是");
-          console.log(word);
-          console.log(_class);
 
           str += '<span class="' + _class + '">' + word + '</span>';
           snl_html += str;
