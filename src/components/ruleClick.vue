@@ -1,19 +1,26 @@
 <template>
   <div id="snl_box">
     <div id="description_container">
-      <h2>{{this.current_node.text}}自然语言描述</h2>
-      <el-input
-        type="textarea"
-        id="text_area"
-        rows=2
-        v-model="current_node.description"
-        v-bind:disabled= "disable_flag"
-      >
-      </el-input>
-      <div id="btns">
-        <el-button type="primary" v-on:click='editDescription()' >修改</el-button>
-        <el-button type="success" v-on:click='saveDescription()' >保存</el-button>
-      </div>
+      <h2>
+        {{this.current_node.text}}自然语言描述
+      </h2>
+      <el-row>
+        <el-input
+          type="textarea"
+          id="text_area"
+          rows=2
+          v-model="current_node.description"
+          v-bind:disabled= "disable_flag"
+        >
+        </el-input>
+        <div id="btns">
+          <el-button type="primary" v-on:click='editDescription()' >修改</el-button>
+          <el-button type="success" v-on:click='saveDescription()' >保存</el-button>
+        </div>
+      </el-row>
+      <!--<h2>{{this.current_node.text}}自然语言描述</h2>-->
+
+
     </div>
 
     <div id="snl_container">
@@ -337,10 +344,6 @@ export default {
 }
 </script>
 <style scoped>
-/* #snl_box{
-  width: 100%;
-  /* border-top: 2px solid #DCDFE6; */
-/* } */
 span{
   /*white-space: normal !important;*/
 }
@@ -356,7 +359,7 @@ span{
   width: 100%;
   box-sizing: border-box;
   /* background-color: #F2F6FC; */
-  padding:2% 2%;
+  padding:1% 1%;
   border-bottom: 2px solid #DCDFE6;
 }
 
@@ -378,7 +381,6 @@ span{
   width: 90%;
   max-height: 70%;
   box-sizing: border-box;
-  border-top: 2px solid #DCDFE6;
 }
 
 #tag-span{
@@ -420,15 +422,17 @@ span{
 
 
 #btns{
-  position: relative;
-  top:-10%;
-  left:80%;
+  float: right;
+  /*position: relative;*/
+  /*top:100%;*/
+  /*left:80%;*/
 }
 
 h2{
   text-align: center;
-  padding: 0 !important;
-  margin-top:0;
+  padding: 0px ;
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 /* .el-tag{
   display:inline;

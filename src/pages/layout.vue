@@ -307,7 +307,6 @@
         console.log("div被点击了");
         this.$refs.mytree.hideMenu();
         //this.$refs.snlLists.close();
-        // alert("hello");
       },
 
       metadataSend() {

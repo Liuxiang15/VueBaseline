@@ -111,9 +111,9 @@
      watch:{
       show(val){
        // this.dialogFormVisible = val;
-        console.log("因为在content对话框内容外点击导致对话框消失，此时show=");
-        console.log(this.show);
-        console.log(this.default_data);
+       //  console.log("因为在content对话框内容外点击导致对话框消失，此时show=");
+       //  console.log(this.show);
+       //  console.log(this.default_data);
         this.input_snl = this.default_data.snl;
       },
 
@@ -211,8 +211,8 @@
       },
 
       snlToHtml(input_str){
-        console.log("在snl转化成HTML的过程中，snl是");
-        console.log(input_str);
+        // console.log("在snl转化成HTML的过程中，snl是");
+        // console.log(input_str);
         var words = input_str.split(' ');
         var snl_html = "";
         for(var word of words){
