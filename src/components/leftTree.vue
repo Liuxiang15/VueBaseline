@@ -422,4 +422,21 @@ span{
   left: 200px;
   width: 97px;
 }
+
+.el-tree-node__expand-icon {
+
+  font-size: 28px !important;
+
+}
+
+.el-tree-node__content {
+  padding: 6px;
+  font-size: 35px !important;
+}
+
+.el-tree-node__expand-icon.expanded {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+  font-size: 35px !important;
+}
 </style>

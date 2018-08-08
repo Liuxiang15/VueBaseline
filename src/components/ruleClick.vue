@@ -79,8 +79,6 @@
           <el-button type="primary" @click="snlSureDelete">确 定</el-button>
         </span>
       </el-dialog>
-
-
     </div>
   </div>
 
@@ -115,7 +113,46 @@ export default {
       parent_name:"rule",
       label:"",//v-model的值为当前被选中的el-option的 value 属性值
 
-      snl_html_lists:[]
+      snl_html_lists:[],
+
+      key_words : [
+        // other:
+        ["的", ".", "。"],
+        //structure:
+        [
+          "如果","if",
+          "那么","then",
+          "不存在","存在一个","所有",
+          "不","只"
+        ],
+        // operation:
+        [
+          "contains","notcontains",
+          "equals","notequals"
+        ],
+        // num_compare:
+        [
+          "=",">=",">","<=","<"
+        ],
+        // regex:
+        ["regex"],
+        // property_name:
+        ["~", ",", "@", "-"],
+        // logic_connect:
+        ["且","并且","或","或者"],
+        // relation_compare:
+        ["多于","少于","至多","至少"],
+        // four_operations:
+        ["+","-","*","/"],
+        // quote:
+        ["'", '"', '“','”'],
+        //subject
+
+      ],
+
+      class_names:["other", "structure", "operation", "num_compare", "regex", "property_name", "logic_connect", "relation_compare", "four_operations", "quote", "subject","common"],
+
+      newline_words:["如果","if","那么","then"],//需要换行的words
 
 
     }
@@ -128,11 +165,16 @@ export default {
     showList(current_node){
       // console.log("进入show_list函数");
       // console.log(current_node);
+
+      //先把关键词subject引进来
+      this.key_words.push(this.config_keys);
+      //!!!!!!!!!!!!!!!!!!!!
       this.current_node = current_node;
       //清空数组
       this.snl_html_lists = [];
       for(var snl_spl of this.current_node.snl_spl_pairs){
-        var snl_html = this.$refs.edit_dialog.snlToHtml(snl_spl.snl);
+        // var snl_html = this.$refs.edit_dialog.snlToHtml(snl_spl.snl);
+        var snl_html = this.snlToHtml(snl_spl.snl);
         // this.snl_html_lists.push({"snl":snl_html});
         //为了更容易地获取index,选择用table
         this.snl_html_lists.push(snl_html);
@@ -151,19 +193,8 @@ export default {
 
     snlEdit(index, row_data){
       console.log("进入snlEdit函数");
-      console.log(this.edit_show);
-      this.edit_show = false;
-      this.close();
-      console.log(this.edit_show);
-      // this.edit_show = true;
       this.current_snl = this.current_node.snl_spl_pairs[index];
-      // this.current_snl.index = index;
-      // console.log("this.current_snl是");
-      // console.log(this.current_snl);
-      // console.log(this.config_keys);
       this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, this.config_keys);
-
-      // this.current_snl = this.current_node.snl_spl_pairs[index];
       this.edit_show = true;
     },
 
@@ -238,6 +269,53 @@ export default {
         this.$emit("metadataSend");
       }
     },
+
+    snlToHtml(input_str){
+      console.log("在snl转化成HTML的过程中，snl是");
+      console.log(input_str);
+      var words = input_str.split(' ');
+      var snl_html = "";
+      for(var word of words){
+        var type = this.typeKeyWord(word);
+        var str = "";
+        var _class = "";
+        if(this.newline_words.indexOf(word) != -1){
+          str += "<br/>";
+        }
+
+        _class = this.class_names[type];
+
+        if(this.attrbute_flag){
+          _class="attribute";
+          this.attrbute_flag = false;
+        }
+
+        if(word == "的"){
+          //两者关系是互斥的
+          this.attrbute_flag = true;
+        }
+
+        console.log("word 是");
+        console.log(word);
+        console.log(_class);
+
+        str += '<span class="' + _class + '">' + word + '</span>';
+        snl_html += str;
+        snl_html += "&nbsp";
+      }
+      return snl_html;
+    },
+
+    typeKeyWord(word){
+      for(var type in this.key_words){
+        for(var key of this.key_words[type]){
+          if(word === key){
+            return type;
+          }
+        }
+      }
+      return this.key_words.length;
+    },
   },
 
   watch:{
@@ -261,7 +339,7 @@ export default {
   /* border-top: 2px solid #DCDFE6; */
 /* } */
 span{
-  white-space: normal !important;
+  /*white-space: normal !important;*/
 }
 
 

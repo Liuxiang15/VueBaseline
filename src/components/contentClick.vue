@@ -70,9 +70,10 @@ export default {
 
 
     turnToSNLEdit(index, row_data, parent_index, event){
-      // console.log("in turnToSNLEdit this.current_snl  是：");
-      console.log("rowdata 是");
-      console.log(row_data);
+      console.log("in turnToSNLEdit this.edit_show  是：");
+      console.log(this.edit_show);
+      // console.log("rowdata 是");
+      // console.log(row_data);
       // this.current_snl = row_data;    //z!!!!!这个赋值语句会改变rule_snls
         this.current_snl.snl = row_data.snl;
         this.current_snl.spl = [].concat(row_data.spl);
