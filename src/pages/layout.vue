@@ -9,6 +9,7 @@
       <el-main>
         <div id="main-content" >
           <content-click v-show="content_click_show" :rule_snls="rule_snls"
+                         :config_keys="config_keys"
           @snlSaveFromContent="snlSaveFromContent"
                          @showRuleFromContent="showRuleFromContent"
            ref="ruleLists"></content-click>
@@ -124,6 +125,47 @@
         inputVisible: false,
         inputValue: '',//都是对话框的属性
         config_keys:[],//存储config里key便于高亮
+
+        key_words : [
+          // other:
+          ["的", ".", "。"],
+          //structure:
+          [
+            "如果","if",
+            "那么","then",
+            "不存在","存在一个","所有",
+            "不","只"
+          ],
+          // operation:
+          [
+            "contains","notcontains",
+            "equals","notequals"
+          ],
+          // num_compare:
+          [
+            "=",">=",">","<=","<"
+          ],
+          // regex:
+          ["regex"],
+          // property_name:
+          ["~", ",", "@", "-"],
+          // logic_connect:
+          ["且","并且","或","或者"],
+          // relation_compare:
+          ["多于","少于","至多","至少"],
+          // four_operations:
+          ["+","-","*","/"],
+          // quote:
+          ["'", '"', '“','”'],
+          //subject
+
+        ],
+
+        class_names:["other", "structure", "operation", "num_compare", "regex", "property_name", "logic_connect", "relation_compare", "four_operations", "quote", "subject","common"],
+
+        newline_words:["如果","if","那么","then"],//需要换行的word
+
+
       }
     },
     created() {
@@ -157,6 +199,10 @@
         for(var config of response.data.config.config_list){
           this.config_keys.push(config.key);
         }
+
+
+        //初始化的时候就在关键词数组里搞进去config的主语key数组
+        this.key_words.push(config_keys);
         // console.log(this.config_keys);
       }).catch(function(err){
         console.log(err);
@@ -448,6 +494,53 @@
         console.log(err);
       });
     },
+
+      snlToHtml(input_str){
+        console.log("在snl转化成HTML的过程中，snl是");
+        console.log(input_str);
+        var words = input_str.split(' ');
+        var snl_html = "";
+        for(var word of words){
+          var type = this.typeKeyWord(word);
+          var str = "";
+          var _class = "";
+          if(this.newline_words.indexOf(word) != -1){
+            str += "<br/>";
+          }
+
+          _class = this.class_names[type];
+
+          if(this.attrbute_flag){
+            _class="attribute";
+            this.attrbute_flag = false;
+          }
+
+          if(word == "的"){
+            //两者关系是互斥的
+            this.attrbute_flag = true;
+          }
+
+          console.log("word 是");
+          console.log(word);
+          console.log(_class);
+
+          str += '<span class="' + _class + '">' + word + '</span>';
+          snl_html += str;
+          snl_html += "&nbsp";
+        }
+        return snl_html;
+      },
+
+      typeKeyWord(word){
+        for(var type in this.key_words){
+          for(var key of this.key_words[type]){
+            if(word === key){
+              return type;
+            }
+          }
+        }
+        return this.key_words.length;
+      },
   }
 }
 </script>

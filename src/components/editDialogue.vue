@@ -113,6 +113,9 @@
      watch:{
       show(val){
        // this.dialogFormVisible = val;
+        console.log("因为在content对话框内容外点击导致对话框消失，此时show=");
+        console.log(this.show);
+        console.log(this.default_data);
        this.input_snl = this.default_data.snl;
       },
 
@@ -180,7 +183,7 @@
       updateDefaultData(default_data, index, config_keys){
         // console.log("in updateDefaultData default_data 是");
         // console.log(default_data);
-        console.log("this.show = ________________----------------------");
+        console.log("this.show = ----------------------");
         console.log(this.show);
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
@@ -201,7 +204,7 @@
       typeKeyWord(word){
         for(var type in this.key_words){
           for(var key of this.key_words[type]){
-            if(word == key){
+            if(word === key){
               return type;
             }
           }
@@ -210,6 +213,8 @@
       },
 
       snlToHtml(input_str){
+        console.log("在snl转化成HTML的过程中，snl是");
+        console.log(input_str);
         var words = input_str.split(' ');
         var snl_html = "";
         for(var word of words){
@@ -239,6 +244,9 @@
             this.attrbute_flag = true;
           }
 
+          console.log("word 是");
+          console.log(word);
+          console.log(_class);
 
           str += '<span class="' + _class + '">' + word + '</span>';
           snl_html += str;
@@ -257,36 +265,36 @@
 }
 
 .structure{
-    color: red;
+  color: orange;
 }
 
 .operation{
-    color:red;
+  color: orange;
 }
 
 
 .num_compare {
-  color: blue;
+  color: orange;
 
 }
 .regex{
-
+  color: orange;
 }
 .property_name{
-
+  color: orange;
 }
 
 .logic_connect {
-  color: blue;
+  color: orange;
 
 }
 
 .relation_compare{
-   color:blue;
+  color: orange;
  }
 
  .four_operations{
-
+   color: orange;
  }
 
  .quote{

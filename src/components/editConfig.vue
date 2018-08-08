@@ -120,6 +120,10 @@ import {HOST} from '../utils/config'
         item.value=[];
         item.value.push("new");
         this.config.config_list.push(item);
+        let max_page = Math.ceil(this.total / this.currentPageSize);
+        this.pageChange(max_page);
+        // this.pageChange(6);
+        //接下来要实现的是页面跳转
       },
       handleEdit(index, row) {
         // console.log(index, row);
