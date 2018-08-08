@@ -13,23 +13,10 @@
 
       </div>
       <div>
-        <!--<el-table :data="rule_snl.snl">-->
-        <!--<el-table :data="rule_snls_htmls[index]">-->
-          <!--<el-table-column label="SNL语句">-->
-            <!--<template slot-scope="scope">-->
-
-              <!--<div  v-html="scope.row">-->
-                <!--&lt;!&ndash;{{scope.row}}&ndash;&gt;-->
-              <!--</div>-->
-            <!--</template>-->
-          <!--</el-table-column>-->
-        <!--</el-table>-->
-
         <div class="html-class" v-for="(snl_html, _index) in rule_snls_htmls[index]"
               :key="_index"
               v-on:click="turnToSNLEdit(_index, index, $event)" v-html="snl_html">
         </div>
-
       </div>
 
     </el-card>
@@ -260,6 +247,16 @@ export default {
   .html-class{
     padding: 10px;
     border:1px solid #DCDFE6;
+
+  }
+
+  span{
+    white-space: pre-wrap;
+  }
+
+  .html-class:hover{
+    cursor: pointer;
+    background:#DCDFE6;
 
   }
 

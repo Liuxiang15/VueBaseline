@@ -144,11 +144,11 @@
           this.$emit('save', temp);
         }
         else if(this.parent == "content"){
-          console.log("PPPPPPPPPPPPPPPPPPPP");
+          // console.log("PPPPPPPPPPPPPPPPPPPP");
           temp.parent_index = this.default_data.parent_index;
           this.$emit('save', temp);
         }
-        console.log("close save 函数");
+        // console.log("close save 函数");
       },
       checkSNL(){
         this.$ajax({
@@ -181,8 +181,8 @@
       updateDefaultData(default_data, index, config_keys){
         // console.log("in updateDefaultData default_data 是");
         // console.log(default_data);
-        console.log("this.show = ----------------------");
-        console.log(this.show);
+        // console.log("this.show = ----------------------");
+        // console.log(this.show);
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
         this.snl_index = index;
@@ -217,6 +217,8 @@
         var snl_html = "";
         for(var word of words){
           var type = this.typeKeyWord(word);
+          // console.log(word+"的type是");
+          // console.log(this.class_names[type]);
           var str = "";
           var _class = "";
           if(this.newline_words.indexOf(word) != -1){

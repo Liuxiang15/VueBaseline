@@ -36,11 +36,13 @@
         </el-select>
       </div>
       <!--用于展示规则的列表-->
-      <el-button id="new-snl"type="primary" icon="el-icon-edit" @click="newSNL">新建SNL语句</el-button>
+      <el-button id="new-snl"type="primary" icon="el-icon-edit" @click="newSNL">新建SNL语句
+      </el-button>
+
       <el-table
         :data="this.snl_html_lists"
         >
-        <el-table-column  label="SNL语句" >
+        <el-table-column  label="SNL语句" min-width="80%">
           <template slot-scope="scope">
             <div slot="reference" class="name-wrapper" v-html="scope.row">
               <!--{{ scope.row.snl }}-->
@@ -48,7 +50,7 @@
           </template>
 
         </el-table-column>
-        <el-table-column  label="操作" >
+        <el-table-column  label="操作"  min-width="20%">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -400,7 +402,7 @@ span{
     padding-left: 10%; */
     position: relative;
     top:20px;
-    table-layout: auto;
+    /*table-layout: auto;*/
 }
 
 .el-table td {
@@ -414,6 +416,8 @@ span{
     text-align: center;
     text-overflow: ellipsis;
 }
+
+
 
 #btns{
   position: relative;
