@@ -1,8 +1,6 @@
 <template>
-    <el-dialog title="在线编辑SNL" :visible.sync="show">
-
+    <el-dialog title="在线编辑SNL" :visible="show" @close="close">
       <div id="html_div" v-html="this.snl_html"></div>
-
       <el-input
         type="textarea"
         :rows="4"
@@ -116,7 +114,7 @@
         console.log("因为在content对话框内容外点击导致对话框消失，此时show=");
         console.log(this.show);
         console.log(this.default_data);
-       this.input_snl = this.default_data.snl;
+        this.input_snl = this.default_data.snl;
       },
 
       input_snl(){
@@ -310,10 +308,7 @@
   color:blue;
 }
 
-.el-dialog__headerbtn .el-dialog__close {
-    color: #909399;
-    display: none;
-}
+
 #html_div{
   display: block;
   height: 100%;

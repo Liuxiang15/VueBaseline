@@ -9,8 +9,6 @@
     </el-input>
     <el-tree
 
-      expand-on-click-node = "false"
-      :default-expanded-keys="expanded_keys"
       :filter-node-method="filterNode"
       class="filter-tree"
       oncontextmenu="return false"
@@ -151,7 +149,7 @@ export default {
         current_node:{},
         node_delete_show:false,
         filterText:"",
-        expanded_keys:"[1]",
+        // expanded_keys:"[1]",
         //注释    opera `1234分别为新建目录， 新建叶子节点， 删除该节点， 重命名`
 
       }
@@ -172,10 +170,8 @@ export default {
         this.$emit("listenToNodeClick", node.data);
         this.menu_show = false;
 
-        console.log(this.$refs.tree.store);
-        for(var i=0;i<this.$refs.tree.store._getAllNodes().length;i++){
-          this.$refs.treeX.store._getAllNodes()[i].expanded=true;
-        }
+        // console.log(this.$refs.tree.store);
+
         // console.log("被点击的nodedata是");
         // console.log(node_data);
         // console.log("被点击的node是");
@@ -388,9 +384,7 @@ export default {
       this.$refs.tree.filter(val);
     },
 
-    expanded_keys(){
-      this.expanded_keys = [1];
-    }
+
   }
 }
 </script>

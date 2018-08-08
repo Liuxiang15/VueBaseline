@@ -271,8 +271,8 @@ export default {
     },
 
     snlToHtml(input_str){
-      console.log("在snl转化成HTML的过程中，snl是");
-      console.log(input_str);
+      // console.log("在snl转化成HTML的过程中，snl是");
+      // console.log(input_str);
       var words = input_str.split(' ');
       var snl_html = "";
       for(var word of words){
@@ -296,9 +296,9 @@ export default {
           _class = "structure";
         }
 
-        console.log("word 是");
-        console.log(word);
-        console.log(_class);
+        // console.log("word 是");
+        // console.log(word);
+        // console.log(_class);
 
         str += '<span class="' + _class + '">' + word + '</span>';
         snl_html += str;

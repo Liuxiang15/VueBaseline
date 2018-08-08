@@ -14,20 +14,22 @@
       </div>
       <div>
         <!--<el-table :data="rule_snl.snl">-->
-        <el-table :data="rule_snls_htmls[index]">
-          <el-table-column label="SNL语句">
-            <template slot-scope="scope">
-              <!--<a-->
-                <!--href="javascript:void(0);"-->
-                <!--v-on:click="turnToSNLEdit(scope.$index, scope.row, index, $event)">-->
-                <!--{{scope.row.snl}}-->
-              <!--</a>-->
-              <div v-on:click="turnToSNLEdit(scope.$index, scope.row, index, $event)" v-html="scope.row">
-                <!--{{scope.row}}-->
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
+        <!--<el-table :data="rule_snls_htmls[index]">-->
+          <!--<el-table-column label="SNL语句">-->
+            <!--<template slot-scope="scope">-->
+
+              <!--<div  v-html="scope.row">-->
+                <!--&lt;!&ndash;{{scope.row}}&ndash;&gt;-->
+              <!--</div>-->
+            <!--</template>-->
+          <!--</el-table-column>-->
+        <!--</el-table>-->
+
+        <div class="html-class" v-for="(snl_html, _index) in rule_snls_htmls[index]"
+              :key="_index"
+              v-on:click="turnToSNLEdit(_index, index, $event)" v-html="snl_html">
+        </div>
+
       </div>
 
     </el-card>
@@ -54,7 +56,7 @@ export default {
 
   data() {
     return{
-      edit_show:false,
+      edit_show: false,
       current_snl:{},//用户点击的当下SNL语句
       parent_name:"content",
       _index:1,
@@ -133,7 +135,7 @@ export default {
 
 
 
-    turnToSNLEdit(index, row_data, parent_index, event){
+    turnToSNLEdit(index,parent_index, event){
       console.log("in turnToSNLEdit this.edit_show  是：");
       console.log(this.edit_show);
       console.log(this.rule_snls[parent_index].snl[index].snl);
@@ -143,9 +145,7 @@ export default {
       console.log(this.current_snl);
       this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, this.config_keys);
       this.edit_show = true;
-      // console.log("in contentClick.vue ");
-      // console.log(event.target);
-      // console.log(event.currentTarget);
+
     },
 
     turnToRule(index){
@@ -156,8 +156,13 @@ export default {
       this.edit_show = false;
       console.log("进入contentrClick的save函数");
       console.log(new_data);
+      console.log(this.rule_snls[new_data.parent_index].snl[new_data.index].snl);
+
       this.$emit('snlSaveFromContent', new_data);
-      // console.log(new_data.snl);
+      this.current_snl.snl = this.rule_snls[new_data.parent_index].snl[new_data.index].snl;
+      this.rule_snls_htmls[new_data.parent_index][new_data.index] = this.snlToHtml(this.current_snl.snl);
+      console.log(this.snlToHtml(this.current_snl.snl));
+      console.log(this.rule_snls_htmls[new_data.parent_index][new_data.index]);
       // this.current_node.snl_spl_pairs[new_data.index].snl = new_data.snl;
     },
 
@@ -218,6 +223,20 @@ export default {
       }
       return this.key_words.length;
     },
+  },
+
+  watch:{
+    "current_snl.snl"(){
+      for(var snls of this.rule_snls){
+        var snl_htmls =  [];
+        for(var snl of snls.snl){
+          var snl_html = this.snlToHtml(snl.snl);
+          snl_htmls.push(snl_html);
+        }
+        this.rule_snls_htmls.push(snl_htmls);
+      }
+      console.log("修改的SNL已经更新了&&&&&&&&&&&&&&&&&&&&&&&&&&");
+    }
   }
 }
 
@@ -238,6 +257,12 @@ export default {
   /* .box-card {
     width: 480px;
   } */
+  .html-class{
+    padding: 10px;
+    border:1px solid #DCDFE6;
+
+  }
+
   #ruleCards{
     width: 100%;
     display: flex;
