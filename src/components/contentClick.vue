@@ -16,11 +16,14 @@
         <el-table :data="rule_snl.snl">
           <el-table-column label="SNL语句">
             <template slot-scope="scope">
-              <a
-                href="javascript:void(0);"
-                v-on:click="turnToSNLEdit(scope.$index, scope.row, index, $event)">
+              <!--<a-->
+                <!--href="javascript:void(0);"-->
+                <!--v-on:click="turnToSNLEdit(scope.$index, scope.row, index, $event)">-->
+                <!--{{scope.row.snl}}-->
+              <!--</a>-->
+              <div v-on:click="turnToSNLEdit(scope.$index, scope.row, index, $event)">
                 {{scope.row.snl}}
-              </a>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -30,6 +33,7 @@
     <edit-dialogue :show = "edit_show"
       ref = "edit_dialog"
       :parent="parent_name"
+
       @save = "save" @close="close" >
     </edit-dialogue>
 </div>
@@ -41,7 +45,7 @@ import {HOST} from '../utils/config'
 
 export default {
   name: 'ContentClick',
-  props: ['rule_snls'],
+  props: ['rule_snls', "config_keys"],
 
   components:{
     editDialogue,
@@ -52,7 +56,9 @@ export default {
       edit_show:false,
       current_snl:{},//用户点击的当下SNL语句
       parent_name:"content",
-      _index:1
+      _index:1,
+      snl_html_lists:[],
+
     }
   },
 
@@ -62,8 +68,14 @@ export default {
 
   methods:{
     showRules(rule_snls){
+
+
+      //清空数组
+      this.snl_html_lists = [];
+
+
       this.rule_snls = rule_snls;
-      console.log("in showRules");
+      console.log("in showRules HAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
       console.log(rule_snls);
     },
 
@@ -81,7 +93,7 @@ export default {
       // this.current_snl.index = index;
       this.current_snl.parent_index = parent_index;
       console.log(this.current_snl);
-      this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, []);
+      this.$refs.edit_dialog.updateDefaultData(this.current_snl, index, this.config_keys);
       this.edit_show = true;
       // console.log("in contentClick.vue ");
       // console.log(event.target);
@@ -109,7 +121,9 @@ export default {
       // console.log("in contentClick.vue ");
       // console.log(index);
       // console.log(row_data);
-    }
+    },
+
+
   }
 }
 

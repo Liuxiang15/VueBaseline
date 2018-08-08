@@ -9,6 +9,7 @@
       <el-main>
         <div id="main-content" >
           <content-click v-show="content_click_show" :rule_snls="rule_snls"
+                         :config_keys="config_keys"
           @snlSaveFromContent="snlSaveFromContent"
                          @showRuleFromContent="showRuleFromContent"
            ref="ruleLists"></content-click>
