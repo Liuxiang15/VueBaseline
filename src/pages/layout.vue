@@ -380,17 +380,17 @@
 
         if(child.is_rule){
           if(this.find_rule_order == index_i){
-            console.log("要改动的规则就是：-----------------------");
-            console.log(child);
-            console.log(index);
-            console.log(child.snl_spl_pairs[index]);
+            // console.log("要改动的规则就是：-----------------------");
+            // console.log(child);
+            // console.log(index);
+            // console.log(child.snl_spl_pairs[index]);
             if(child.snl_spl_pairs[index] == "undefined"){
               return "undefined error";
             }
             child.snl_spl_pairs[index].snl = snl;
-            console.log("改动后的规则是：");
-            console.log(child);
-            console.log(this.meta_data);
+            // console.log("改动后的规则是：");
+            // console.log(child);
+            // console.log(this.meta_data);
             this.metadataSend();
             return true;
           }
@@ -400,6 +400,7 @@
         }
         else{
           this.findTargetSNL(child.children, index_i,index, snl);
+          return false;
         }
       }
       return false;
@@ -411,10 +412,13 @@
         for(var child of arr){
           if(child.is_rule){
             if(this.find_rule_order == index){
+              console.log("找到的规则节点是：");
+              console.log(child);
               this.$refs.snlLists.showList(child);
               this.rule_click_show = true;
               this.content_click_show = false;
-              return;
+              this.find_rule_order = 0;
+              return true;
             }
             else{
               this.find_rule_order++;
@@ -422,8 +426,10 @@
           }
           else{
             this.findTargetRule(child.children, index);
+            return false;
           }
         }
+        return false;
       },
 
     snlSaveFromContent(new_data){
@@ -442,6 +448,8 @@
 
       showRuleFromContent(index){
         this.find_rule_order = 0;
+        console.log("进入showRuleFromContent：#######################");
+        console.log(this.current_node);
         this.findTargetRule(this.current_node.children, index);
       },
 
