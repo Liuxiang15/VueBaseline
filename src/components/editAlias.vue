@@ -1,10 +1,16 @@
 <template>
 <div id="alias_container">
-  <el-input
-    placeholder="输入关键字进行过滤"
-    v-model="filter_key">
-  </el-input>
+  <!--<el-input-->
+    <!--placeholder="输入关键字进行过滤"-->
+    <!--v-model="filter_key">-->
+  <!--</el-input>-->
   <el-table :data="alias_list" >
+    <el-table-column>
+      <el-table-column
+        width="1"
+      >
+      </el-table-column>
+    </el-table-column>
     <el-table-column label="key" width="180" align="center" :filters="filter_text"
                      :filter-method="filterHandler">
       <template slot-scope="scope">
@@ -208,7 +214,7 @@ import {HOST} from '../utils/config'
 
 </script>
 
-<style>
+<style scoped>
 #alias_container{
   position: relative;
   width: 60%;

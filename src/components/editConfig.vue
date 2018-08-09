@@ -1,20 +1,45 @@
 <template>
 <div id="config_container">
-  <el-input
-    placeholder="输入关键字进行过滤"
-    v-model="filter_key">
-  </el-input>
-  <el-table
-    :data="pagedData">
+  <!--<el-input-->
+  <!--placeholder="输入关键字进行过滤"-->
+  <!--v-model="filter_key"-->
+<!--&gt;-->
+<!--</el-input>-->
+  <el-table :data="pagedData">
 
-    <el-table-column label="key" width="180" align="center" :filters="filter_text"
-                     :filter-method="filterHandler">
+    <!-- 为了防止循环第一项显示在最后一项 -->
+    <el-table-column>
+      <el-table-column
+        width="1"
+      >
+      </el-table-column>
+    </el-table-column>
+    <el-table-column label="key" width="180" align="center">
+      <!--<el-table-row-->
+        <!--:render-header='addSearch'-->
+        <!--show-overflow-tooltip-->
+      <!--&gt;-->
+      <!--</el-table-row>-->
+
       <template slot-scope="scope">
+
         <el-tag size="medium">{{ scope.row.key }}</el-tag>
       </template>
     </el-table-column>
 
     <el-table-column label="value" >
+      <!--<el-table-column-->
+        <!--:render-header='addSearch'-->
+        <!--show-overflow-tooltip-->
+      <!--&gt;-->
+      <!--</el-table-column>-->
+
+      <!--<el-table-row-->
+        <!--:render-header='addSearch'-->
+        <!--show-overflow-tooltip-->
+      <!--&gt;-->
+      <!--</el-table-row>-->
+
       <template slot-scope="scope">
         <div slot="reference" class="name-wrapper">
             <el-tag size="medium" v-for = "(val, index) in scope.row.value"
@@ -25,7 +50,7 @@
       </template>
     </el-table-column>
 
-    <el-table-column label="操作">
+    <el-table-column class="operation-btn"label="操作">
       <template slot-scope="scope">
         <el-button
           size="mini"
@@ -228,6 +253,34 @@ import {HOST} from '../utils/config'
         this.config.config_list.splice(this.current_index, 1);
         this.config_delete_show = false;
       },
+      addSearch (h, {column}) {
+        let inputValue = {}
+        return h('Input', {
+          props: {
+            placeholder: 'Search' + ' ' + column.label,
+            icon: 'ios-search-strong'
+          },
+          style: {
+            paddingRight: '5px'
+          },
+          on: {
+            input: val => {
+              inputValue = val
+              if (!inputValue) {
+                this.vaildInputValue(column.label, inputValue)
+              }
+            },
+            class: 'ivu-input-icon',
+            'on-click': () => {
+              this.vaildInputValue(column.label, inputValue)
+            },
+            'on-enter': () => {
+              console.log('enter')
+              this.vaildInputValue(column.label, inputValue)
+            }
+          }
+        })
+      },
 
     },
     watch:{
@@ -276,6 +329,10 @@ import {HOST} from '../utils/config'
   left: 50%;
   top: 10%;
 }
+/*.operation-btn{*/
+  /*min-width: 20%;*/
+  /*max-width: 20%;*/
+/*}*/
 
 
 </style>

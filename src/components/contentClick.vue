@@ -136,8 +136,8 @@ export default {
     },
 
     turnToRule(index){
-      console.log("查看的规则是：#######################");
-      console.log(index);
+      // console.log("查看的规则是：#######################");
+      // console.log(index);
       this.$emit('showRuleFromContent', index);
     },
 
