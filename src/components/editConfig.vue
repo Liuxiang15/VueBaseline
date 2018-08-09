@@ -110,8 +110,8 @@ import {HOST} from '../utils/config'
         data: {"_id":this.id},
       }).then(response=>{
         this.config = response.data.config;
-        console.log("this.config is ");
-        console.log(this.config);
+        // console.log("this.config is ");
+        // console.log(this.config);
       }).catch(function(err){
         console.log(err);
       });

@@ -118,7 +118,7 @@
       },
 
       input_snl(){
-        console.log(this.input_snl);
+        // console.log(this.input_snl);
         //这里要实现对用户输入snl的检查同时你生成相应的html
         this.snl_html = this.snlToHtml(this.input_snl);
       },
@@ -140,13 +140,14 @@
         // console.log("enter save 函数");
         // console.log(temp);
         // temp.spl = this.default_data.spl;
-        console.log(this.snl_index);
+        // console.log(this.snl_index);
         temp.index = this.snl_index;
         if(this.parent == "rule"){
           this.$emit('save', temp);
         }
         else if(this.parent == "content"){
-          // console.log("PPPPPPPPPPPPPPPPPPPP");
+          console.log("PPPPPPPPPPPPPPPPPPPP");
+          console.log(temp);
           temp.parent_index = this.default_data.parent_index;
           this.$emit('save', temp);
         }
@@ -162,11 +163,7 @@
           data: {"snl": this.input_snl},
           // async: false  //要同步才能获取打返回的值
         }).then(response => {
-          console.log("in editDialogue ");
-          console.log(response.data);
           this.check_result = JSON.parse(response.data.data);
-          console.log("after check ");
-          console.log(this.check_result);
           if(this.check_result.msg === "correct"){
             this.right_show = true;
             this.wrong_show = false;

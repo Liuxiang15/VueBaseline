@@ -374,7 +374,7 @@
 
     findTargetSNL(arr, index_i, index, snl){
         //根据点击节点的孩子数组，index_i是这条规则在所有子孙中的排序，index是snl语句的顺序
-      console.log("index_i是！！！！！！！！！！！！！！！！！！！！！！！！");
+      console.log("parent_index是！！！！！！！！！！！！！！！！！！！！！！！！");
       console.log(index_i);
       for(var child of arr){
 
@@ -382,7 +382,16 @@
           if(this.find_rule_order == index_i){
             console.log("要改动的规则就是：-----------------------");
             console.log(child);
+            console.log(index);
+            console.log(child.snl_spl_pairs[index]);
+            if(child.snl_spl_pairs[index] == "undefined"){
+              return "undefined error";
+            }
             child.snl_spl_pairs[index].snl = snl;
+            console.log("改动后的规则是：");
+            console.log(child);
+            console.log(this.meta_data);
+            this.metadataSend();
             return true;
           }
           else{
@@ -394,8 +403,6 @@
         }
       }
       return false;
-      console.log("index_i是！！！！！！！！！！！！！！！！！！！！！！！！");
-      console.log(index_i);
     },
 
       findTargetRule(arr, index){
