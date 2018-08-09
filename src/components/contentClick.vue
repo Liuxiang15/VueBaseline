@@ -141,8 +141,8 @@ export default {
 
     save(new_data){
       this.edit_show = false;
-      console.log("进入contentrClick的save函数");
-      console.log(new_data);
+      // console.log("进入contentrClick的save函数");
+      // console.log(new_data);
       console.log(this.rule_snls[new_data.parent_index].snl[new_data.index].snl);
 
       this.$emit('snlSaveFromContent', new_data);

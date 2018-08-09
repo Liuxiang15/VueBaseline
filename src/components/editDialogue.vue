@@ -128,6 +128,8 @@
       close() {
         // this.new_snl = this.default_data.snl;
         this.$emit('close');
+        this.right_show = false;
+        this.wrong_show = false;
       },
 
       save() {

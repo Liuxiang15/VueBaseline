@@ -1,9 +1,12 @@
 <template>
 <div id="alias_container">
-  <el-table :data="alias_list">
-
-    <!-- config.config_list -->
-    <el-table-column label="key" width="180" align="center">
+  <el-input
+    placeholder="输入关键字进行过滤"
+    v-model="filter_key">
+  </el-input>
+  <el-table :data="alias_list" >
+    <el-table-column label="key" width="180" align="center" :filters="filter_text"
+                     :filter-method="filterHandler">
       <template slot-scope="scope">
         <el-tag size="medium">{{ scope.row.key }}</el-tag>
       </template>
@@ -28,7 +31,7 @@
     </el-table-column>
   </el-table>
 
-  <el-dialog :title="title" :visible.sync="dialog_show">
+  <el-dialog :title="title" :visible.sync="dialog_show" @close="close">
     <el-form>
       <el-form-item label="key">
         <el-input v-model="new_key" auto-complete="off"></el-input>
@@ -44,6 +47,17 @@
       <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
     </div>
   </el-dialog>
+
+  <el-dialog
+    title="删除提示"
+    :visible.sync="alias_delete_show"
+    center>
+    <span>您确定删除选中的alias语句吗？</span>
+    <span slot="footer" class="dialog-footer">
+          <el-button @click="aliasCancelDelete">取 消</el-button>
+          <el-button type="primary" @click="aliasSureDelete">确 定</el-button>
+        </span>
+  </el-dialog>
   <div id="btns">
     <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
     <el-button type="success" icon="el-icon-check" @click="aliasSave">保存</el-button>
@@ -53,12 +67,8 @@
 
 <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script>
-// import configDialogue from "./configDialogue.vue"
 import {HOST} from '../utils/config'
   export default {
-    // components:{
-    //   configDialogue
-    // },
 
     data() {
       return {
@@ -68,8 +78,11 @@ import {HOST} from '../utils/config'
         new_key:"",
         new_value:"",
         current_index: 0,
-        operation: 0,
-        title:""
+        operation_type: "",
+        title:"",
+        filter_key:"",
+        filter_text:[],
+        alias_delete_show:false,
         //operation=1时，编辑，2时新建
       }
     },
@@ -82,7 +95,7 @@ import {HOST} from '../utils/config'
 
     methods:{
       handleEdit(index, row){
-        this.operation = 1;
+        this.operation_type = "edit";
         this.title = "编辑alias"
         this.dialog_show = true;
         this.current_index = index;
@@ -91,7 +104,20 @@ import {HOST} from '../utils/config'
 
       },
       handleDelete(index, row) {
-        this.alias_list.splice(index, 1);
+        this.current_index = index;
+        this.alias_delete_show = true;
+
+      },
+
+      aliasCancelDelete(){
+        this.current_index = -1;
+        this.alias_delete_show = false;
+      },
+
+      aliasSureDelete(){
+        this.alias_list.splice(this.current_index, 1);
+        this.current_index = -1;
+        this.alias_delete_show = false;
       },
 
       close(){
@@ -101,16 +127,13 @@ import {HOST} from '../utils/config'
         this.new_value = "";
       },
       save(){
-        // this.alias_list[this.current_index] = {
-        //   key: this.new_key,
-        //   value: this.new_value
-        // };
-        if(this.operation == 1){
+
+        if(this.operation == "edit"){
           this.alias_list[this.current_index].key = this.new_key;
           this.alias_list[this.current_index].value = this.new_value;
 
-          console.log(this.current_index);
-          console.log(this.alias_list[this.current_index]);
+          // console.log(this.current_index);
+          // console.log(this.alias_list[this.current_index]);
         }
         else{
           const new_item = {
@@ -129,7 +152,7 @@ import {HOST} from '../utils/config'
       },
       newItem(){
         console.log("进入newItem函数");
-        this.operation = 2;
+        this.operation = "new";
         this.title = "新建alias"
         this.dialog_show = true;
       },
@@ -139,7 +162,6 @@ import {HOST} from '../utils/config'
         this.$ajax({
           //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
           method:'POST',
-      //dataType:"jsonp",
           url:HOST + '/alias/refresh_alias',
           data: JSON.stringify(this.response.alias),
         }).then(response=>{
@@ -152,11 +174,33 @@ import {HOST} from '../utils/config'
           console.log(err);
         });
 
+      },
+
+      filterHandler(value, row, column) {
+        console.log("FFFFFFFFFFFFFFFFFFFFFFF");
+        console.log(value);
+        console.log(row);
+        console.log(column);
+        const property = column['property'];
+        return row[property] === value;
+      },
+    },
+
+    watch:{
+      filter_key()
+      {
+        this.filter_text = [];
+        var temp = {};
+        temp.text = this.filter_key;
+        temp.value = this.filter_key;
+        this.filter_text.push(temp);
       }
     }
-
   }
+
+
 </script>
+
 <style>
 #alias_container{
   position: relative;
@@ -168,10 +212,5 @@ import {HOST} from '../utils/config'
   position: relative;
   left: 60%;
   top: 30%;
-}
-
-.el-dialog__headerbtn .el-dialog__close {
-    color: #909399;
-    display: none;
 }
 </style>

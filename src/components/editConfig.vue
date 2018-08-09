@@ -1,10 +1,14 @@
 <template>
 <div id="config_container">
+  <el-input
+    placeholder="输入关键字进行过滤"
+    v-model="filter_key">
+  </el-input>
   <el-table
     :data="pagedData">
 
-    <!-- config.config_list -->
-    <el-table-column label="key" width="180" align="center">
+    <el-table-column label="key" width="180" align="center" :filters="filter_text"
+                     :filter-method="filterHandler">
       <template slot-scope="scope">
         <el-tag size="medium">{{ scope.row.key }}</el-tag>
       </template>
@@ -48,7 +52,17 @@
 
   <config-dialogue :show = "edit_show" :default_data ="curr_data" @save="save" @close="close">
   </config-dialogue>
-  <edit
+
+  <el-dialog
+    title="删除提示"
+    :visible.sync="config_delete_show"
+    center>
+    <span>您确定删除选中的config语句吗？</span>
+    <span slot="footer" class="dialog-footer">
+          <el-button @click="configCancelDelete">取 消</el-button>
+          <el-button type="primary" @click="configSureDelete">确 定</el-button>
+        </span>
+  </el-dialog>
 </div>
 </template>
 
@@ -77,7 +91,13 @@ import {HOST} from '../utils/config'
         config:{},
         // total:0,
         currentPage: 1,
-        currentPageSize: 10
+        currentPageSize: 10,
+        filter_key:"",
+        filter_text:[],
+        config_delete_show:false,
+
+        current_index:-1,
+
 
       }
     },
@@ -115,13 +135,23 @@ import {HOST} from '../utils/config'
 
     methods: {
       newItem() {
+        // var item = {};
+        // item.key="new";
+        // item.value=[];
+        // item.value.push("new");
+        // this.config.config_list.push(item);
+        // let max_page = Math.ceil(this.total / this.currentPageSize);
+        // this.pageChange(max_page);
+
+        //往头部插入元素
         var item = {};
         item.key="new";
         item.value=[];
         item.value.push("new");
-        this.config.config_list.push(item);
-        let max_page = Math.ceil(this.total / this.currentPageSize);
-        this.pageChange(max_page);
+        // var new_config_list = this.config.config_list.slice(0);
+        this.config.config_list.unshift(item);
+
+
         // this.pageChange(6);
         //接下来要实现的是页面跳转
       },
@@ -135,7 +165,9 @@ import {HOST} from '../utils/config'
       },
       handleDelete(index, row) {
         // console.log("要删除的这行是");
-        this.config.config_list.splice(index, 1);
+        this.config_delete_show = true;
+        this.current_index = index;
+        // this.config.config_list.splice(index, 1);
         // console.log(row);
       },
 
@@ -171,22 +203,42 @@ import {HOST} from '../utils/config'
       },
       configSave(){
         this.$ajax({
-          //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
           method:'POST',
-      //dataType:"jsonp",
           url:HOST + '/config/refresh_config',
           data: JSON.stringify(this.config),
         }).then(response=>{
-          //node_data = response.data.nodedata;
-          //6 路由跳转并传递lib的id， meta_data， node_data
           console.log(response.data);
-          alert("保存成功");
-
         }).catch(function(err){
           console.log(err);
         });
+      },
+      filterHandler(value, row, column) {
+        console.log("FFFFFFFFFFFFFFFFFFFFFFF");
+        console.log(value);
+        console.log(row);
+        console.log(column);
+        const property = column['property'];
+        return row[property] === value;
+      },
+      configCancelDelete(){
+        this.config_delete_show = false;
+      },
+
+      configSureDelete(){
+        this.config.config_list.splice(this.current_index, 1);
+        this.config_delete_show = false;
+      },
+
+    },
+    watch:{
+      filter_key(){
+        this.filter_text = [];
+        var temp = {};
+        temp.text = this.filter_key;
+        temp.value = this.filter_key;
+        this.filter_text.push(temp);
       }
-    }
+    },
   }
 </script>
 <style scoped>

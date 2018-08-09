@@ -229,8 +229,6 @@
           this.rule_order = 0;//记住每次获取目录下所有rule_snls的时候必须清0
           this.rule_snls = [];
           this.getRuleSNLs(data.children);
-          console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++");
-          console.log(this.rule_snls);
           this.$refs.ruleLists.showRules(this.rule_snls);
           this.rule_click_show = false;
           this.content_click_show = true;
