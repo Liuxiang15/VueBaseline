@@ -101,23 +101,31 @@ import {HOST} from '../utils/config'
         this.current_index = index;
         this.new_key = this.alias_list[this.current_index].key;
         this.new_value = this.alias_list[this.current_index].value;
-
       },
       handleDelete(index, row) {
+        this.operation_type = "delete";
         this.current_index = index;
         this.alias_delete_show = true;
 
       },
 
       aliasCancelDelete(){
-        this.current_index = -1;
-        this.alias_delete_show = false;
+        if(this.operation_type == "delete"){
+          this.current_index = -1;
+          this.alias_delete_show = false;
+        }
+
       },
 
       aliasSureDelete(){
-        this.alias_list.splice(this.current_index, 1);
-        this.current_index = -1;
-        this.alias_delete_show = false;
+        if(this.operation_type == "delete"){
+          this.alias_list.splice(this.current_index, 1);
+          this.current_index = -1;
+          this.alias_delete_show = false;
+        }
+        // this.alias_list.splice(this.current_index, 1);
+        // this.current_index = -1;
+        // this.alias_delete_show = false;
       },
 
       close(){
@@ -127,15 +135,13 @@ import {HOST} from '../utils/config'
         this.new_value = "";
       },
       save(){
-
-        if(this.operation == "edit"){
+        console.log("进入alias的save函数后的operation是："+this.operation);
+        if(this.operation_type === "edit"){
+          console.log("进入编辑保存函数");
           this.alias_list[this.current_index].key = this.new_key;
           this.alias_list[this.current_index].value = this.new_value;
-
-          // console.log(this.current_index);
-          // console.log(this.alias_list[this.current_index]);
         }
-        else{
+        else if(this.operation_type === "new"){
           const new_item = {
             key: this.new_key,
             value: this.new_value
@@ -148,11 +154,12 @@ import {HOST} from '../utils/config'
         this.new_key = "";
         this.new_value = "";
         this.dialog_show = false;
+        this.operation_type = "";
         console.log(this.response);
       },
       newItem(){
         console.log("进入newItem函数");
-        this.operation = "new";
+        this.operation_type = "new";
         this.title = "新建alias"
         this.dialog_show = true;
       },

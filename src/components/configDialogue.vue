@@ -1,5 +1,5 @@
 <template>
-<el-dialog title="弹出对话框" :visible.sync="dialogFormVisible">
+<el-dialog title="弹出对话框" :visible.sync="dialogFormVisible" @close="close">
 
   <el-form :model="form">
 
