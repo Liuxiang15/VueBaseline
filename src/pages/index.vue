@@ -30,8 +30,8 @@
               <el-table-column label="操作">
               <template slot-scope="props">
                 <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
-                <el-button type="danger" @click.native ="libDelete(props.$index, props.row)">删除</el-button>
                 <el-button @click.native ="libRename(props.$index, props.row)">重命名</el-button>
+                <el-button type="danger" @click.native ="libDelete(props.$index, props.row)">删除</el-button>
               </template>
               </el-table-column>
             </el-table>

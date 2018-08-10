@@ -212,23 +212,18 @@
       snlToHtml(input_str){
         // console.log("在snl转化成HTML的过程中，snl是");
         // console.log(input_str);
+        var line_index = 1;
         var words = input_str.split(' ');
         var snl_html = "";
         for(var word of words){
           var type = this.typeKeyWord(word);
-          // console.log(word+"的type是");
-          // console.log(this.class_names[type]);
           var str = "";
           var _class = "";
           if(this.newline_words.indexOf(word) != -1){
-            // if(this.line_order == 1){
-            //     this.line_order += 1;
-            // }
-            // else{
-            //   str += "<br/>";
-            //   this.line_order += 1;
-            // }
-            str += "<br/>";
+            if(line_index !== 1){
+              str += "<br/>";
+            }
+            line_index += 1;
           }
 
           _class = this.class_names[type];

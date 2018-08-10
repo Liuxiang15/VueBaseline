@@ -282,6 +282,7 @@ export default {
     snlToHtml(input_str){
       // console.log("在snl转化成HTML的过程中，snl是");
       // console.log(input_str);
+      var line_index = 1;
       var words = input_str.split(' ');
       var snl_html = "";
       for(var word of words){
@@ -289,7 +290,10 @@ export default {
         var str = "";
         var _class = "";
         if(this.newline_words.indexOf(word) != -1){
-          str += "<br/>";
+          if(line_index !== 1){
+            str += "<br/>";
+          }
+          line_index += 1;
         }
 
         _class = this.class_names[type];
@@ -375,9 +379,9 @@ span{
 
 #snl_container{
   position: relative;
-  padding-top: 2%;
-  padding-left: 5%;
-  padding-right: 5%;
+  margin-top: 2%;
+  margin-left: 5%;
+  margin-right: 5%;
   width: 90%;
   max-height: 70%;
   box-sizing: border-box;
@@ -386,8 +390,10 @@ span{
 #tag-span{
   position: relative;
   width: 100%;
-  display: inline-flex;
-  justify-content:space-around;
+  /*display: inline-flex;*/
+  /*justify-content:space-around;*/
+  border-bottom: 2px solid #DCDFE6;
+  padding-bottom: 1%;
 }
 
 #new-snl{
@@ -434,9 +440,10 @@ h2{
   margin-top: 0px;
   margin-bottom: 20px;
 }
-/* .el-tag{
+.el-tag{
+  margin-right: 2%;
   display:inline;
-} */
+}
 
 .other{
 

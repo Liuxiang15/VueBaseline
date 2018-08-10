@@ -168,6 +168,7 @@ export default {
     snlToHtml(input_str){
       // console.log("在snl转化成HTML的过程中，snl是");
       // console.log(input_str);
+      var line_index = 1;
       var words = input_str.split(' ');
       var snl_html = "";
       for(var word of words){
@@ -175,9 +176,11 @@ export default {
         var str = "";
         var _class = "";
         if(this.newline_words.indexOf(word) != -1){
-          str += "<br/>";
+          if(line_index !== 1){
+            str += "<br/>";
+          }
+          line_index += 1;
         }
-
         _class = this.class_names[type];
 
         if(this.attrbute_flag){

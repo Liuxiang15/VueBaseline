@@ -3,7 +3,7 @@
   为元素绑定一个 oncontextmenu 事件 -->
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
   <div id="aside_container" >
-    <el-input
+    <el-input id="filter-input"
       placeholder="输入关键字进行过滤"
       v-model="filterText">
     </el-input>
@@ -73,13 +73,13 @@
 
     <el-dialog title="重命名" :visible.sync="rename_show" @close="close">
       <el-form>
-        <el-form-item label="新名称">
-          <el-input v-model="new_text" auto-complete="off"></el-input>
+        <el-form-item label="编号">
+          <el-input v-model="new_order" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <el-form>
-        <el-form-item label="编号">
-          <el-input v-model="new_order" auto-complete="off"></el-input>
+        <el-form-item label="新名称">
+          <el-input v-model="new_text" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -360,6 +360,19 @@ export default {
 </script>
 
 <style scoped>
+
+  /*#filter-key{*/
+    /*box-sizing: border-box;*/
+    /*margin: 5% !important;*/
+  /*}*/
+.el-input{
+  width: 90%;
+
+  margin-left: 5%;
+  padding-top: 2%;
+  margin-right: 5%;
+}
+
 span{
   padding-top: 10px;
   overflow:hidden;
