@@ -222,6 +222,9 @@
         var words = input_str.split(' ');
         var snl_html = "";
         for(var word of words){
+          if(word.length == 0 || word==" "){
+            continue;//空格的话进入下一单词的检测
+          }
           var type = this.typeKeyWord(word);
           var str = "";
           var _class = "";
