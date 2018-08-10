@@ -172,20 +172,13 @@ export default {
   },
   methods:{
     showList(current_node){
-      // console.log("进入show_list函数");
-      // console.log(current_node);
-
       //先把关键词subject引进来
       this.key_words.push(this.config_keys);
-      //!!!!!!!!!!!!!!!!!!!!
       this.current_node = current_node;
       //清空数组
       this.snl_html_lists = [];
       for(var snl_spl of this.current_node.snl_spl_pairs){
-        // var snl_html = this.$refs.edit_dialog.snlToHtml(snl_spl.snl);
         var snl_html = this.snlToHtml(snl_spl.snl);
-        // this.snl_html_lists.push({"snl":snl_html});
-        //为了更容易地获取index,选择用table
         this.snl_html_lists.push(snl_html);
       }
     },
@@ -234,11 +227,8 @@ export default {
         snl:"new",
         spl:[],
       };
-      // item.snl="new";
-      // item.spl=[];
       this.current_node.snl_spl_pairs.push(new_item);
       this.current_snl = new_item;//激发变化
-
       this.$emit("metadataSend");
     },
 
@@ -264,9 +254,9 @@ export default {
     },
 
     selectTag(value){
-      console.log("被选中的标签是：");
-      console.log(value);
-      console.log("label 是" + this.label);
+      // console.log("被选中的标签是：");
+      // console.log(value);
+      // console.log("label 是" + this.label);
       //判断选中的标签是否已经存在标签中
       if(this.current_node.tags.indexOf(value) >= 0){
         console.log(value);
@@ -280,8 +270,6 @@ export default {
     },
 
     snlToHtml(input_str){
-      // console.log("在snl转化成HTML的过程中，snl是");
-      // console.log(input_str);
       var line_index = 1;
       while(input_str.indexOf("\n") != -1){
         input_str = input_str.replace("\n", ' ');
@@ -313,15 +301,8 @@ export default {
         }
 
         if(word == "的" || word=="有属性"){
-          //两者关系是互斥的
           this.attrbute_flag = true;
           _class = "structure";
-        }
-
-        console.log("word 是" + word + _class);
-
-        if(word == "那么"){
-          console.log("那么的类型是" + _class);
         }
         str += '<span class="' + _class + '">' + word + '</span>';
         snl_html += str;
@@ -348,8 +329,6 @@ export default {
       this.snl_html_lists = [];
       for(var snl_spl of this.current_node.snl_spl_pairs){
         var snl_html = this.$refs.edit_dialog.snlToHtml(snl_spl.snl);
-        // this.snl_html_lists.push({"snl":snl_html});
-        //为了更容易地获取index,选择用table
         this.snl_html_lists.push(snl_html);
       }
     },
@@ -362,9 +341,7 @@ span{
   /*white-space: normal !important;*/
 }
 
-
 #description_container{
-
   position: relative;
   /* left: 20%; */
   padding-left: 20%;

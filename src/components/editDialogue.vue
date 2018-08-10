@@ -1,6 +1,6 @@
 <template>
     <el-dialog title="在线编辑SNL" :visible="show" @close="close">
-      <div id="html_div" v-html="this.snl_html"></div>
+      <div id="html_div" v-html="snl_html"></div>
       <el-input
         type="textarea"
         :rows="4"
@@ -30,8 +30,7 @@
 
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="checkSNL"
-        >检查</el-button>
+        <el-button type="primary" @click="checkSNL">检查</el-button>
         <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
         <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
       </div>
@@ -41,21 +40,18 @@
 <script>
   import {HOST} from '../utils/config'
   export default {
-    // 1 dialogFormVisible决定了对话框是否显现，初始值在本组件里定义
-    // 在layout.vue里实现了对该属性修改的函数
+    // 1 dialogFormVisible决定了对话框是否显现，在layout.vue里实现了对该属性修改的函数
     //key_words存储关键词
     //snl_html是snl的HTML版本，比如把关键词用span包围
     name:"editDialogue",
     props:[
       "show",
       "parent",//存储它的父亲组件
-      // "config_keys"
     ],
 
     data() {
 
       return {
-
         default_data:{},
         check_result:{},
         right_show:false,
@@ -110,16 +106,11 @@
     },
      watch:{
       show(val){
-       // this.dialogFormVisible = val;
-       //  console.log("因为在content对话框内容外点击导致对话框消失，此时show=");
-       //  console.log(this.show);
-       //  console.log(this.default_data);
         this.input_snl = this.default_data.snl;
       },
 
       input_snl(){
-        // console.log(this.input_snl);
-        //这里要实现对用户输入snl的检查同时你生成相应的html
+        //这里要实现对用户输入snl的检查同时生成相应的html
         this.snl_html = this.snlToHtml(this.input_snl);
       },
     },
@@ -135,33 +126,25 @@
       save() {
         // this.default_data.snl = this.input_snl;
         //this.current_snl.index
-        var temp = {};
+        let temp = {};
         temp.snl = this.input_snl;
-        // console.log("enter save 函数");
-        // console.log(temp);
-        // temp.spl = this.default_data.spl;
-        // console.log(this.snl_index);
         temp.index = this.snl_index;
+        //以不同途径保存SNL的修改结果，传递的参数并不相同
         if(this.parent == "rule"){
           this.$emit('save', temp);
         }
         else if(this.parent == "content"){
-          console.log("PPPPPPPPPPPPPPPPPPPP");
-          console.log(temp);
           temp.parent_index = this.default_data.parent_index;
           this.$emit('save', temp);
         }
-        // console.log("close save 函数");
       },
+
       checkSNL(){
         this.$ajax({
           //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
-          // async:false,
-          // cache: false,
           method: 'POST',
           url: HOST + '/data/check_snl',
           data: {"snl": this.input_snl},
-          // async: false  //要同步才能获取打返回的值
         }).then(response => {
           this.check_result = JSON.parse(response.data.data);
           if(this.check_result.msg === "correct"){
@@ -178,27 +161,19 @@
       },
 
       updateDefaultData(default_data, index, config_keys){
-        // console.log("in updateDefaultData default_data 是");
-        // console.log(default_data);
-        // console.log("this.show = ----------------------");
-        // console.log(this.show);
+        //初始化对话框的相关参数
         this.default_data = default_data;
         this.snl_html = this.snlToHtml(this.default_data.snl);
         this.snl_index = index;
-        // console.log("in updateDefaultData snl_index = " + this.snl_index);
         if(!this.default_data["parent_index"]){
           //如果传参default_data没有这个属性
             this.key_words.push(config_keys);
         }
-        // console.log(config_keys);
-        // console.log(this.key_words);
       },
 
-      snlSaveFromContent(new_data){
-
-      },
-      //遍历关键词数组返回词语类型,其实返回的数值就是数组中的下标，如果找不到，就返回最大下标+1，也就是this.key_words.length
       typeKeyWord(word){
+        //遍历关键词数组返回词语类型,其实返回的数值就是数组中的下标，
+        // 如果找不到，就返回最大下标+1，也就是this.key_words.length
         for(var type in this.key_words){
           for(var key of this.key_words[type]){
             if(word === key){
@@ -210,17 +185,15 @@
       },
 
       snlToHtml(input_str){
-        // console.log("在snl转化成HTML的过程中，snl是");
-        // console.log(input_str);
-        var line_index = 1;
+        let line_index = 1;
         while(input_str.indexOf("\n") != -1){
           input_str = input_str.replace("\n", ' ');
         }
         while(input_str.indexOf("\r") != -1){
           input_str = input_str.replace("\r", ' ');
         }
-        var words = input_str.split(' ');
-        var snl_html = "";
+        let words = input_str.split(' ');
+        let snl_html = "";
         for(var word of words){
           if(word.length == 0 || word==" "){
             continue;//空格的话进入下一单词的检测
@@ -236,19 +209,15 @@
           }
 
           _class = this.class_names[type];
-
+          //以下是判断当前关键词类型的特殊情况
           if(this.attrbute_flag){
             _class="attribute";
             this.attrbute_flag = false;
           }
-
           if(word == "的" || word=="有属性"){
-            //两者关系是互斥的
             this.attrbute_flag = true;
             _class = "structure";
           }
-
-
           str += '<span class="' + _class + '">' + word + '</span>';
           snl_html += str;
           snl_html += "&nbsp";
@@ -273,10 +242,8 @@
   color: orange;
 }
 
-
 .num_compare {
   color: orange;
-
 }
 .regex{
   color: orange;

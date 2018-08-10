@@ -55,7 +55,7 @@
       <span>您确定删除选中的规则库吗？</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancalDelete">取 消</el-button>
-        <el-button type="primary" @click="SureDelete">确 定</el-button>
+        <el-button type="primary" @click="sureDelete">确 定</el-button>
       </span>
     </el-dialog>
   </el-main>
@@ -101,17 +101,17 @@ export default {
       this.lib_names = response.data.data;
       console.log(this.lib_names);
     })
+    console.log("AAA0");
   },
   methods:{
     showDetail(index, row){
       //3 点击某一行规则库名后的按钮触发的事件，index是点击行在列表中的下标(从0开始)
       //data是点击该行存储的数据，具体内容可看console语句输出
-      var id = row._id;
       this.$router.push({
         path: '/data',
         name: "layout" ,
         props: true,
-        query: {id: id,}
+        query: {id: row._id,}
       });
     },
 
@@ -129,7 +129,8 @@ export default {
       this.centerDialogVisible = true;
       this.current_index = index;
     },
-    SureDelete(){
+
+    sureDelete(){
       this.centerDialogVisible = false;
       //这个先后顺序不能换
       _libDelete({"_id":this.lib_names[this.current_index]._id});
@@ -158,7 +159,7 @@ export default {
       this.lib_names[this.current_index].lib_name = this.new_libname;
       changeLibName({
         "_id":this.lib_names[this.current_index]._id,
-        "lib_name":this.new_libname
+        "lib_name":this.new_libname,
       });
     },
 

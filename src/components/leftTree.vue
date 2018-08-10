@@ -134,7 +134,6 @@ export default {
         new_content_show:false,
         new_rule_show:false,
         rename_show:false,
-
         operation:0,
         hello:"hello",
         new_text:"text",
@@ -146,7 +145,7 @@ export default {
         node_delete_show:false,
         filterText:"",
         // expanded_keys:"[1]",
-        //注释    opera `1234分别为新建目录， 新建叶子节点， 删除该节点， 重命名
+        //opera `1234分别为新建目录， 新建叶子节点， 删除该节点， 重命名
 
       }
   },
@@ -165,7 +164,6 @@ export default {
       console.log(node.data);
       this.$emit("listenToNodeClick", node.data);
       this.menu_show = false;
-
     },
 
     handleRightClick(event, nodedata, node, self){
@@ -178,8 +176,6 @@ export default {
         }
       this.current_data = nodedata;
       this.current_node = node;
-      // console.log("this.current_data是：-------------------");
-      // console.log(this.current_data);
     },
 
     hideMenu(){
@@ -214,9 +210,7 @@ export default {
         this.current_data.children.push(new_item);
       }
       else if(this.operation == 2){
-        //这里要注意的是SNL语句可能输入多条，这牵扯到怎么设计对话框的额结构
-        //我们先假设用户只输入一条SNL语句
-        //或者我们在解析用户的多条SNL语句再操作
+        //假设用户只输入一条SNL语句
         this.new_rule_show = false;
         const new_item = {};
         new_item.children = [];
@@ -236,11 +230,8 @@ export default {
         this.current_data.order = this.new_order;
         this.new_order = "";
       }
-      console.log("++++++++++++++++++++++++++++++++++++");
       this.$emit("metadataSend");
-
       this.menu_show = false;
-
       //输入框的值保持为原始
       this.new_text = "";
       this.new_description = "";
@@ -251,7 +242,6 @@ export default {
       console.log("in getData ");
       console.log(this.meta_data);
       this.data = this.meta_data.metadata.data;
-      // this.group = this.meta_data.metadata.tags;
     },
     handleDragStart(node, ev) {
       console.log('drag start', node);
@@ -269,10 +259,9 @@ export default {
 
     newContent(node_data){
       //先传参进入newContent函数,之后可能通过data里的值传进来
-      //新建元素的order属性需要判断node_data的children的order
       if(this.current_data.is_rule){
         this.menu_show = false;
-        alert("当前操作叶子结点不能新建目录");
+        alert("当前操作规则不能新建目录");
       }
       else{
         this.operation = 1;
@@ -281,10 +270,9 @@ export default {
     },
 
     newRule(node_data, des, text){
-      //新建叶子节点不同之处在于要
       if(this.current_data.is_rule){
         this.menu_show = false;
-        alert("当前操作叶子结点不能新建规则");
+        alert("当前操作规则不能新建规则");
       }
       else{
         this.operation = 2;
@@ -295,10 +283,6 @@ export default {
     deleleNode(){
       //删除该节点，修改双亲节点,注意参数是node
       this.operation = 3;
-      // const parent = this.current_node.parent;
-      // const children = parent.data.children || parent.data;
-      // const index = children.findIndex(d => d.id === this.current_data.id);
-      // children.splice(index, 1);
       this.node_delete_show = true;
       this.menu_show = false;
     },
@@ -310,8 +294,8 @@ export default {
     nodeSureDelete(){
       this.node_delete_show = false;
       const parent = this.current_node.parent;
-      console.log("删除节点的父亲是：");
-      console.log(parent);
+      // console.log("删除节点的父亲是：");
+      // console.log(parent);
       // const children = parent.data.children || parent.data;
       const children = parent.childNodes;
       // console.log("删除节点的兄弟有：");

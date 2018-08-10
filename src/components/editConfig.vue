@@ -1,10 +1,5 @@
 <template>
 <div id="config_container">
-  <!--<el-input-->
-  <!--placeholder="输入关键字进行过滤"-->
-  <!--v-model="filter_key"-->
-<!--&gt;-->
-<!--</el-input>-->
   <el-table :data="pagedData">
 
     <!-- 为了防止循环第一项显示在最后一项 -->
@@ -15,31 +10,12 @@
       </el-table-column>
     </el-table-column>
     <el-table-column label="key" width="180" align="center">
-      <!--<el-table-row-->
-        <!--:render-header='addSearch'-->
-        <!--show-overflow-tooltip-->
-      <!--&gt;-->
-      <!--</el-table-row>-->
-
       <template slot-scope="scope">
         <el-tag size="medium">{{ scope.row.key }}</el-tag>
       </template>
-
     </el-table-column>
 
-    <el-table-column label="value" >
-      <!--<el-table-column-->
-        <!--:render-header='addSearch'-->
-        <!--show-overflow-tooltip-->
-      <!--&gt;-->
-      <!--</el-table-column>-->
-
-      <!--<el-table-row-->
-        <!--:render-header='addSearch'-->
-        <!--show-overflow-tooltip-->
-      <!--&gt;-->
-      <!--</el-table-row>-->
-
+    <el-table-column label="value" min-width="80%">
       <template slot-scope="scope">
         <div slot="reference" class="name-wrapper">
             <el-tag size="medium" v-for = "(val, index) in scope.row.value"
@@ -50,7 +26,7 @@
       </template>
     </el-table-column>
 
-    <el-table-column class="operation-btn"label="操作">
+    <el-table-column class="operation-btn"label="操作" min-width="20%">
       <template slot-scope="scope">
         <el-button
           size="mini"
@@ -129,14 +105,12 @@ import {HOST} from '../utils/config'
     created(){
       this.id = this.$route.query.id;
       this.$ajax({
-      //7 向站点请求{"_id":"5b470ba5fc6a38858a673ec8","lib_name":"Component Check"}的数组
+      //7 向站点请求config数组
         method:'POST',
         url:HOST+'/config/get_config',
-        data: {"_id":this.id},
+        data: {"_id":this.$route.query.id},
       }).then(response=>{
         this.config = response.data.config;
-        // console.log("this.config is ");
-        // console.log(this.config);
       }).catch(function(err){
         console.log(err);
       });
@@ -160,63 +134,42 @@ import {HOST} from '../utils/config'
 
     methods: {
       newItem() {
-        // var item = {};
-        // item.key="new";
-        // item.value=[];
-        // item.value.push("new");
-        // this.config.config_list.push(item);
-        // let max_page = Math.ceil(this.total / this.currentPageSize);
-        // this.pageChange(max_page);
-
         //往头部插入元素
-        var item = {};
+        let item = {};
         item.key="new";
         item.value=[];
         item.value.push("new");
-        // var new_config_list = this.config.config_list.slice(0);
         this.config.config_list.unshift(item);
-
-
-        // this.pageChange(6);
-        //接下来要实现的是页面跳转
       },
+
       handleEdit(index, row) {
-        // console.log(index, row);
-        // console.log("被点击的这行数据是：");
-        // console.log(row);
-        //console.log(index, row);
-        var real_index = (this.currentPage - 1) * this.currentPageSize + index;
+        //先获取修改语句的下标
+        let real_index = (this.currentPage - 1) * this.currentPageSize + index;
         this.editDialogue(real_index, row);
       },
       handleDelete(index, row) {
-        // console.log("要删除的这行是");
         this.config_delete_show = true;
         this.current_index = index;
-        // this.config.config_list.splice(index, 1);
-        // console.log(row);
       },
 
       editDialogue(index, row){
         // console.log("进入showDialogue函数");
         this.edit_show = true;
-        // console.log("this.edit_show"+this.edit_show);
         this.curr_data.data.key = row.key;
-
         this.curr_data.data.value = [].concat(row.value);
-
         this.curr_data.index = index;
-        // console.log(this.curr_data);
       },
+
       close(){
         this.edit_show = false;
       },
-      save(res){
+
+      save(new_data){
         this.edit_show = false;
-        // console.log(res);
-        this.curr_data = res;
+        this.curr_data = new_data;
         console.log(this.curr_data);
-        this.config.config_list[res.index].key = res.data.key;
-        this.config.config_list[res.index].value = res.data.value;
+        this.config.config_list[new_data.index].key = new_data.data.key;
+        this.config.config_list[new_data.index].value = new_data.data.value;
 
       },
 
@@ -238,10 +191,10 @@ import {HOST} from '../utils/config'
         });
       },
       filterHandler(value, row, column) {
-        console.log("FFFFFFFFFFFFFFFFFFFFFFF");
-        console.log(value);
-        console.log(row);
-        console.log(column);
+        // console.log("FFFFFFFFFFFFFFFFFFFFFFF");
+        // console.log(value);
+        // console.log(row);
+        // console.log(column);
         const property = column['property'];
         return row[property] === value;
       },
@@ -252,34 +205,6 @@ import {HOST} from '../utils/config'
       configSureDelete(){
         this.config.config_list.splice(this.current_index, 1);
         this.config_delete_show = false;
-      },
-      addSearch (h, {column}) {
-        let inputValue = {}
-        return h('Input', {
-          props: {
-            placeholder: 'Search' + ' ' + column.label,
-            icon: 'ios-search-strong'
-          },
-          style: {
-            paddingRight: '5px'
-          },
-          on: {
-            input: val => {
-              inputValue = val
-              if (!inputValue) {
-                this.vaildInputValue(column.label, inputValue)
-              }
-            },
-            class: 'ivu-input-icon',
-            'on-click': () => {
-              this.vaildInputValue(column.label, inputValue)
-            },
-            'on-enter': () => {
-              console.log('enter')
-              this.vaildInputValue(column.label, inputValue)
-            }
-          }
-        })
       },
 
     },
@@ -321,12 +246,14 @@ import {HOST} from '../utils/config'
 
 .el-pagination{
   position: relative;
-  left: 10%;
+  width: 80%;
+  top: 5px;
+  left: 20%;
 }
 
 #btns{
   position: relative;
-  left: 50%;
+  left: 80%;
   top: 10%;
 }
 /*.operation-btn{*/

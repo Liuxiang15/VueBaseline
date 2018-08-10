@@ -2,7 +2,6 @@
 <el-dialog title="弹出对话框" :visible.sync="dialogFormVisible" @close="close">
 
   <el-form :model="form">
-
     <el-form-item label="key" :label-width="formLabelWidth">
       <el-input id="key" v-model="default_data.data.key"
       auto-complete="off">
@@ -10,23 +9,20 @@
     </el-form-item>
   </el-form>
 
-
-    <div  v-for = "(val,index) in default_data.data.value" :key="index">
-      <el-form>
-        <el-form-item label="value" :label-width="formLabelWidth">
-          <el-input type="textarea"  v-model="default_data.data.value[index]"
-          auto-complete="off"></el-input>
-
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(index)">删除
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-
-
+  <div v-for = "(val,index) in default_data.data.value" :key="index">
+    <el-form>
+      <el-form-item label="value" :label-width="formLabelWidth">
+        <el-input type="textarea"  v-model="default_data.data.value[index]"
+                  auto-complete="off">
+        </el-input>
+        <el-button
+          size="mini"
+          type="danger"
+          @click="handleDelete(index)">删除
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 
   <div slot="footer" class="dialog-footer">
     <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
@@ -41,11 +37,6 @@
     // 1 dialogFormVisible决定了对话框是否显现，初始值在本组件里定义
     // 在layout.vue里实现了对该属性修改的函数
     name:"configDialogue",
-    // props:{
-    //   show: Boolean,
-    //   default: false,
-    //   default_data: {}
-    // },
     props:[
       "show", "default_data",
     ],

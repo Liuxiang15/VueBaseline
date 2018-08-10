@@ -129,9 +129,6 @@ import {HOST} from '../utils/config'
           this.current_index = -1;
           this.alias_delete_show = false;
         }
-        // this.alias_list.splice(this.current_index, 1);
-        // this.current_index = -1;
-        // this.alias_delete_show = false;
       },
 
       close(){
@@ -153,8 +150,8 @@ import {HOST} from '../utils/config'
             value: this.new_value
           };
           this.alias_list.push(new_item);
-          console.log("新增后的list是");
-          console.log(this.alias_list);
+          // console.log("新增后的list是");
+          // console.log(this.alias_list);
         }
 
         this.new_key = "";
@@ -164,22 +161,18 @@ import {HOST} from '../utils/config'
         console.log(this.response);
       },
       newItem(){
-        console.log("进入newItem函数");
+        // console.log("进入newItem函数");
         this.operation_type = "new";
         this.title = "新建alias"
         this.dialog_show = true;
       },
 
       aliasSave(){
-
         this.$ajax({
-          //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
           method:'POST',
           url:HOST + '/alias/refresh_alias',
           data: JSON.stringify(this.response.alias),
         }).then(response=>{
-          //node_data = response.data.nodedata;
-          //6 路由跳转并传递lib的id， meta_data， node_data
           console.log(response.data);
           alert("保存成功");
 
@@ -190,10 +183,10 @@ import {HOST} from '../utils/config'
       },
 
       filterHandler(value, row, column) {
-        console.log("FFFFFFFFFFFFFFFFFFFFFFF");
-        console.log(value);
-        console.log(row);
-        console.log(column);
+        // console.log(value);
+        // console.log(row);
+        // console.log(column);
+        //筛选函数没有执行
         const property = column['property'];
         return row[property] === value;
       },
