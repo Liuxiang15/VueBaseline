@@ -283,9 +283,15 @@ export default {
       // console.log("在snl转化成HTML的过程中，snl是");
       // console.log(input_str);
       var line_index = 1;
+      while(input_str.indexOf("\n") != -1){
+        input_str = input_str.replace("\n", ' ');
+      }
       var words = input_str.split(' ');
       var snl_html = "";
       for(var word of words){
+        if(word.length == 0){
+          continue;//空格的话进入下一单词的检测
+        }
         var type = this.typeKeyWord(word);
         var str = "";
         var _class = "";
@@ -309,10 +315,11 @@ export default {
           _class = "structure";
         }
 
-        // console.log("word 是");
-        // console.log(word);
-        // console.log(_class);
+        console.log("word 是" + word + _class);
 
+        if(word == "那么"){
+          console.log("那么的类型是" + _class);
+        }
         str += '<span class="' + _class + '">' + word + '</span>';
         snl_html += str;
         snl_html += "&nbsp";
