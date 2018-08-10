@@ -169,6 +169,12 @@ export default {
       // console.log("在snl转化成HTML的过程中，snl是");
       // console.log(input_str);
       var line_index = 1;
+      while(input_str.indexOf("\n") != -1){
+        input_str = input_str.replace("\n", ' ');
+      }
+      while(input_str.indexOf("\r") != -1){
+        input_str = input_str.replace("\r", ' ');
+      }
       var words = input_str.split(' ');
       var snl_html = "";
       for(var word of words){

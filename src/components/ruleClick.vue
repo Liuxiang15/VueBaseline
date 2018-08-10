@@ -286,6 +286,9 @@ export default {
       while(input_str.indexOf("\n") != -1){
         input_str = input_str.replace("\n", ' ');
       }
+      while(input_str.indexOf("\r") != -1){
+        input_str = input_str.replace("\r", ' ');
+      }
       var words = input_str.split(' ');
       var snl_html = "";
       for(var word of words){
