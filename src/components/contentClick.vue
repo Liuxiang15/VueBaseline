@@ -273,7 +273,7 @@ export default {
   }
 
   .el-card {
-      width: 40%;
+      width: 70%;
       margin-bottom: 5%;
   }
 
