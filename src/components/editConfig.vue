@@ -22,9 +22,9 @@
       <!--</el-table-row>-->
 
       <template slot-scope="scope">
-
         <el-tag size="medium">{{ scope.row.key }}</el-tag>
       </template>
+
     </el-table-column>
 
     <el-table-column label="value" >

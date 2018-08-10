@@ -627,6 +627,22 @@
     height: 100%;
   }
 
+  .el-tree-node__content {
+    padding: 6px;
+    font-size: 35px !important;
+  }
+
+  .el-tree-node__expand-icon.expanded {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    font-size: 35px !important;
+  }
+
+  .el-tree-node__content {
+
+    padding: 1% !important;
+  }
+
   .el-textarea.is-disabled .el-textarea__inner {
     color: black;
   }

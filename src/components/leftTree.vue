@@ -361,6 +361,7 @@ export default {
 
 <style scoped>
 span{
+  padding-top: 10px;
   overflow:hidden;
   white-space:nowrap;
   text-overflow:ellipsis;
@@ -402,5 +403,16 @@ span{
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
   font-size: 35px !important;
+}
+
+.el-tree-node__content {
+
+  padding: 1% !important;
+}
+
+.el-tree-node {
+  white-space: nowrap;
+  padding: 1% !important;
+  outline: 0;
 }
 </style>
