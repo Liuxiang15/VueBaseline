@@ -254,7 +254,7 @@ import {HOST} from '../utils/config'
 #btns{
   position: relative;
   left: 80%;
-  top: 10%;
+  top: 2%;
 }
 /*.operation-btn{*/
   /*min-width: 20%;*/
