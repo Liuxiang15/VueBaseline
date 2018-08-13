@@ -1,38 +1,28 @@
 <template>
   <el-main class="container">
+
     <el-row type="flex" justify="space-around">
       <el-col :xs="24" :sm="24" :lg="24">
-        <el-card
-        class="overview-panel"
-        :body-style="{ padding: '20px' }">
-          <div slot="header" class="title">
-            <el-row>
-              <el-col :span="18">
-                <i class="el-icon-document"></i>
-                <span>规则库列表</span>
-              </el-col>
-              <el-col :span="1">
-                <el-button @click.native ="createARuleLib()">创建规则库</el-button>
-              </el-col>
-            </el-row>
+        <el-card class="overview-panel" :body-style="{ padding: '0px' }">
+          <div slot="header" class="clearfix">
+            <i class="el-icon-document"></i>
+            <span>规则库列表</span>
+            <el-button style="float:right" @click.native ="createARuleLib()">创建规则库</el-button>
           </div>
           <div class="overview-content">
-            <el-table
-            class="table"
-            :data="lib_names">
+            <el-table class="table" :data="lib_names">
               <el-table-column prop="lib_names" label="规则库名字">
-              <template slot-scope="scope">
-                <i class="el-icon-document"></i>
-                <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
-              </template>
+                <template slot-scope="scope">
+                  <i class="el-icon-document"></i>
+                  <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
+                </template>
               </el-table-column>
-
               <el-table-column label="操作">
-              <template slot-scope="props">
-                <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
-                <el-button @click.native ="libRename(props.$index, props.row)">重命名</el-button>
-                <el-button type="danger" @click.native ="libDelete(props.$index, props.row)">删除</el-button>
-              </template>
+                <template slot-scope="props">
+                  <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
+                  <el-button @click.native ="libRename(props.$index, props.row)">重命名</el-button>
+                  <el-button type="danger" @click.native ="libDelete(props.$index, props.row)">删除</el-button>
+                </template>
               </el-table-column>
             </el-table>
           </div>
@@ -48,9 +38,10 @@
         <el-button type="success" icon="el-icon-check" @click.native="saveRename()">确定</el-button>
       </div>
     </el-dialog>
+
     <el-dialog
       title="删除提示"
-      :visible.sync="centerDialogVisible"
+      :visible.sync="delete_dialog_show"
       center>
       <span>您确定删除选中的规则库吗？</span>
       <span slot="footer" class="dialog-footer">
@@ -58,6 +49,7 @@
         <el-button type="primary" @click="sureDelete">确 定</el-button>
       </span>
     </el-dialog>
+
   </el-main>
 </template>
 
@@ -81,7 +73,7 @@ export default {
       rename_dialog_show:false,
       new_libname:"",
       current_index:0,
-      centerDialogVisible:false,
+      delete_dialog_show:false,
 
     }
   },
@@ -99,9 +91,9 @@ export default {
     //2 向指定网页发送get请求并接收存储metadata和nodedata的字典
     findLibList(response => {
       this.lib_names = response.data.data;
+      console.log("AAA0");
       console.log(this.lib_names);
     })
-    console.log("AAA0");
   },
   methods:{
     showDetail(index, row){
@@ -126,19 +118,19 @@ export default {
     },
 
     libDelete(index, data){
-      this.centerDialogVisible = true;
+      this.delete_dialog_show = true;
       this.current_index = index;
     },
 
     sureDelete(){
-      this.centerDialogVisible = false;
+      this.delete_dialog_show = false;
       //这个先后顺序不能换
       _libDelete({"_id":this.lib_names[this.current_index]._id});
       this.lib_names.splice(this.current_index, 1);
     },
 
     cancalDelete(){
-      this.centerDialogVisible = false;
+      this.delete_dialog_show = false;
       this.current_index = -1;
     },
 
@@ -168,6 +160,16 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
+.clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both
+  }
+
 .container
   width 60%
   position relative
