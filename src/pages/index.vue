@@ -1,6 +1,5 @@
 <template>
   <el-main class="container">
-
     <el-row type="flex" justify="space-around">
       <el-col :xs="24" :sm="24" :lg="24">
         <el-card class="overview-panel" :body-style="{ padding: '0px' }">
@@ -41,7 +40,7 @@
 
     <el-dialog
       title="删除提示"
-      :visible.sync="delete_dialog_show"
+      :visible.sync="centerDialogVisible"
       center>
       <span>您确定删除选中的规则库吗？</span>
       <span slot="footer" class="dialog-footer">
@@ -73,7 +72,7 @@ export default {
       rename_dialog_show:false,
       new_libname:"",
       current_index:0,
-      delete_dialog_show:false,
+      centerDialogVisible:false,
 
     }
   },
@@ -118,19 +117,19 @@ export default {
     },
 
     libDelete(index, data){
-      this.delete_dialog_show = true;
+      this.centerDialogVisible = true;
       this.current_index = index;
     },
 
     sureDelete(){
-      this.delete_dialog_show = false;
+      this.centerDialogVisible = false;
       //这个先后顺序不能换
       _libDelete({"_id":this.lib_names[this.current_index]._id});
       this.lib_names.splice(this.current_index, 1);
     },
 
     cancalDelete(){
-      this.delete_dialog_show = false;
+      this.centerDialogVisible = false;
       this.current_index = -1;
     },
 

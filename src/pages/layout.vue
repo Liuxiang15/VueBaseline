@@ -1,5 +1,5 @@
 <template>
-    <el-container @click.native="divClick" >
+    <el-container >
       <el-aside >
         <left-tree ref="mytree" id="left_tree" :meta_data="meta_data" @metadataSend="metadataSend"
                    v-on:listenToNodeClick="showMsgFromChild">
@@ -33,6 +33,26 @@
               下载SPL
             </a>
           </el-button>
+          <el-button type="primary" @click="showExcelHistory()">查看Excel历史</el-button>
+          <el-dialog title="Excel导入历史" :visible.sync="excel_history_show" @close="excel_close">
+            <el-collapse accordion>
+              <el-collapse-item v-for="(row, index) in excel_history">
+                <template slot="title">
+                  <el-row class="row-border" type="flex" align="middle">
+                    <el-col :span="8">{{row.org_name}}</el-col>
+                    <el-col :span="8">{{row.create_date}}</el-col>
+                    <el-col :span="8">
+                      <el-button type="text">
+                        <a :href="downloadExcel() + row._id" style='text-decoration:none;color:inherit;'>下载</a>
+                      </el-button>
+                    </el-col>
+                  </el-row>
+                </template>
+                <pre class="pj">{{row.excel_template_definition}}</pre>
+              </el-collapse-item>
+            </el-collapse>
+          </el-dialog>
+
           <el-button type="primary" @click="manageLibTags">
             管理规则库标签
           </el-button>
@@ -91,6 +111,7 @@
 
 
   import {getMetadataById} from '../api/rulelib'
+  import {getExcelHistoryById} from '../api/rulelib'
 
   export default {
     name: 'layout',
@@ -103,10 +124,12 @@
     data() {
       return {
         //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录
+        excel_history: [],
         current_node: {},
         meta_data: {},
         rule_click_show: false,
         content_click_show: true,
+        excel_history_show: false,
         rule_snls:[],//存储当前目录(分类)下所有的规则及其对应的SNL语句数组
         rule_order:0,//存储单条规则在当下分类下的孩子排序
         find_rule_order:0,
@@ -152,14 +175,9 @@
           // quote:
           ["'", '"', '“','”'],
           //subject
-
         ],
-
         class_names:["other", "structure", "operation", "num_compare", "regex", "property_name", "logic_connect", "relation_compare", "four_operations", "quote", "subject","common"],
-
         newline_words:["如果","if","那么","then"],//需要换行的word
-
-
       }
     },
     created() {
@@ -179,7 +197,7 @@
       });
 
       this.$ajax({
-      // // 向站点请求config数组，并存储key值数组作为关键词识别
+      // 向站点请求config数组，并存储key值数组作为关键词识别
         method:'POST',
         data:{"_id":id},
         url:HOST+'/config/get_config'
@@ -215,7 +233,25 @@
           this.content_click_show = true;
         }
       },
-
+      showExcelHistory () {
+        // this.excel_history_show = true
+        var id = this.$route.query.id;
+        this.$ajax({
+          // 向站点请求包含metadata和nodedata属性的字典数据,同时把tag分离出来
+          method: 'POST',
+          url: HOST + '/excel/excel_history',
+          data: {"_id": id},
+        }).then(response => {
+            console.log(response)
+            this.excel_history=response.data.data
+          }).catch(function (err) {
+          console.log(err);
+        });
+        this.excel_history_show = true
+      },
+      excel_close () {
+        this.excel_history_show = false
+      },
       checkAllSNLs(){
         this.$ajax({
           method: 'POST',
@@ -297,6 +333,12 @@
         return HOST + '/data/download_spl_file/' + this.$route.query.id
       },
 
+      downloadExcel() {
+        console.log('----=-=------')
+        // console.log(_id)
+        return HOST + '/excel/download_excel_file/'
+      },
+
       showImportExcel() {
         this.$router.push({
           path: '/importExcel',
@@ -306,7 +348,6 @@
           }
         });
       },
-
       getRuleSNLs(arr){
         //找点击目录下的所有规则和它的SNL语句并存储在this.rule_snls.push中
         for(var child of arr){
@@ -326,8 +367,6 @@
         // console.log("in getRuleSNLs ");
         // console.log(this.rule_snls);
     },
-
-
     findTargetSNL(arr, index_i, index, snl){
       //根据点击节点的孩子数组，index_i是这条规则在所有子孙中的排序，index是snl语句在规则中的顺序找规则
       //并修改该规则的SNL语句
@@ -472,7 +511,13 @@
 </script>
 
 <!-- 使用vue 引入一个组件时，组件中的css样式将作用域全局 ,解决方法-->
-<style  scoped>
+<style scoped>
+  .row-border {
+    /* border-bottom: 1px solid; */
+    border-color: #9F79EE;
+    height: 50px;
+  }
+
   body {
     height: 100%;
   }

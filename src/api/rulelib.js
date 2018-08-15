@@ -8,8 +8,10 @@ const CREATE_LIB_API = HOST+'/data/create_metadata'
 const LIB_DELETE_API = HOST+'/data/delete_metadata'
 const LIBNAME_CHANGE_API = HOST+'/data/change_lib_name'
 const GET_METADAtA_BYID_API = HOST + '/data/get_metadata'
+const GET_EXCEL_HISTORY = HOST + '/excel/excel_history'
 
 export function findLibList(callback){
+  console.log(DATA_INDEX_API)
   return axios.get(DATA_INDEX_API).then(callback);
 }
 
@@ -27,4 +29,8 @@ export function changeLibName(post_data){
 
 export function getMetadataById(post_data, callback){
   return axios.post(GET_METADAtA_BYID_API, post).then(callback);
+}
+
+export function getExcelHistoryById(post_data, callback){
+  return axios.post(GET_EXCEL_HISTORY, post).then(callback);
 }
