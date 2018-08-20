@@ -28,11 +28,11 @@
           <el-button @click = "showImportExcel()" icon="el-icon-upload">Excel导入</el-button>
           <el-button @click.native ="editConfig()">编辑config</el-button>
           <el-button @click.native ="editAlias()">编辑alias</el-button>
-          <el-button type="primary" icon="el-icon-download">
+          <!-- <el-button type="primary" icon="el-icon-download">
             <a :href="downloadLink()" style='text-decoration:none;color:inherit;'>
               下载SPL
             </a>
-          </el-button>
+          </el-button> -->
           <el-button type="primary" @click="showExcelHistory()">查看Excel历史</el-button>
           <el-dialog title="Excel导入历史" :visible.sync="excel_history_show" @close="excel_close">
             <el-collapse accordion>

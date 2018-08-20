@@ -49,7 +49,7 @@
       <el-table
         :data="this.snl_html_lists"
         >
-        <el-table-column  label="SNL语句" min-width="80%">
+        <el-table-column  label="SNL语句" min-width="70%">
           <template slot-scope="scope">
             <div slot="reference" class="name-wrapper" v-html="scope.row">
               <!--{{ scope.row.snl }}-->
@@ -57,7 +57,7 @@
           </template>
 
         </el-table-column>
-        <el-table-column  label="操作"  min-width="20%">
+        <el-table-column  label="操作"  min-width="30%">
           <template slot-scope="scope">
             <el-button
               size="mini"
