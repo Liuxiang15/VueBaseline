@@ -111,7 +111,7 @@
 
       input_snl(){
         //这里要实现对用户输入snl的检查同时生成相应的html
-        this.snl_html = this.snlToHtml(this.input_snl);
+        // this.snl_html = this.snlToHtml(this.input_snl);
       },
     },
     methods:{
@@ -134,6 +134,11 @@
           this.$emit('save', temp);
         }
         else if(this.parent == "content"){
+          temp.parent_index = this.default_data.parent_index;
+          this.$emit('save', temp);
+        }
+        else if(this.parent == "meta_data"){
+          console.log("进入对话框的metadata保存函数");
           temp.parent_index = this.default_data.parent_index;
           this.$emit('save', temp);
         }
@@ -228,7 +233,7 @@
     }
   };
 </script>
-<style>
+<style >
 
 .other{
 
@@ -276,6 +281,9 @@
   color:black;
 }
 
+.query {
+  background-color:yellow;
+}
 .attribute{
   color:blue;
 }

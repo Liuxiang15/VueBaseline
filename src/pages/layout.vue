@@ -1,14 +1,16 @@
 <template>
-    <el-container >
+    <el-container @click.native="divClick">
       <el-aside >
         <left-tree ref="mytree" id="left_tree" :meta_data="meta_data" @metadataSend="metadataSend"
-                   v-on:listenToNodeClick="showMsgFromChild">
+                   @listenToNodeClick="showMsgFromChild"
+        @showSNLQueryResult="showSNLQueryResult">
         </left-tree>
       </el-aside>
 
       <el-main>
         <div id="main-content" >
-          <content-click v-show="content_click_show" :rule_snls="rule_snls"
+          <!--:rule_snls="rule_snls"-->
+          <content-click v-show="content_click_show"
                          :config_keys="config_keys"
                          @snlSaveFromContent="snlSaveFromContent"
                          @showRuleFromContent="showRuleFromContent"
@@ -23,17 +25,19 @@
             @metadataSend="metadataSend"
           >
           </rule-click>
+          <snl-query v-show="snl_query_show"
+                     ref="snlQuery"
+                     :config_keys="config_keys"
+            @showRuleByIndex="showRuleByIndex"
+                     @snlSaveFromSnlQuery="snlSaveFromSnlQuery"
+          >
+          </snl-query>
         </div>
-        <div id="btn-group">
-          <el-button @click = "showImportExcel()" icon="el-icon-upload">Excel导入</el-button>
-          <el-button @click.native ="editConfig()">编辑config</el-button>
-          <el-button @click.native ="editAlias()">编辑alias</el-button>
-          <!-- <el-button type="primary" icon="el-icon-download">
-            <a :href="downloadLink()" style='text-decoration:none;color:inherit;'>
-              下载SPL
-            </a>
-          </el-button> -->
-          <el-button type="primary" @click="showExcelHistory()">查看Excel历史</el-button>
+        <div class="btn-group">
+          <el-button class="btn-class" @click = "showImportExcel()" icon="el-icon-upload">Excel导入</el-button>
+          <el-button class="btn-class" @click.native ="editConfig()" icon="el-icon-edit">编辑config</el-button>
+          <el-button class="btn-class" @click.native ="editAlias()" icon="el-icon-edit">编辑alias</el-button>
+          <el-button class="btn-class" @click="showExcelHistory()"type="primary">查看Excel历史</el-button>
           <el-dialog title="Excel导入历史" :visible.sync="excel_history_show" @close="excel_close">
             <el-collapse accordion>
               <el-collapse-item v-for="(row, index) in excel_history">
@@ -53,7 +57,7 @@
             </el-collapse>
           </el-dialog>
 
-          <el-button type="primary" @click="manageLibTags">
+          <el-button class="btn-class" @click="manageLibTags" type="primary" >
             管理规则库标签
           </el-button>
           <el-dialog title="管理规则库标签" :visible.sync="tagsDialogShow">
@@ -79,20 +83,32 @@
               + New Tag
             </el-button>
           </el-dialog>
-          <el-button id="checkout" type="primary" @click="checkAllSNLs">检查所有SNL语句</el-button>
 
-          <el-alert  title="" v-show="right_show" type="success"
-            show-icon>
-            msg:{{this.check_result.msg}}
-          </el-alert>
-          <el-alert title="" v-show="wrong_show" type="error"
-            show-icon>
-            msg:{{this.check_result.msg}}
-            <br>
-            <div v-for="info in check_result.output">
-            {{info}}
-            </div>
-          </el-alert>
+
+          <el-popover
+            placement="left"
+            trigger="click"
+            title="检查所有SNL语句结果：">
+            <el-button class="btn-class" id="checkout" slot="reference" type="primary" @click="checkAllSNLs">检查所有SNL语句</el-button>
+            <el-alert  title="" v-show="right_show" type="success"
+                       show-icon :closable="false">
+              msg:{{this.check_result.msg}}
+            </el-alert>
+            <el-alert title="" v-show="wrong_show" type="error"
+                      show-icon :closable="false">
+              msg:{{this.check_result.msg}}
+              <div v-for="info in check_result.output">
+                {{info}}
+              </div>
+            </el-alert>
+            <el-alert  title="" v-if="exception_show" type="warning" show-icon
+                       :closable="false">
+              <p> Exception:{{this.check_result.error}}</p>
+              <p>message:{{this.check_result.message}}</p>
+            </el-alert>
+          </el-popover>
+
+
 
         </div>
 
@@ -108,6 +124,8 @@
   import LeftTree from '../components/leftTree'
   import RuleClick from "../components/ruleClick"
   import ContentClick from "../components/contentClick"
+  import SnlQuery from "../components/snlQuery"
+
 
 
   import {getMetadataById} from '../api/rulelib'
@@ -120,6 +138,7 @@
       LeftTree,
       RuleClick,
       ContentClick,
+      SnlQuery,
     },
     data() {
       return {
@@ -129,6 +148,7 @@
         meta_data: {},
         rule_click_show: false,
         content_click_show: true,
+        snl_query_show:false,
         excel_history_show: false,
         rule_snls:[],//存储当前目录(分类)下所有的规则及其对应的SNL语句数组
         rule_order:0,//存储单条规则在当下分类下的孩子排序
@@ -136,6 +156,7 @@
         check_result:{},
         right_show:false,
         wrong_show:false,
+        exception_show:false,
         tag_options:[],
         value:"",
         tagsDialogShow:false,//为了展示tag对话框
@@ -223,6 +244,7 @@
           this.$refs.snlLists.showList(data);
           this.rule_click_show = true;
           this.content_click_show = false;
+          this.snl_query_show = false;
         }
         else{
           this.rule_order = 0;//记住每次获取目录下所有rule_snls的时候必须清0
@@ -230,6 +252,7 @@
           this.getRuleSNLs(data.children);
           this.$refs.ruleLists.showRules(this.rule_snls);
           this.rule_click_show = false;
+          this.snl_query_show = false;
           this.content_click_show = true;
         }
       },
@@ -260,13 +283,25 @@
         }).then(response => {
           console.log(response.data);
           this.check_result = JSON.parse(response.data.data);
-          if(this.check_result.msg === "correct"){
-            this.right_show = true;
-            this.wrong_show = false;
+          // if(this.check_result.msg === "correct"){
+          if(response.data.code !== 500){
+            if(this.check_result.msg === "correct"){
+              this.right_show = true;
+              this.wrong_show = false;
+              this.exception_show = false;
+            }
+            else{
+              this.wrong_show = true;
+              this.right_show = false;
+              this.exception_show = false;
+            }
           }
           else{
+            console.log("调试结果是：");
+            console.log(this.check_result.error);
+            this.exception_show = true;
             this.right_show = false;
-            this.wrong_show = true;
+            this.wrong_show = false;
           }
         }).catch(function (err) {
           console.log(err);
@@ -394,12 +429,15 @@
 
       findTargetRule(arr, index){
         //点击目录的查看规则按钮执行的函数，找相应规则
-        for(var child of arr){
+        console.log("进入findTargetRule函数");
+        console.log(arr);
+        for(let child of arr){
           if(child.is_rule){
             if(this.find_rule_order == index){
               this.$refs.snlLists.showList(child);
               this.rule_click_show = true;
               this.content_click_show = false;
+              this.snl_query_show = false;
               this.find_rule_order = 0;
               return true;
             }
@@ -421,10 +459,23 @@
       var result =  this.findTargetSNL(this.current_node.children,new_data.parent_index, new_data.index,new_data.snl);
     },
 
+      snlSaveFromSnlQuery(new_data){
+        this.find_rule_order = 0;
+        var result =  this.findTargetSNL(this.meta_data.metadata.data,new_data.parent_index, new_data.index,new_data.snl);
+      },
+
     showRuleFromContent(index){
       this.find_rule_order = 0;
       this.findTargetRule(this.current_node.children, index);
     },
+
+      showRuleByIndex(index){
+        this.find_rule_order = 0;
+        console.log("in showRuleByIndex ");
+        console.log(this.meta_data.metadata.data);
+        this.findTargetRule(this.meta_data.metadata.data, index);
+        // this.findTargetRule(this.me.children, index);
+      },
 
     editConfig(){
       var data = {"_id":this.meta_data.metadata._id};
@@ -505,6 +556,14 @@
         }
       }
       return this.key_words.length;
+    },
+
+    showSNLQueryResult(snl_query_result, snl_query_words){
+        console.log("进入layout的showSNLQueryResult函数");
+      this.$refs.snlQuery.showRules(snl_query_result, snl_query_words);
+      this.rule_click_show = false;
+      this.content_click_show = false;
+      this.snl_query_show = true;
     },
   }
 }
@@ -608,13 +667,17 @@
     color: black;
   }
 
-  #btn-group {
+  .btn-group {
     display: inline-flex;
     flex-direction: column;
     position: relative;
     left:5%;
     top:5%;
     flex: 0 0 10%;
+  }
+
+  .btn-class{
+    width: 100%;
   }
 
   button{
