@@ -7,12 +7,12 @@
         <el-card class="overview-panel" :body-style="{ padding: '0px' }">
           <div slot="header" class="clearfix">
             <i class="el-icon-document"></i>
-            <span>规则库列表</span>
-            <el-button style="float:right" @click.native ="createARuleLib()">创建规则库</el-button>
+            <span>公共规则库列表</span>
+            <el-button style="float:right" @click.native ="createPublicLib()">创建规则库</el-button>
           </div>
           <div class="overview-content">
-            <el-table class="table" :data="lib_names">
-              <el-table-column prop="lib_names" label="规则库名字">
+            <el-table class="table" :data="public_lib_names">
+              <el-table-column prop="public_lib_names" label="规则库名字">
                 <template slot-scope="scope">
                   <i class="el-icon-document"></i>
                   <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
@@ -21,8 +21,8 @@
               <el-table-column label="操作">
                 <template slot-scope="props">
                   <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
-                  <el-button @click.native ="libRename(props.$index, props.row)">重命名</el-button>
-                  <el-button type="danger" @click.native ="libDelete(props.$index, props.row)">删除</el-button>
+                  <el-button @click.native ="libRename(props.$index, props.row, public_type)">重命名</el-button>
+                  <el-button type="danger" @click.native ="libDelete(props.$index, props.row, public_type)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -36,12 +36,12 @@
         <el-card class="overview-panel" :body-style="{ padding: '0px' }">
           <div slot="header" class="clearfix">
             <i class="el-icon-document"></i>
-            <span>私人规则库列表</span>
-            <el-button style="float:right" @click.native ="createARuleLib()">创建规则库</el-button>
+            <span>私有规则库列表</span>
+            <el-button style="float:right" @click.native ="createPrivateLib">创建规则库</el-button>
           </div>
           <div class="overview-content">
-            <el-table class="table" :data="lib_names">
-              <el-table-column prop="lib_names" label="规则库名">
+            <el-table class="table" :data="private_lib_names">
+              <el-table-column prop="private_lib_names" label="规则库名">
                 <template slot-scope="scope">
                   <i class="el-icon-document"></i>
                   <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
@@ -50,8 +50,8 @@
               <el-table-column label="操作">
                 <template slot-scope="props">
                   <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
-                  <el-button @click.native ="libRename(props.$index, props.row)">重命名</el-button>
-                  <el-button type="danger" @click.native ="libDelete(props.$index, props.row)">删除</el-button>
+                  <el-button @click.native ="libRename(props.$index, props.row, private_type)">重命名</el-button>
+                  <el-button type="danger" @click.native ="libDelete(props.$index, props.row, private_type)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -72,6 +72,7 @@
     <el-dialog
       title="删除提示"
       :visible.sync="centerDialogVisible"
+      width="500px"
       center>
       <span>您确定删除选中的规则库吗？</span>
       <span slot="footer" class="dialog-footer">
@@ -87,7 +88,8 @@
 <script>
 import config from '../components/editConfig.vue'
 import alias from '../components/editAlias.vue'
-import {findLibList} from '../api/rulelib'
+import {findPublicLibList} from '../api/rulelib'
+import {findPrivateLibList} from '../api/rulelib'
 import {createRuleLib} from '../api/rulelib'
 import {_libDelete} from '../api/rulelib'
 import {changeLibName} from '../api/rulelib'
@@ -102,12 +104,15 @@ export default {
     return {
       //lib_names是存储包含id和snl_spl_pairs属性的字典的列表
       //lib_names_ids是包含lib_name和_id属性的字典的列表
-      lib_names:[],
+      public_lib_names:[],
+      private_lib_names:[],
       rename_dialog_show:false,
       new_libname:"",
       current_index:0,
       centerDialogVisible:false,
-
+      public_type:"public",
+      private_type:"private",
+      type:"",  //操作的规则库类型
     }
   },
 
@@ -122,16 +127,19 @@ export default {
 
   created() {
     //2 向指定网页发送get请求并接收存储metadata和nodedata的字典
-    findLibList(response => {
-      this.lib_names = response.data.data;
-      console.log("AAA0");
-      console.log(this.lib_names);
-    })
-    console.log('===========================')
-    console.log('===========================')
-    console.log(this.$store.state.user)
-    console.log('===========================')
-    console.log('===========================')
+    findPublicLibList(response => {
+      this.public_lib_names = response.data.data;
+      console.log(this.public_lib_names);
+    });
+
+    findPrivateLibList({"user_id":this.$store.state.user.id}).then(
+      response => {
+        this.private_lib_names = response.data.data;
+        console.log("收到的private 信息是");
+        console.log(response.data);
+      }
+    );
+    // console.log(localStorage)
   },
   methods:{
     showDetail(index, row){
@@ -146,25 +154,40 @@ export default {
     },
 
 
-    createARuleLib(){
-      createRuleLib().then(
-        findLibList(response=>{
-          this.lib_names = response.data.data;
-          console.log(this.lib_names);
+    createPublicLib(){
+      createRuleLib(response=>{
+        // console.log("新建规则库的调试信息有：");
+        // console.log(response.data);
+      }).then(
+        findPublicLibList(response=>{
+          this.public_lib_names = response.data.data;
+          // console.log("新增公共规则库后的结果是：")
+          // console.log(response.data.data);
         })
       )
     },
 
-    libDelete(index, data){
+    libDelete(index, data,type){
       this.centerDialogVisible = true;
       this.current_index = index;
+      this.type = type;
     },
 
     sureDelete(){
       this.centerDialogVisible = false;
       //这个先后顺序不能换
-      _libDelete({"_id":this.lib_names[this.current_index]._id});
-      this.lib_names.splice(this.current_index, 1);
+      if(this.type === "private"){
+        _libDelete({"_id":this.private_lib_names[this.current_index]._id}).then
+        (
+          response => {
+            // console.log(response.data);
+            this.private_lib_names.splice(this.current_index, 1);}
+        );
+      }
+      else if(this.type === "public"){
+        _libDelete({"_id":this.public_lib_names[this.current_index]._id});
+        this.public_lib_names.splice(this.current_index, 1);
+      }
     },
 
     cancalDelete(){
@@ -172,9 +195,18 @@ export default {
       this.current_index = -1;
     },
 
-    libRename(index, data){
+    libRename(index, data, type){
+      this.type = type;
       this.current_index = index;
-      this.new_libname = this.lib_names[index].lib_name;
+      if(type === "private"){
+        this.new_libname = this.private_lib_names[index].lib_name;
+      }
+      else if(type === "public"){
+        this.new_libname = this.public_lib_names[index].lib_name;
+      }
+      // console.log(this.type);
+      // console.log("libname是-------------------------------");
+      // console.log(this.new_libname);
       this.rename_dialog_show = true;
     },
 
@@ -185,11 +217,61 @@ export default {
     saveRename(){
       this.rename_dialog_show = false;
       console.log("进入saveRename函数");
-      console.log(this.lib_names[this.current_index]);
-      this.lib_names[this.current_index].lib_name = this.new_libname;
-      changeLibName({
-        "_id":this.lib_names[this.current_index]._id,
-        "lib_name":this.new_libname,
+      // console.log(this.public_lib_names[this.current_index]);
+      if(this.type === "private"){
+        this.private_lib_names[this.current_index].lib_name = this.new_libname;
+        console.log(this.new_libname);
+        console.log(this.private_lib_names);
+        console.log(this.private_lib_names[this.current_index]._id);
+        this.$ajax({
+          // 向站点请求包含metadata和nodedata属性的字典数据,同时把tag分离出来
+          method: 'POST',
+          url: HOST + '/data/change_lib_name',
+          data: {
+            "_id":this.private_lib_names[this.current_index]._id,
+            "lib_name":this.new_libname,
+          }
+        }).then(response => {
+          console.log("private数据库修改的结果是");
+          console.log(response.data);
+        }).catch(function (err) {
+          console.log(err);
+        });
+      }
+      else if(this.type === "public"){
+        this.public_lib_names[this.current_index].lib_name = this.new_libname;
+        changeLibName({
+          "_id":this.public_lib_names[this.current_index]._id,
+          "lib_name":this.new_libname,
+        });
+      }
+    },
+
+    createPrivateLib(){
+      this.$ajax({
+        // 向站点请求包含metadata和nodedata属性的字典数据,同时把tag分离出来
+        method: 'POST',
+        url: HOST + '/data/create_private_metadata',
+        data: {"user_id":this.$store.state.user.id}
+      }).then(response => {
+        // console.log("新建private数据库的结果是");
+        // console.log(response.data);
+
+        this.$ajax({
+          // 向站点请求包含metadata和nodedata属性的字典数据,同时把tag分离出来
+          method: 'POST',
+          url: HOST + '/data/private_index',
+          data: {"user_id":this.$store.state.user.id},
+        }).then(response => {
+          this.private_lib_names = response.data.data;
+          console.log("收到的private 信息是");
+          console.log(response.data);
+        }).catch(function (err) {
+          console.log(err);
+        });
+
+      }).catch(function (err) {
+        console.log(err);
       });
     },
 

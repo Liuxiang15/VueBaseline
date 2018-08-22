@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="div-container">
     <demo-header></demo-header>
     <el-container @click.native="divClick">
       <el-aside >
@@ -569,6 +569,10 @@
 
 <!-- 使用vue 引入一个组件时，组件中的css样式将作用域全局 ,解决方法-->
 <style scoped>
+  .div-container{
+    height: 100%;
+  }
+
   .row-border {
     /* border-bottom: 1px solid; */
     border-color: #9F79EE;
