@@ -26,8 +26,8 @@ export function createRuleLib(postdata, callback){
   return axios.post(CREATE_PUBLIC_LIB_API, postdata).then(callback);
 }
 
-export function createPrivateLib(callback){
-  return axios.post(CREATE_PRIVATE_LIB_API).then(callback);
+export function createPrivateRuleLib(postdata, callback){
+  return axios.post(postdata, CREATE_PRIVATE_LIB_API).then(callback);
 }
 
 export function _libDelete(post_data){

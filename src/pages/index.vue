@@ -91,6 +91,7 @@ import alias from '../components/editAlias.vue'
 import {findPublicLibList} from '../api/rulelib'
 import {findPrivateLibList} from '../api/rulelib'
 import {createRuleLib} from '../api/rulelib'
+import {createPrivateRuleLib} from '../api/rulelib'
 import {_libDelete} from '../api/rulelib'
 import {changeLibName} from '../api/rulelib'
 import DemoHeader from '../components/demoHeader'
@@ -177,10 +178,7 @@ export default {
       this.centerDialogVisible = false;
       //这个先后顺序不能换
       if(this.type === "private"){
-        _libDelete({"_id":this.private_lib_names[this.current_index]._id}).then
-        (
-          response => {
-            // console.log(response.data);
+        _libDelete({"_id":this.private_lib_names[this.current_index]._id}).then(response => {// console.log(response.data);
             this.private_lib_names.splice(this.current_index, 1);}
         );
       }
@@ -205,8 +203,7 @@ export default {
         this.new_libname = this.public_lib_names[index].lib_name;
       }
       // console.log(this.type);
-      // console.log("libname是-------------------------------");
-      // console.log(this.new_libname);
+      // console.log("libname是-------------------------------"+this.new_libname);
       this.rename_dialog_show = true;
     },
 
@@ -248,8 +245,23 @@ export default {
     },
 
     createPrivateLib(){
+      // createPrivateRuleLib({"user_id":this.$store.state.user.id}).then(response=>{
+      //     this.$ajax({
+      //       method: 'POST',
+      //       url: HOST + '/data/private_index',
+      //       data: {"user_id":this.$store.state.user.id},
+      //     }).then(response => {
+      //       this.private_lib_names = response.data.data;
+      //       console.log("收到的private 信息是");
+      //       console.log(response.data);
+      //     }).catch(function (err) {
+      //       console.log(err);
+      //     })
+      // }
+      // );
+
       this.$ajax({
-        // 向站点请求包含metadata和nodedata属性的字典数据,同时把tag分离出来
+
         method: 'POST',
         url: HOST + '/data/create_private_metadata',
         data: {"user_id":this.$store.state.user.id}
