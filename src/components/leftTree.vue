@@ -3,10 +3,33 @@
   为元素绑定一个 oncontextmenu 事件 -->
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
   <div id="aside_container" >
-    <el-input id="filter-input"
-      placeholder="输入关键字进行过滤"
-      v-model="filterText">
-    </el-input>
+    <!--<el-input id="filter-input"-->
+      <!--placeholder="输入关键词在编号、目录(规则)名、规则描述中进行过滤"-->
+      <!--v-model="filterText">-->
+    <!--</el-input>-->
+
+    <!--<div class="snl-query-div">-->
+      <!--<el-input class="snl-query"-->
+                <!--placeholder="SNL语句查询"-->
+                <!--v-model="filter_snl_key">-->
+      <!--</el-input>-->
+      <!--<el-button type="primary" size="mini"icon="el-icon-search" @click.native="snlQuery">搜索</el-button>-->
+    <!--</div>-->
+
+    <div class="filter-input">
+      <el-input placeholder="请输入搜索内容" class="input-with-select"
+                v-model="filter_text"
+      >
+        <el-select v-model="select_method" slot="prepend" placeholder="请选择搜索方式" style="width: 140px;">
+          <el-option label="目录/规则信息搜索" value="tree"></el-option>
+          <el-option label="SNL搜索" value="snl"></el-option>
+        </el-select>
+        <el-button slot="append" icon="el-icon-search" @click.native="handleFilter">
+          搜索
+        </el-button>
+      </el-input>
+    </div>
+
     <el-tree
 
       :filter-node-method="filterNode"
@@ -143,7 +166,11 @@ export default {
         current_data:{},
         current_node:{},
         node_delete_show:false,
-        filterText:"",
+        filter_text:"",
+        filter_snl_key:"",
+        rule_index:0,//存储当下规则节点在metadata中的规则序号
+        snl_query_result:[],
+        select_method:"",//保存选择的搜索方式
         // expanded_keys:"[1]",
         //opera `1234分别为新建目录， 新建叶子节点， 删除该节点， 重命名
 
@@ -327,6 +354,79 @@ export default {
         || (data.text.toLowerCase().search(value.toLowerCase()) !== -1);
     },
 
+    snlQuery(){
+
+      // let snl_query_words = this.filter_snl_key.split(" ");
+      if(!this.filter_text){
+        return;
+      }
+      let snl_query_words = this.filter_text.split(" ");
+      //对用户输入切割而成的数组预处理（消除' '元素）
+      let index =  snl_query_words.length;
+      while(index--){
+        if(snl_query_words[index] === ""){
+          snl_query_words.splice(index, 1);
+        }
+      }
+      console.log("对用户输入切割而成的数组预处理结果");
+      console.log(snl_query_words);
+
+      console.log("in snlQuery ")
+      console.log(this.meta_data);
+      //函数递归复杂度太高，还是用while循环迭代吧
+      let node_array = this.meta_data.metadata.data;
+      this.snl_query_result = [];//每次查询清空
+      this.singleNodeQuery(snl_query_words, node_array);
+      console.log("snl查询的结果是：");
+      console.log(this.snl_query_result);
+      this.$emit('showSNLQueryResult', this.snl_query_result, snl_query_words);
+      // this.
+    },
+
+    singleNodeQuery(words, node_array){
+      if(node_array.length === 0)
+        return false;
+      for(let node of node_array){
+        if(node.is_rule){
+          let hasSNL = false;
+          let single_result = {
+            rule_index:this.rule_index,
+            order:node.order,
+            text: node.text,
+            snls: [],
+          };
+          this.rule_index += 1;
+          for(let snl_spl of node.snl_spl_pairs){
+            //必须遍历完所有的SNL语句
+            for(let word of words){
+              if(snl_spl.snl.indexOf(word) !== -1){
+                //就说明输入词语在该条snl语句中存在
+                hasSNL = true;
+                single_result.snls.push(snl_spl.snl);
+              }
+            }
+          }
+          if(hasSNL){
+            //只有存在满足的SNL之后才把他所在的规则信息push进去
+            this.snl_query_result.push(single_result);
+          }
+          console.log(node);
+        }
+        else{
+          this.singleNodeQuery(words, node.children);
+        }
+      }
+      return false;
+    },
+    handleFilter(){
+      if(this.select_method == "tree"){
+        this.$refs.tree.filter(this.filter_text);
+      }
+      else if(this.select_method == "snl"){
+        this.snlQuery();
+      }
+    }
+
   },
   watch:{
     meta_data(){
@@ -334,10 +434,21 @@ export default {
       this.getData();
     },
 
-    filterText(val) {
-      this.$refs.tree.filter(val);
+    filter_text(val) {
+      if(this.select_method == "tree"){
+        this.$refs.tree.filter(val);
+      }
+      // else if(this.select_method == "snl"){
+      //
+      // }
     },
 
+    select_method(val){
+      if(val=="snl"){
+        this.filter_text = "";
+        this.$refs.tree.filter(this.filter_text);
+      }
+    },
 
   }
 }
@@ -349,13 +460,26 @@ export default {
     /*box-sizing: border-box;*/
     /*margin: 5% !important;*/
   /*}*/
-.el-input{
-  width: 90%;
 
-  margin-left: 5%;
-  padding-top: 2%;
-  margin-right: 5%;
-}
+  .el-input-group__append, .el-input-group__prepend {
+    width: 60px !important;
+  }
+
+  .el-select .el-input__inner {
+    cursor: pointer;
+    width: 100px !important;
+    padding-right: 35px;
+  }
+  .filer-input{
+    width: 100%;
+  }
+  .snl-query-div{
+    width: 100%;
+    display: inline-flex;
+    justify-content:space-around;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
 span{
   padding-top: 10px;

@@ -12,7 +12,7 @@
       <div>
         <div class="html-class" v-for="(snl_html, _index) in rule_snls_htmls[index]"
               :key="_index"
-              v-on:click="turnToSNLEdit(_index, index, $event)" v-html="snl_html">
+              @click="turnToSNLEdit(_index, index, $event)" v-html="snl_html">
         </div>
       </div>
     </el-card>
@@ -30,7 +30,8 @@ import {HOST} from '../utils/config'
 
 export default {
   name: 'ContentClick',
-  props: ['rule_snls', "config_keys"],
+  // props: ['rule_snls', "config_keys"],
+  props: ["config_keys"],
 
   components:{
     editDialogue,
@@ -38,6 +39,7 @@ export default {
 
   data() {
     return{
+      rule_snls:{},
       edit_show: false,
       current_snl:{},//用户点击的当下SNL语句
       parent_name:"content",
