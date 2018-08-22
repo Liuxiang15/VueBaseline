@@ -1,4 +1,6 @@
 <template>
+  <div>
+    <demo-header></demo-header>
     <el-container @click.native="divClick">
       <el-aside >
         <left-tree ref="mytree" id="left_tree" :meta_data="meta_data" @metadataSend="metadataSend"
@@ -84,7 +86,6 @@
             </el-button>
           </el-dialog>
 
-
           <el-popover
             placement="left"
             trigger="click"
@@ -108,25 +109,22 @@
             </el-alert>
           </el-popover>
 
-
-
         </div>
 
       </el-main>
     </el-container>
+  </div>
 </template>
 
 
 <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script>
   import {HOST} from '../utils/config'
-  import DemoHeader from '../components/demoHeader'
   import LeftTree from '../components/leftTree'
   import RuleClick from "../components/ruleClick"
   import ContentClick from "../components/contentClick"
   import SnlQuery from "../components/snlQuery"
-
-
+  import DemoHeader from '../components/demoHeader'
 
   import {getMetadataById} from '../api/rulelib'
   import {getExcelHistoryById} from '../api/rulelib'
@@ -583,21 +581,6 @@
 
   div {
     box-sizing: border-box;
-  }
-
-  .el-header {
-    /* height: 10% ; */
-    /* 我们希望 header 采用固定的高度，只占用必须的空间 */
-    /* 0 flex-grow, 0 flex-shrink, auto flex-basis */
-    /* flex: 0 1 auto; */
-    height: 10% ;
-    background-color: #333;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-    box-sizing: border-box;
-    width: 100%;
-    /* padding: 0 !important; */
   }
 
   #main-content{

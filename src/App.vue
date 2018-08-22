@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <demo-header></demo-header>
     <router-view/>
   </div>
 </template>
@@ -9,8 +8,14 @@
 import DemoHeader from './components/demoHeader'
 export default {
   name: 'App',
-  components:{
+  components: {
     DemoHeader
+  },
+  created() {
+    localStorage.name = ''
+    localStorage.statue = 'logout'
+    localStorage.id = ''
+    localStorage.token = ''
   }
 }
 </script>
