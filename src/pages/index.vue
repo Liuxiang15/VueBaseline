@@ -1,4 +1,6 @@
 <template>
+  <div>
+  <demo-header></demo-header>
   <el-main class="container">
     <el-row type="flex" justify="space-around">
       <el-col :xs="24" :sm="24" :lg="24">
@@ -50,6 +52,7 @@
     </el-dialog>
 
   </el-main>
+  </div>
 </template>
 
 <script>
@@ -59,11 +62,13 @@ import {findLibList} from '../api/rulelib'
 import {createRuleLib} from '../api/rulelib'
 import {_libDelete} from '../api/rulelib'
 import {changeLibName} from '../api/rulelib'
+import DemoHeader from '../components/demoHeader'
 
 import {HOST} from '../utils/config'
 
 export default {
   name: "index",
+  components: {DemoHeader},
   data() {
     return {
       //lib_names是存储包含id和snl_spl_pairs属性的字典的列表

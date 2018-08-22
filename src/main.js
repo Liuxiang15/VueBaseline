@@ -7,10 +7,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import VueResource from 'vue-resource'
 import axios from 'axios'
+import store from './store'
 
 Vue.prototype.$ajax=axios
-
-Vue.use(ElementUI);
+Vue.use(ElementUI)
 Vue.use(VueResource)
 
 Vue.config.productionTip = false
@@ -18,10 +18,10 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 
 
-
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>',
   render: h => h(App)

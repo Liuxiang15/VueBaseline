@@ -1,4 +1,6 @@
 <template>
+  <div>
+  <demo-header></demo-header>
   <div class="app-container">
 
     <upload-excel-component :on-success='handleSuccess' :before-upload="beforeUpload"
@@ -113,15 +115,17 @@
     </div>
 
   </div>
+  </div>
 </template>
 
 <script>
   import UploadExcelComponent from '../components/UploadExcel/index.vue'
+  import DemoHeader from '../components/demoHeader'
   // debugger;
   export default {
     name: "uploadExcel",
     // comments: {ImportExcel},
-    components: {UploadExcelComponent},
+    components: {UploadExcelComponent,DemoHeader},
 
     data() {
       return {
