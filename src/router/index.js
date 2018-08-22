@@ -11,7 +11,7 @@ function requireAuth (to, from, next) {
   // next()
   console.log('======in requireAuth=======')
   console.log(store.state.user)
-  if (store.state.user.status==='login') {
+  if (store.state.user.status === 'login') {
     console.log('already login')
     next()
   } else {

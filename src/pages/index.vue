@@ -31,6 +31,35 @@
       </el-col>
     </el-row>
 
+    <el-row type="flex" justify="space-around">
+      <el-col :xs="24" :sm="24" :lg="24">
+        <el-card class="overview-panel" :body-style="{ padding: '0px' }">
+          <div slot="header" class="clearfix">
+            <i class="el-icon-document"></i>
+            <span>私人规则库列表</span>
+            <el-button style="float:right" @click.native ="createARuleLib()">创建规则库</el-button>
+          </div>
+          <div class="overview-content">
+            <el-table class="table" :data="lib_names">
+              <el-table-column prop="lib_names" label="规则库名">
+                <template slot-scope="scope">
+                  <i class="el-icon-document"></i>
+                  <span style="margin-left: 10px">{{ scope.row.lib_name }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="props">
+                  <el-button @click.native="showDetail(props.$index, props.row)">查看详情</el-button>
+                  <el-button @click.native ="libRename(props.$index, props.row)">重命名</el-button>
+                  <el-button type="danger" @click.native ="libDelete(props.$index, props.row)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
     <el-dialog title="规则库重命名" :visible.sync="rename_dialog_show">
       <el-input v-model="new_libname">
       </el-input>
@@ -98,6 +127,11 @@ export default {
       console.log("AAA0");
       console.log(this.lib_names);
     })
+    console.log('===========================')
+    console.log('===========================')
+    console.log(this.$store.state.user)
+    console.log('===========================')
+    console.log('===========================')
   },
   methods:{
     showDetail(index, row){
