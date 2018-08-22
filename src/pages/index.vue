@@ -98,6 +98,11 @@ export default {
       console.log("AAA0");
       console.log(this.lib_names);
     })
+
+    console.log('SSSSSSSS')
+    console.log(this.$store.state.user)
+    console.log(localStorage)
+    console.log('SSSSSSSS')
   },
   methods:{
     showDetail(index, row){

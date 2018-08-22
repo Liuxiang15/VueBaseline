@@ -12,10 +12,14 @@ export default {
     DemoHeader
   },
   created() {
-    localStorage.name = ''
-    localStorage.statue = 'logout'
-    localStorage.id = ''
-    localStorage.token = ''
+    if(localStorage.id && localStorage.id !== '') {
+      console.log('already login')
+    } else {
+      localStorage.name = ''
+      localStorage.status = 'logout'
+      localStorage.id = ''
+      localStorage.token = ''
+    }
   }
 }
 </script>
