@@ -111,7 +111,7 @@
 
       input_snl(){
         //这里要实现对用户输入snl的检查同时生成相应的html
-        // this.snl_html = this.snlToHtml(this.input_snl);
+        this.snl_html = this.snlToHtml(this.input_snl);
       },
     },
     methods:{

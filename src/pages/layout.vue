@@ -127,7 +127,9 @@
   import DemoHeader from '../components/demoHeader'
 
   import {getMetadataById} from '../api/rulelib'
+  import {getConfigById} from '../api/rulelib'
   import {getExcelHistoryById} from '../api/rulelib'
+  import {checkAllSNL} from '../api/rulelib'
 
   export default {
     name: 'layout',
@@ -200,37 +202,32 @@
       }
     },
     created() {
-      var id = this.$route.query.id;
-      this.$ajax({
-        // 向站点请求包含metadata和nodedata属性的字典数据,同时把tag分离出来
-        method: 'POST',
-        url: HOST + '/data/get_metadata',
-        data: {"_id": id},
-      }).then(response => {
+      getMetadataById({"_id": this.$route.query.id}).then(
+        response => {
+          console.log("getMetadataById!!!!!!!!!");
+          console.log(response.data);
           this.meta_data = response.data;
-          for(var tag of this.meta_data.metadata.tags){
-          this.tag_options.push(tag);
+          for (let tag of this.meta_data.metadata.tags) {
+            this.tag_options.push(tag);
           }
-        }).catch(function (err) {
-        console.log(err);
-      });
-
-      this.$ajax({
-      // 向站点请求config数组，并存储key值数组作为关键词识别
-        method:'POST',
-        data:{"_id":id},
-        url:HOST+'/config/get_config'
-      }).then(response=>{
-        // console.log(response.data);
-        for(var config of response.data.config.config_list){
-          this.config_keys.push(config.key);
         }
-        //初始化的时候就在关键词数组里搞进去config的主语key数组
-        this.key_words.push(config_keys);
-        // console.log(this.config_keys);
-      }).catch(function(err){
-        console.log(err);
-      });
+      );
+      getConfigById({"_id":this.$route.query.id}).then(
+        response=>{
+          try{
+            for(let config of response.data.config.config_list) {
+              this.config_keys.push(config.key);
+            }
+          }
+          catch(err){
+              console.log("getConfigById!!!!!!!!!");
+              console.log(response.data);
+          }
+          //初始化的时候就在关键词数组里搞进去config的主语key数组
+          this.key_words.push(this.config_keys);
+          // console.log(this.config_keys);
+        }
+      );
     },
     methods: {
       showMsgFromChild(data) {
@@ -255,30 +252,18 @@
         }
       },
       showExcelHistory () {
-        // this.excel_history_show = true
-        var id = this.$route.query.id;
-        this.$ajax({
-          // 向站点请求包含metadata和nodedata属性的字典数据,同时把tag分离出来
-          method: 'POST',
-          url: HOST + '/excel/excel_history',
-          data: {"_id": id},
-        }).then(response => {
-            console.log(response)
+        getExcelHistoryById({"_id": this.$route.query.id}).then(
+          response =>{
             this.excel_history=response.data.data
-          }).catch(function (err) {
-          console.log(err);
-        });
+          }
+        );
         this.excel_history_show = true
       },
       excel_close () {
         this.excel_history_show = false
       },
       checkAllSNLs(){
-        this.$ajax({
-          method: 'POST',
-          url: HOST + '/data/check_snl_all',
-          data: {"_id": this.$route.query.id},
-        }).then(response => {
+        checkAllSNL({"_id": this.$route.query.id}).then(response => {
           console.log(response.data);
           this.check_result = JSON.parse(response.data.data);
           // if(this.check_result.msg === "correct"){
@@ -301,8 +286,6 @@
             this.right_show = false;
             this.wrong_show = false;
           }
-        }).catch(function (err) {
-          console.log(err);
         });
       },
 

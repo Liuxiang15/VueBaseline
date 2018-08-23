@@ -213,26 +213,13 @@ export default {
 
     saveRename(){
       this.rename_dialog_show = false;
-      console.log("进入saveRename函数");
+      // console.log("进入saveRename函数");
       // console.log(this.public_lib_names[this.current_index]);
       if(this.type === "private"){
         this.private_lib_names[this.current_index].lib_name = this.new_libname;
-        console.log(this.new_libname);
-        console.log(this.private_lib_names);
-        console.log(this.private_lib_names[this.current_index]._id);
-        this.$ajax({
-          // 向站点请求包含metadata和nodedata属性的字典数据,同时把tag分离出来
-          method: 'POST',
-          url: HOST + '/data/change_lib_name',
-          data: {
-            "_id":this.private_lib_names[this.current_index]._id,
-            "lib_name":this.new_libname,
-          }
-        }).then(response => {
-          console.log("private数据库修改的结果是");
-          console.log(response.data);
-        }).catch(function (err) {
-          console.log(err);
+        changeLibName({
+          "_id":this.private_lib_names[this.current_index]._id,
+          "lib_name":this.new_libname,
         });
       }
       else if(this.type === "public"){
@@ -245,46 +232,17 @@ export default {
     },
 
     createPrivateLib(){
-      // createPrivateRuleLib({"user_id":this.$store.state.user.id}).then(response=>{
-      //     this.$ajax({
-      //       method: 'POST',
-      //       url: HOST + '/data/private_index',
-      //       data: {"user_id":this.$store.state.user.id},
-      //     }).then(response => {
-      //       this.private_lib_names = response.data.data;
-      //       console.log("收到的private 信息是");
-      //       console.log(response.data);
-      //     }).catch(function (err) {
-      //       console.log(err);
-      //     })
-      // }
-      // );
-
-      this.$ajax({
-
-        method: 'POST',
-        url: HOST + '/data/create_private_metadata',
-        data: {"user_id":this.$store.state.user.id}
-      }).then(response => {
-        // console.log("新建private数据库的结果是");
-        // console.log(response.data);
-
-        this.$ajax({
-          // 向站点请求包含metadata和nodedata属性的字典数据,同时把tag分离出来
-          method: 'POST',
-          url: HOST + '/data/private_index',
-          data: {"user_id":this.$store.state.user.id},
-        }).then(response => {
-          this.private_lib_names = response.data.data;
-          console.log("收到的private 信息是");
-          console.log(response.data);
-        }).catch(function (err) {
-          console.log(err);
-        });
-
-      }).catch(function (err) {
-        console.log(err);
-      });
+      createPrivateRuleLib({"user_id":this.$store.state.user.id}).then(
+        response => {
+        findPrivateLibList({"user_id": this.$store.state.user.id}).then(
+          response => {
+            this.private_lib_names = response.data.data;
+            console.log("收到的private 信息是");
+            console.log(response.data);
+            ;
+          }
+        );
+        })
     },
 
   },
