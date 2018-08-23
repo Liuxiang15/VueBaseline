@@ -5,18 +5,29 @@
         {{this.current_node.text}}自然语言描述
       </h2>
       <el-row>
-        <el-input
-          type="textarea"
-          id="text_area"
-          rows=2
-          v-model="current_node.description"
-          v-bind:disabled= "disable_flag"
-        >
-        </el-input>
-        <div id="btns">
-          <el-button type="primary" v-on:click='editDescription()' >修改</el-button>
-          <el-button type="success" v-on:click='saveDescription()' >保存</el-button>
-        </div>
+        <el-col :span="20">
+          <div class="grid-content bg-purple">
+            <el-input
+              type="textarea"
+              id="text_area"
+              rows=3
+              v-model="current_node.description"
+              v-bind:disabled= "disable_flag"
+            >
+            </el-input>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content bg-purple-light">
+            <div id="btns">
+              <el-button type="primary" v-on:click='editDescription()' >修改</el-button>
+              <el-button type="success" v-on:click='saveDescription()' >保存</el-button>
+            </div>
+          </div>
+        </el-col>
+
+
+
       </el-row>
       <!--<h2>{{this.current_node.text}}自然语言描述</h2>-->
 
@@ -360,7 +371,7 @@ span{
 
 .el-textarea{
   position: relative;
-  width: 80%;
+  width: 90%;
   left: 0%;
 }
 
@@ -415,10 +426,8 @@ span{
 
 
 #btns{
-  float: right;
-  /*position: relative;*/
-  /*top:100%;*/
-  /*left:80%;*/
+  position: relative;
+  top:20px;
 }
 
 h2{

@@ -212,9 +212,10 @@ import {saveAlias} from '../api/rulelib'
   left: 20%;
 }
 
+
 #btns{
   position: relative;
-  left: 60%;
-  top: 30%;
+  left: 80%;
+  top: 20%;
 }
 </style>

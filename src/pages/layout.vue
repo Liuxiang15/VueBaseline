@@ -206,8 +206,8 @@
     created() {
       getMetadataById({"_id": this.$route.query.id}).then(
         response => {
-          console.log("getMetadataById!!!!!!!!!");
-          console.log(response.data);
+          // console.log("getMetadataById!!!!!!!!!");
+          // console.log(response.data);
           this.meta_data = response.data;
           for (let tag of this.meta_data.metadata.tags) {
             this.tag_options.push(tag);

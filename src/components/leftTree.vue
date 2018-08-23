@@ -266,8 +266,8 @@ export default {
       this.new_snl = "";
     },
     getData(){
-      console.log("in getData ");
-      console.log(this.meta_data);
+      // console.log("in getData ");
+      // console.log(this.meta_data);
       this.data = this.meta_data.metadata.data;
     },
     handleDragStart(node, ev) {
