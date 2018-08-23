@@ -6,12 +6,18 @@ const PUBLIC_LIB_API = HOST +'/data/index'
 const PRIVATE_LIB_API = HOST + '/data/private_index'
 const GET_CONFIG_API = HOST+'/config/get_config'
 const CREATE_PUBLIC_LIB_API = HOST+'/data/create_metadata'
+const GET_ALIAS_API = HOST+'/alias/get_alias'
 const CREATE_PRIVATE_LIB_API = HOST + '/data/create_private_metadata'
 const LIB_DELETE_API = HOST+'/data/delete_metadata'
 const LIBNAME_CHANGE_API = HOST+'/data/change_lib_name'
 const GET_METADAtA_BYID_API = HOST + '/data/get_metadata'
 const GET_EXCEL_HISTORY = HOST + '/excel/excel_history'
 const CHECK_ALL_SNL = HOST + '/data/check_snl_all'
+const CHECK_SINGLE_SNL = HOST + '/data/check_snl'
+const SAVE_METADATA_API = HOST + '/data/refresh_metadata'
+const SAVE_ALIAS_API = HOST + '/alias/refresh_alias'
+const SAVE_CONFIG_API = HOST + '/config/refresh_config'
+
 
 
 export function findPublicLibList(callback){
@@ -51,6 +57,27 @@ export function getConfigById(post_data, callback){
   return axios.post(GET_CONFIG_API, post_data).then(callback);
 }
 
+export function getAliasById(post_data, callback){
+  return axios.post(GET_ALIAS_API, post_data).then(callback);
+}
+
 export  function checkAllSNL(post_data, callback){
   return axios.post(CHECK_ALL_SNL, post_data).then(callback);
 }
+
+export  function checkSingleSNL(post_data, callback){
+  return axios.post(CHECK_SINGLE_SNL, post_data).then(callback);
+}
+
+export  function saveMetadata(post_data, callback){
+  return axios.post(SAVE_METADATA_API, post_data).then(callback);
+}
+
+export function saveAlias(post_data, callback){
+  return axios.post(SAVE_ALIAS_API, post_data).then(callback);
+}
+
+export function saveConfig(post_data, callback){
+  return axios.post(SAVE_CONFIG_API, post_data).then(callback);
+}
+

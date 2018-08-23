@@ -128,8 +128,10 @@
 
   import {getMetadataById} from '../api/rulelib'
   import {getConfigById} from '../api/rulelib'
+  import {getAliasById} from '../api/rulelib'
   import {getExcelHistoryById} from '../api/rulelib'
   import {checkAllSNL} from '../api/rulelib'
+  import {saveMetadata} from '../api/rulelib'
 
   export default {
     name: 'layout',
@@ -334,15 +336,10 @@
       metadataSend() {
         // console.log("要向传输的数据是：");
         // console.log(this.meta_data);
-        this.$ajax({
-          method: 'POST',
-          url: HOST + '/data/refresh_metadata',
-          data: JSON.stringify(this.meta_data),
-        }).then(response => {
-          console.log(response.data);
-        }).catch(function (err) {
-          console.log(err);
-        });
+        saveMetadata(JSON.stringify(this.meta_data)).then(
+          response => {
+              console.log(response.data);
+          });
       },
 
       downloadLink() {
@@ -459,45 +456,30 @@
       },
 
     editConfig(){
-      var data = {"_id":this.meta_data.metadata._id};
-      this.$ajax({
-        method:'POST',
-        data:data,
-        url:HOST+'/config/get_config'
-      }).then(response=>{
-        console.log(response.data);
-        this.$router.push({
-          path: '/config',
-          name: "config" ,
-          props: true,
-          query:{
-            id:this.meta_data.metadata._id
-          },
-          params:{
-            config: response.data.config,
-          }
-        });
-      }).catch(function(err){
-        console.log(err);
+      this.$router.push({
+        path: '/config',
+        name: "config",
+        props: true,
+        query: {
+          id: this.meta_data.metadata._id
+        },
       });
     },
 
     editAlias(index, data){
-      this.$ajax({
-        method:'POST',
-        url:HOST+'/alias/get_alias',
-        data: {"_id":this.meta_data.metadata._id},
-      }).then(response=>{
+      getAliasById({"_id":this.meta_data.metadata._id}).then(
+        response=>{
         this.$router.push({
           path: '/alias',
           name: "alias" ,
           props: true,
+          query: {
+            id: this.meta_data.metadata._id
+          },
           params:{
             response: response.data,
           }
         });
-      }).catch(function(err){
-        console.log(err);
       });
     },
 

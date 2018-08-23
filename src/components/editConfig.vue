@@ -71,6 +71,8 @@
 <script>
 import configDialogue from "./configDialogue.vue"
 import {HOST} from '../utils/config'
+import {getConfigById} from '../api/rulelib'
+import {saveConfig} from '../api/rulelib'
   export default {
     components:{
       configDialogue
@@ -96,24 +98,15 @@ import {HOST} from '../utils/config'
         filter_key:"",
         filter_text:[],
         config_delete_show:false,
-
         current_index:-1,
-
-
       }
     },
     created(){
       this.id = this.$route.query.id;
-      this.$ajax({
-      //7 向站点请求config数组
-        method:'POST',
-        url:HOST+'/config/get_config',
-        data: {"_id":this.$route.query.id},
-      }).then(response=>{
-        this.config = response.data.config;
-      }).catch(function(err){
-        console.log(err);
-      });
+      getConfigById({"_id":this.$route.query.id}).then(
+        response=> {
+          this.config = response.data.config;
+        });
     },
 
     computed:{
@@ -180,18 +173,12 @@ import {HOST} from '../utils/config'
           this.currentPage = page
       },
       configSave(){
-        this.$ajax({
-          method:'POST',
-          url:HOST + '/config/refresh_config',
-          data: JSON.stringify(this.config),
-        }).then(response=>{
+        saveConfig(JSON.stringify(this.config)).then(
+          response=>{
           console.log(response.data);
-        }).catch(function(err){
-          console.log(err);
-        });
+        })
       },
       filterHandler(value, row, column) {
-        // console.log("FFFFFFFFFFFFFFFFFFFFFFF");
         // console.log(value);
         // console.log(row);
         // console.log(column);

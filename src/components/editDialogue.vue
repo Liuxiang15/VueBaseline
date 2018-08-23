@@ -39,6 +39,7 @@
 
 <script>
   import {HOST} from '../utils/config'
+  import {checkSingleSNL} from '../api/rulelib'
   export default {
     // 1 dialogFormVisible决定了对话框是否显现，在layout.vue里实现了对该属性修改的函数
     //key_words存储关键词
@@ -145,12 +146,8 @@
       },
 
       checkSNL(){
-        this.$ajax({
-          //5 向站点请求包含metadata和nodedata属性的字典数据，传参是被查询的lib的id
-          method: 'POST',
-          url: HOST + '/data/check_snl',
-          data: {"snl": this.input_snl},
-        }).then(response => {
+        checkSingleSNL({"snl": this.input_snl}).then(
+          response => {
           this.check_result = JSON.parse(response.data.data);
           if(this.check_result.msg === "correct"){
             this.right_show = true;
@@ -160,8 +157,6 @@
             this.right_show = false;
             this.wrong_show = true;
           }
-        }).catch(function (err) {
-          console.log(err);
         });
       },
 

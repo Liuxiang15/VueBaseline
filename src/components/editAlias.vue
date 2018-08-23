@@ -74,6 +74,8 @@
 <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script>
 import {HOST} from '../utils/config'
+import {getAliasById} from '../api/rulelib'
+import {saveAlias} from '../api/rulelib'
   export default {
 
     data() {
@@ -89,14 +91,17 @@ import {HOST} from '../utils/config'
         filter_key:"",
         filter_text:[],
         alias_delete_show:false,
-        //operation=1时，编辑，2时新建
+        id:"",//通过id来获取数据
+        alias:{},
       }
     },
     created(){
-      this.response = this.$route.params.response;
-      this.alias_list = this.$route.params.response.alias.alias_list;
-      console.log("in created ");
-      console.log(this.alias_list);
+      this.id = this.$route.query.id;
+      getAliasById({"_id":this.$route.query.id}).then(
+        response=> {
+          this.alias = response.data.alias;
+          this.alias_list = this.alias.alias_list;
+        });
     },
 
     methods:{
@@ -138,7 +143,7 @@ import {HOST} from '../utils/config'
         this.new_value = "";
       },
       save(){
-        console.log("进入alias的save函数后的operation是："+this.operation);
+        console.log("进入alias的save函数后的operation是："+this.operation_type);
         if(this.operation_type === "edit"){
           console.log("进入编辑保存函数");
           this.alias_list[this.current_index].key = this.new_key;
@@ -158,7 +163,6 @@ import {HOST} from '../utils/config'
         this.new_value = "";
         this.dialog_show = false;
         this.operation_type = "";
-        console.log(this.response);
       },
       newItem(){
         // console.log("进入newItem函数");
@@ -168,18 +172,12 @@ import {HOST} from '../utils/config'
       },
 
       aliasSave(){
-        this.$ajax({
-          method:'POST',
-          url:HOST + '/alias/refresh_alias',
-          data: JSON.stringify(this.response.alias),
-        }).then(response=>{
+        // console.log("in aliasSave");
+        saveAlias(JSON.stringify(this.alias)).then(
+          response=>{
           console.log(response.data);
           alert("保存成功");
-
-        }).catch(function(err){
-          console.log(err);
         });
-
       },
 
       filterHandler(value, row, column) {
