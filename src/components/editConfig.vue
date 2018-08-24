@@ -1,5 +1,6 @@
 <template>
 <div id="config_container">
+  <h2>编辑config界面</h2>
   <el-table :data="pagedData">
 
     <!-- 为了防止循环第一项显示在最后一项 -->
@@ -261,6 +262,9 @@ import {saveConfig} from '../api/rulelib'
   overflow: hidden;
 }
 
+h2{
+  text-align: center;
+}
 /* .el-table {
     position: relative;
     width: 60%;
