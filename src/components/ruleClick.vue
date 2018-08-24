@@ -25,13 +25,7 @@
             </div>
           </div>
         </el-col>
-
-
-
       </el-row>
-      <!--<h2>{{this.current_node.text}}自然语言描述</h2>-->
-
-
     </div>
 
     <div id="snl_container">

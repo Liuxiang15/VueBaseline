@@ -9,7 +9,9 @@
       >
       </el-table-column>
     </el-table-column>
-    <el-table-column label="key" width="180" align="center">
+    <el-table-column label="key" width="180" align="center"
+
+    >
       <template slot-scope="scope">
         <el-tag size="medium">{{ scope.row.key }}</el-tag>
       </template>
@@ -18,8 +20,10 @@
     <el-table-column label="value" min-width="80%">
       <template slot-scope="scope">
         <div slot="reference" class="name-wrapper">
-            <el-tag size="medium" v-for = "(val, index) in scope.row.value"
-            :key = "index">
+            <el-tag size="medium" v-for = "(val, index) in scope.row.value" :key = "index"
+                    closable
+                    @close="tagDelete(scope.$index, scope.row, val)"
+            >
                 {{val}}
             </el-tag>
           </div>
@@ -55,13 +59,24 @@
   </config-dialogue>
 
   <el-dialog
-    title="删除提示"
-    :visible.sync="config_delete_show"
-    center>
-    <span>您确定删除选中的config语句吗？</span>
-    <span slot="footer" class="dialog-footer">
+  title="删除提示"
+  :visible.sync="config_delete_show"
+  center>
+  <span>您确定删除选中的config语句吗？</span>
+  <span slot="footer" class="dialog-footer">
           <el-button @click="configCancelDelete">取 消</el-button>
           <el-button type="primary" @click="configSureDelete">确 定</el-button>
+        </span>
+</el-dialog>
+
+  <el-dialog
+    title="删除提示"
+    :visible.sync="tag_delete_show"
+    center>
+    <span>您确定删除选中的标签吗？</span>
+    <span slot="footer" class="dialog-footer">
+          <el-button @click="tagCancelDelete">取 消</el-button>
+          <el-button type="primary" @click="tagSureDelete">确 定</el-button>
         </span>
   </el-dialog>
 </div>
@@ -98,7 +113,9 @@ import {saveConfig} from '../api/rulelib'
         filter_key:"",
         filter_text:[],
         config_delete_show:false,
+        tag_delete_show:false,
         current_index:-1,
+        delete_tag:"",
       }
     },
     created(){
@@ -142,7 +159,7 @@ import {saveConfig} from '../api/rulelib'
       },
       handleDelete(index, row) {
         this.config_delete_show = true;
-        this.current_index = index;
+        this.current_index = (this.currentPage - 1) * this.currentPageSize + index;
       },
 
       editDialogue(index, row){
@@ -194,6 +211,32 @@ import {saveConfig} from '../api/rulelib'
         this.config_delete_show = false;
       },
 
+      tagDelete(index, row, tag){
+        console.log("删除的下标是" + index);
+        console.log(row);
+        console.log(tag);
+        this.current_index = (this.currentPage - 1) * this.currentPageSize + index;
+        this.tag_delete_show = true;
+        this.delete_tag = tag;
+      },
+
+      tagCancelDelete(){
+        this.tag_delete_show = false;
+      },
+
+      tagSureDelete(){
+        console.log("删除的标签是：");
+        console.log(this.config.config_list[this.current_index]);
+        let index = this.config.config_list[this.current_index].value.length - 1;
+        for(;index >= 0; index--){
+          if(this.config.config_list[this.current_index].value[index] == this.delete_tag){
+            this.config.config_list[this.current_index].value.splice(index, 1);
+          }
+        }
+
+        this.tag_delete_show = false;
+      },
+
     },
     watch:{
       filter_key(){
@@ -215,6 +258,7 @@ import {saveConfig} from '../api/rulelib'
   position: relative;
   width: 60%;
   left: 20%;
+  overflow: hidden;
 }
 
 /* .el-table {
