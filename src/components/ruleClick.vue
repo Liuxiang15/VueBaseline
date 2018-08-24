@@ -275,7 +275,7 @@ export default {
     },
 
     snlToHtml(input_str){
-      var line_index = 1;
+      let line_index = 1;
       while(input_str.indexOf("\n") != -1){
         input_str = input_str.replace("\n", ' ');
       }

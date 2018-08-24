@@ -7,7 +7,7 @@
     >
       <el-select v-model="select_method" slot="prepend" placeholder="请选择搜索方式" style="width: 200px;">
         <el-option label="根据key搜索" value="key"></el-option>
-        <!--<el-option label="根据value搜索" value="value"></el-option>-->
+        <el-option label="根据value搜索" value="value"></el-option>
       </el-select>
       <el-button slot="append" icon="el-icon-search" @click.native="handleFilter">
         搜索
@@ -321,35 +321,66 @@ import {saveConfig} from '../api/rulelib'
 
         this.tag_delete_show = false;
       },
+      handleFilter(){
+
+      },
 
     },
     watch:{
       filter_key(){
         this.filter_text = [];
-        var temp = {};
+        let temp = {};
         temp.text = this.filter_key;
         temp.value = this.filter_key;
         this.filter_text.push(temp);
       },
 
       filter_text(val){
-        // console.log(this.config.config_list);
+        console.log("更新后的value是" + val);
         if(!val)
         {
           this.copy_list = [].concat(this.config.config_list);
           return;
         }
+
+        while(val.indexOf(" ") != -1){
+          val = val.replace(" ", '');
+        }
+        this.filter_text = val;
         this.mode = "search";
         this.search_array = [];
-        for(let config of this.copy_list){
-          if(val === config.key){
-            config.real_index = this.config.config_list.indexOf(config);
-            this.search_array.push(config);
+        this.copy_list = this.config.config_list;
+        if(this.select_method === "key"){
+          for(let config of this.copy_list){
+            if(config.key.indexOf(val) != -1){
+              config.real_index = this.config.config_list.indexOf(config);
+              this.search_array.push(config);
+            }
+          }
+          if(this.search_array.length == 0)
+            return;
+          this.copy_list = this.search_array;
+        }
+        else if(this.select_method === "value"){
+          console.log("进入select_method");
+          for(let config of this.copy_list){
+            for(let single_value of config.value){
+              if(single_value.indexOf(val) !== -1){
+                config.real_index = this.config.config_list.indexOf(config);
+                this.search_array.push(config);
+              }
+            }
+          }
+          // console.log("value搜索的结果是");
+          // console.log(this.search_array);
+          if(this.search_array === []){
+            this.copy_list = [];
+            return;
+          }
+          else{
+            this.copy_list = this.search_array;
           }
         }
-        if(this.search_array.length == 0)
-          return;
-        this.copy_list = this.search_array;
       },
 
       "config.config_list"(val){
@@ -358,6 +389,23 @@ import {saveConfig} from '../api/rulelib'
 
         console.log("修改后的copylist是");
         console.log(this.copy_list);
+      },
+
+      select(val){
+        if(val == "key" && !this.filter_text){
+          this.mode = "search";
+          this.search_array = [];
+          for(let config of this.copy_list){
+            if(val === config.key){
+              config.real_index = this.config.config_list.indexOf(config);
+              this.search_array.push(config);
+            }
+          }
+          if(this.search_array.length == 0)
+            return;
+          this.copy_list = [].concat(this.search_array);
+        }
+
       },
     },
   }
