@@ -1,6 +1,19 @@
 <template>
 <div id="config_container">
   <h2>编辑config界面</h2>
+  <div class="filter-input">
+    <el-input placeholder="请输入搜索内容" class="input-with-select"
+              v-model="filter_text"
+    >
+      <el-select v-model="select_method" slot="prepend" placeholder="请选择搜索方式" style="width: 200px;">
+        <el-option label="根据key搜索" value="key"></el-option>
+        <!--<el-option label="根据value搜索" value="value"></el-option>-->
+      </el-select>
+      <el-button slot="append" icon="el-icon-search" @click.native="handleFilter">
+        搜索
+      </el-button>
+    </el-input>
+  </div>
   <el-table :data="pagedData">
 
     <!-- 为了防止循环第一项显示在最后一项 -->
@@ -10,9 +23,8 @@
       >
       </el-table-column>
     </el-table-column>
-    <el-table-column label="key" width="180" align="center"
 
-    >
+    <el-table-column label="key" width="180" align="center"  >
       <template slot-scope="scope">
         <el-tag size="medium">{{ scope.row.key }}</el-tag>
       </template>
@@ -115,8 +127,14 @@ import {saveConfig} from '../api/rulelib'
         filter_text:[],
         config_delete_show:false,
         tag_delete_show:false,
-        current_index:-1,
+        current_index:-1,//当前点击序号
+        current_search_index:-1,
         delete_tag:"",
+        filter_text:"",
+        select_method:"",
+        search_array:[],
+        copy_list:[],
+        mode:"normal",//分为搜索模式和普通浏览模式
       }
     },
     created(){
@@ -124,26 +142,56 @@ import {saveConfig} from '../api/rulelib'
       getConfigById({"_id":this.$route.query.id}).then(
         response=> {
           this.config = response.data.config;
+          this.copy_list = [].concat(this.config.config_list);
         });
     },
 
     computed:{
       total(){
-        if(!this.config.config_list){
+        if(!this.copy_list){
           return 0;
         }
-        return this.config.config_list.length;
+        return this.copy_list.length;
       },
 
       pagedData(){
-        if(!this.config.config_list){
+        if(!this.copy_list){
           return [];
         }
-        return this.config.config_list.slice((this.currentPage - 1) * this.currentPageSize, this.currentPage * this.currentPageSize)
+        return this.copy_list.slice((this.currentPage - 1) * this.currentPageSize, this.currentPage * this.currentPageSize)
       }
     },
 
     methods: {
+      addSearch(h, {column}){
+        let inputValue = {}
+        return h('Input', {
+          props: {
+            placeholder: 'Search' + ' ' + column.label,
+            icon: 'ios-search-strong'
+          },
+          style: {
+            paddingRight: '5px'
+          },
+          on: {
+            input: val => {
+              inputValue = val
+              if (!inputValue) {
+                this.vaildInputValue(column.label, inputValue)
+              }
+            },
+            class: 'ivu-input-icon',
+            'on-click': () => {
+              this.vaildInputValue(column.label, inputValue)
+            },
+            'on-enter': () => {
+              console.log('enter')
+              this.vaildInputValue(column.label, inputValue)
+            }
+          }
+        })
+      },
+
       newItem() {
         //往头部插入元素
         let item = {};
@@ -155,8 +203,19 @@ import {saveConfig} from '../api/rulelib'
 
       handleEdit(index, row) {
         //先获取修改语句的下标
-        let real_index = (this.currentPage - 1) * this.currentPageSize + index;
-        this.editDialogue(real_index, row);
+        if(this.mode == "normal"){
+          let real_index = (this.currentPage - 1) * this.currentPageSize + index;
+          this.current_search_index = real_index;
+          this.editDialogue(real_index, row);
+        }
+        else{
+          let real_index = row.real_index;
+          this.current_search_index = this.copy_list[index].real_index;
+          this.editDialogue(real_index, row);
+          console.log("被修改的key是");
+          console.log(row);
+        }
+
       },
       handleDelete(index, row) {
         this.config_delete_show = true;
@@ -169,6 +228,9 @@ import {saveConfig} from '../api/rulelib'
         this.curr_data.data.key = row.key;
         this.curr_data.data.value = [].concat(row.value);
         this.curr_data.index = index;
+        if(this.mode == "search"){
+
+        }
       },
 
       close(){
@@ -176,12 +238,24 @@ import {saveConfig} from '../api/rulelib'
       },
 
       save(new_data){
-        this.edit_show = false;
-        this.curr_data = new_data;
-        console.log(this.curr_data);
-        this.config.config_list[new_data.index].key = new_data.data.key;
-        this.config.config_list[new_data.index].value = new_data.data.value;
-
+        console.log("保存的结果是");
+        console.log(new_data);
+        if(this.mode === "normal"){
+          this.edit_show = false;
+          this.curr_data = new_data;
+          console.log(this.curr_data);
+          this.config.config_list[new_data.index].key = new_data.data.key;
+          this.config.config_list[new_data.index].value = new_data.data.value;
+        }
+        else{
+          this.edit_show = false;
+          this.curr_data = new_data;
+          console.log("修改search的config是");
+          console.log(this.current_search_index);
+          console.log(this.config.config_list[this.current_search_index]);
+          this.config.config_list[this.current_search_index].key = new_data.data.key;
+          this.config.config_list[this.current_search_index].value = new_data.data.value;
+        }
       },
 
       pageSizeChange(size) {
@@ -191,6 +265,11 @@ import {saveConfig} from '../api/rulelib'
           this.currentPage = page
       },
       configSave(){
+        console.log("in configSave");
+        for(let config of this.config.config_list){
+          delete config.real_index;
+        }
+        console.log(this.config);
         saveConfig(JSON.stringify(this.config)).then(
           response=>{
           console.log(response.data);
@@ -246,7 +325,35 @@ import {saveConfig} from '../api/rulelib'
         temp.text = this.filter_key;
         temp.value = this.filter_key;
         this.filter_text.push(temp);
-      }
+      },
+
+      filter_text(val){
+        // console.log(this.config.config_list);
+        if(!val)
+        {
+          this.copy_list = [].concat(this.config.config_list);
+          return;
+        }
+        this.mode = "search";
+        this.search_array = [];
+        for(let config of this.copy_list){
+          if(val === config.key){
+            config.real_index = this.config.config_list.indexOf(config);
+            this.search_array.push(config);
+          }
+        }
+        if(this.search_array.length == 0)
+          return;
+        this.copy_list = this.search_array;
+      },
+
+      "config.config_list"(val){
+        this.copy_list = [].concat(val);
+        this.mode = "normal"
+
+        console.log("修改后的copylist是");
+        console.log(this.copy_list);
+      },
     },
   }
 </script>
