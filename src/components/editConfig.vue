@@ -287,7 +287,12 @@ import {saveConfig} from '../api/rulelib'
       },
 
       configSureDelete(){
-        this.config.config_list.splice(this.current_index, 1);
+        if(this.mode == "normal"){
+          this.config.config_list.splice(this.current_index, 1);
+        }
+        else{
+          this.config.config_list.splice(this.current_search_index, 1);
+        }
         this.config_delete_show = false;
       },
 
