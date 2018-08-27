@@ -1,5 +1,6 @@
 <template>
 <div id="alias_container">
+  <h2>编辑Alias界面</h2>
   <!--<el-input-->
     <!--placeholder="输入关键字进行过滤"-->
     <!--v-model="filter_key">-->
@@ -24,7 +25,7 @@
       </template>
     </el-table-column>
 
-    <el-table-column label="操作">
+    <el-table-column label="操作" min-width="40%">
       <template slot-scope="scope">
         <el-button
           size="mini"
@@ -208,14 +209,17 @@ import {saveAlias} from '../api/rulelib'
 <style scoped>
 #alias_container{
   position: relative;
-  width: 60%;
-  left: 20%;
+  width: 40%;
+  left: 30%;
 }
 
+h2{
+  text-align: center;
+}
 
 #btns{
   position: relative;
-  left: 80%;
+  left: 75%;
   top: 20%;
 }
 </style>

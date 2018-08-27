@@ -3,19 +3,6 @@
   为元素绑定一个 oncontextmenu 事件 -->
   <!-- <div oncontextmenu="self.event.returnValue=false"> -->
   <div id="aside_container" >
-    <!--<el-input id="filter-input"-->
-      <!--placeholder="输入关键词在编号、目录(规则)名、规则描述中进行过滤"-->
-      <!--v-model="filterText">-->
-    <!--</el-input>-->
-
-    <!--<div class="snl-query-div">-->
-      <!--<el-input class="snl-query"-->
-                <!--placeholder="SNL语句查询"-->
-                <!--v-model="filter_snl_key">-->
-      <!--</el-input>-->
-      <!--<el-button type="primary" size="mini"icon="el-icon-search" @click.native="snlQuery">搜索</el-button>-->
-    <!--</div>-->
-
     <div class="filter-input">
       <el-input placeholder="请输入搜索内容" class="input-with-select"
                 v-model="filter_text"
@@ -31,7 +18,6 @@
     </div>
 
     <el-tree
-
       :filter-node-method="filterNode"
       class="filter-tree"
       oncontextmenu="return false"

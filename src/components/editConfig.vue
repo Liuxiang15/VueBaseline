@@ -1,5 +1,19 @@
 <template>
 <div id="config_container">
+  <h2>编辑config界面</h2>
+  <div class="filter-input">
+    <el-input placeholder="请输入搜索内容" class="input-with-select"
+              v-model="filter_text"
+    >
+      <el-select v-model="select_method" slot="prepend" placeholder="请选择搜索方式" style="width: 200px;">
+        <el-option label="根据key搜索" value="key"></el-option>
+        <el-option label="根据value搜索" value="value"></el-option>
+      </el-select>
+      <el-button slot="append" icon="el-icon-search" @click.native="handleFilter">
+        搜索
+      </el-button>
+    </el-input>
+  </div>
   <el-table :data="pagedData">
 
     <!-- 为了防止循环第一项显示在最后一项 -->
@@ -9,7 +23,8 @@
       >
       </el-table-column>
     </el-table-column>
-    <el-table-column label="key" width="180" align="center">
+
+    <el-table-column label="key" width="180" align="center"  >
       <template slot-scope="scope">
         <el-tag size="medium">{{ scope.row.key }}</el-tag>
       </template>
@@ -18,8 +33,10 @@
     <el-table-column label="value" min-width="80%">
       <template slot-scope="scope">
         <div slot="reference" class="name-wrapper">
-            <el-tag size="medium" v-for = "(val, index) in scope.row.value"
-            :key = "index">
+            <el-tag size="medium" v-for = "(val, index) in scope.row.value" :key = "index"
+                    closable
+                    @close="tagDelete(scope.$index, scope.row, val)"
+            >
                 {{val}}
             </el-tag>
           </div>
@@ -55,13 +72,24 @@
   </config-dialogue>
 
   <el-dialog
-    title="删除提示"
-    :visible.sync="config_delete_show"
-    center>
-    <span>您确定删除选中的config语句吗？</span>
-    <span slot="footer" class="dialog-footer">
+  title="删除提示"
+  :visible.sync="config_delete_show"
+  center>
+  <span>您确定删除选中的config语句吗？</span>
+  <span slot="footer" class="dialog-footer">
           <el-button @click="configCancelDelete">取 消</el-button>
           <el-button type="primary" @click="configSureDelete">确 定</el-button>
+        </span>
+</el-dialog>
+
+  <el-dialog
+    title="删除提示"
+    :visible.sync="tag_delete_show"
+    center>
+    <span>您确定删除选中的标签吗？</span>
+    <span slot="footer" class="dialog-footer">
+          <el-button @click="tagCancelDelete">取 消</el-button>
+          <el-button type="primary" @click="tagSureDelete">确 定</el-button>
         </span>
   </el-dialog>
 </div>
@@ -98,7 +126,15 @@ import {saveConfig} from '../api/rulelib'
         filter_key:"",
         filter_text:[],
         config_delete_show:false,
-        current_index:-1,
+        tag_delete_show:false,
+        current_index:-1,//当前点击序号
+        current_search_index:-1,
+        delete_tag:"",
+        filter_text:"",
+        select_method:"",
+        search_array:[],
+        copy_list:[],
+        mode:"normal",//分为搜索模式和普通浏览模式
       }
     },
     created(){
@@ -106,26 +142,56 @@ import {saveConfig} from '../api/rulelib'
       getConfigById({"_id":this.$route.query.id}).then(
         response=> {
           this.config = response.data.config;
+          this.copy_list = [].concat(this.config.config_list);
         });
     },
 
     computed:{
       total(){
-        if(!this.config.config_list){
+        if(!this.copy_list){
           return 0;
         }
-        return this.config.config_list.length;
+        return this.copy_list.length;
       },
 
       pagedData(){
-        if(!this.config.config_list){
+        if(!this.copy_list){
           return [];
         }
-        return this.config.config_list.slice((this.currentPage - 1) * this.currentPageSize, this.currentPage * this.currentPageSize)
+        return this.copy_list.slice((this.currentPage - 1) * this.currentPageSize, this.currentPage * this.currentPageSize)
       }
     },
 
     methods: {
+      addSearch(h, {column}){
+        let inputValue = {}
+        return h('Input', {
+          props: {
+            placeholder: 'Search' + ' ' + column.label,
+            icon: 'ios-search-strong'
+          },
+          style: {
+            paddingRight: '5px'
+          },
+          on: {
+            input: val => {
+              inputValue = val
+              if (!inputValue) {
+                this.vaildInputValue(column.label, inputValue)
+              }
+            },
+            class: 'ivu-input-icon',
+            'on-click': () => {
+              this.vaildInputValue(column.label, inputValue)
+            },
+            'on-enter': () => {
+              console.log('enter')
+              this.vaildInputValue(column.label, inputValue)
+            }
+          }
+        })
+      },
+
       newItem() {
         //往头部插入元素
         let item = {};
@@ -137,12 +203,23 @@ import {saveConfig} from '../api/rulelib'
 
       handleEdit(index, row) {
         //先获取修改语句的下标
-        let real_index = (this.currentPage - 1) * this.currentPageSize + index;
-        this.editDialogue(real_index, row);
+        if(this.mode == "normal"){
+          let real_index = (this.currentPage - 1) * this.currentPageSize + index;
+          this.current_search_index = real_index;
+          this.editDialogue(real_index, row);
+        }
+        else{
+          let real_index = row.real_index;
+          this.current_search_index = this.copy_list[index].real_index;
+          this.editDialogue(real_index, row);
+          console.log("被修改的key是");
+          console.log(row);
+        }
+
       },
       handleDelete(index, row) {
         this.config_delete_show = true;
-        this.current_index = index;
+        this.current_index = (this.currentPage - 1) * this.currentPageSize + index;
       },
 
       editDialogue(index, row){
@@ -151,6 +228,9 @@ import {saveConfig} from '../api/rulelib'
         this.curr_data.data.key = row.key;
         this.curr_data.data.value = [].concat(row.value);
         this.curr_data.index = index;
+        if(this.mode == "search"){
+
+        }
       },
 
       close(){
@@ -158,12 +238,24 @@ import {saveConfig} from '../api/rulelib'
       },
 
       save(new_data){
-        this.edit_show = false;
-        this.curr_data = new_data;
-        console.log(this.curr_data);
-        this.config.config_list[new_data.index].key = new_data.data.key;
-        this.config.config_list[new_data.index].value = new_data.data.value;
-
+        console.log("保存的结果是");
+        console.log(new_data);
+        if(this.mode === "normal"){
+          this.edit_show = false;
+          this.curr_data = new_data;
+          console.log(this.curr_data);
+          this.config.config_list[new_data.index].key = new_data.data.key;
+          this.config.config_list[new_data.index].value = new_data.data.value;
+        }
+        else{
+          this.edit_show = false;
+          this.curr_data = new_data;
+          console.log("修改search的config是");
+          console.log(this.current_search_index);
+          console.log(this.config.config_list[this.current_search_index]);
+          this.config.config_list[this.current_search_index].key = new_data.data.key;
+          this.config.config_list[this.current_search_index].value = new_data.data.value;
+        }
       },
 
       pageSizeChange(size) {
@@ -173,6 +265,11 @@ import {saveConfig} from '../api/rulelib'
           this.currentPage = page
       },
       configSave(){
+        console.log("in configSave");
+        for(let config of this.config.config_list){
+          delete config.real_index;
+        }
+        console.log(this.config);
         saveConfig(JSON.stringify(this.config)).then(
           response=>{
           console.log(response.data);
@@ -190,19 +287,126 @@ import {saveConfig} from '../api/rulelib'
       },
 
       configSureDelete(){
-        this.config.config_list.splice(this.current_index, 1);
+        if(this.mode == "normal"){
+          this.config.config_list.splice(this.current_index, 1);
+        }
+        else{
+          this.config.config_list.splice(this.current_search_index, 1);
+        }
         this.config_delete_show = false;
+      },
+
+      tagDelete(index, row, tag){
+        console.log("删除的下标是" + index);
+        console.log(row);
+        console.log(tag);
+        this.current_index = (this.currentPage - 1) * this.currentPageSize + index;
+        this.tag_delete_show = true;
+        this.delete_tag = tag;
+      },
+
+      tagCancelDelete(){
+        this.tag_delete_show = false;
+      },
+
+      tagSureDelete(){
+        console.log("删除的标签是：");
+        console.log(this.config.config_list[this.current_index]);
+        let index = this.config.config_list[this.current_index].value.length - 1;
+        for(;index >= 0; index--){
+          if(this.config.config_list[this.current_index].value[index] == this.delete_tag){
+            this.config.config_list[this.current_index].value.splice(index, 1);
+          }
+        }
+
+        this.tag_delete_show = false;
+      },
+      handleFilter(){
+
       },
 
     },
     watch:{
       filter_key(){
         this.filter_text = [];
-        var temp = {};
+        let temp = {};
         temp.text = this.filter_key;
         temp.value = this.filter_key;
         this.filter_text.push(temp);
-      }
+      },
+
+      filter_text(val){
+        console.log("更新后的value是" + val);
+        if(!val)
+        {
+          this.copy_list = [].concat(this.config.config_list);
+          return;
+        }
+
+        while(val.indexOf(" ") != -1){
+          val = val.replace(" ", '');
+        }
+        this.filter_text = val;
+        this.mode = "search";
+        this.search_array = [];
+        this.copy_list = this.config.config_list;
+        if(this.select_method === "key"){
+          for(let config of this.copy_list){
+            if(config.key.indexOf(val) != -1){
+              config.real_index = this.config.config_list.indexOf(config);
+              this.search_array.push(config);
+            }
+          }
+          if(this.search_array.length == 0)
+            return;
+          this.copy_list = this.search_array;
+        }
+        else if(this.select_method === "value"){
+          console.log("进入select_method");
+          for(let config of this.copy_list){
+            for(let single_value of config.value){
+              if(single_value.indexOf(val) !== -1){
+                config.real_index = this.config.config_list.indexOf(config);
+                this.search_array.push(config);
+              }
+            }
+          }
+          // console.log("value搜索的结果是");
+          // console.log(this.search_array);
+          if(this.search_array === []){
+            this.copy_list = [];
+            return;
+          }
+          else{
+            this.copy_list = this.search_array;
+          }
+        }
+      },
+
+      "config.config_list"(val){
+        this.copy_list = [].concat(val);
+        this.mode = "normal"
+
+        console.log("修改后的copylist是");
+        console.log(this.copy_list);
+      },
+
+      select(val){
+        if(val == "key" && !this.filter_text){
+          this.mode = "search";
+          this.search_array = [];
+          for(let config of this.copy_list){
+            if(val === config.key){
+              config.real_index = this.config.config_list.indexOf(config);
+              this.search_array.push(config);
+            }
+          }
+          if(this.search_array.length == 0)
+            return;
+          this.copy_list = [].concat(this.search_array);
+        }
+
+      },
     },
   }
 </script>
@@ -215,8 +419,12 @@ import {saveConfig} from '../api/rulelib'
   position: relative;
   width: 60%;
   left: 20%;
+  overflow: hidden;
 }
 
+h2{
+  text-align: center;
+}
 /* .el-table {
     position: relative;
     width: 60%;

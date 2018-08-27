@@ -15,17 +15,17 @@
         <el-input type="textarea"  v-model="default_data.data.value[index]"
                   auto-complete="off">
         </el-input>
-        <el-button
-          size="mini"
-          type="danger"
-          @click="handleDelete(index)">删除
-        </el-button>
+        <!--<el-button-->
+          <!--size="mini"-->
+          <!--type="danger"-->
+          <!--@click="handleDelete(index)">删除-->
+        <!--</el-button>-->
       </el-form-item>
     </el-form>
   </div>
 
   <div slot="footer" class="dialog-footer">
-    <el-button type="primary" icon="el-icon-edit" @click="newItem">新建</el-button>
+    <el-button type="primary" icon="el-icon-edit" @click="newItem">新建标签</el-button>
     <el-button type="danger" icon="el-icon-close" @click="close">关闭</el-button>
     <el-button type="success" icon="el-icon-check" @click="save">确定</el-button>
   </div>
@@ -74,10 +74,10 @@
     },
     methods:{
       //2 调用父组件的close函数使的对话框消失
-      handleDelete(index) {
-        console.log("要删除的这行是");
-        this.default_data.data.value.splice(index, 1);
-      },
+      // handleDelete(index) {
+      //   console.log("要删除的这行是");
+      //   this.default_data.data.value.splice(index, 1);
+      // },
 
       newItem(){
         this.default_data.data.value.push("new");
