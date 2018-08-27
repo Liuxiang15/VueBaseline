@@ -17,7 +17,7 @@ function requireAuth (to, from, next) {
   } else {
     console.log('not login')
     next({
-      path: '/'
+      path: '/login'
     })
   }
 }
@@ -30,7 +30,8 @@ export default new Router({
     {
       path: '/',
       name: 'login',
-      component: login,
+      component: index,
+      beforeEnter: requireAuth
     },
     {
       path: '/login',

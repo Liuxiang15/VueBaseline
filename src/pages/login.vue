@@ -19,22 +19,6 @@
         />
       </el-form-item>
 
-      <!-- <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :type="passwordType"
-          v-model="loginForm.password"
-          placeholder="password"
-          name="password"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin" />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon icon-class="eye"/>
-        </span>
-      </el-form-item> -->
-
       <el-button
       :loading="loading"
       type="primary"
@@ -105,6 +89,34 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.login-container {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #2d3a4b;
+}
+
+.login-form {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 520px;
+  padding: 35px 35px 15px 35px;
+  margin: 240px auto;
+}
+
+.title-container {
+  position: relative;
+}
+
+.title {
+  font-size: 26px;
+  margin:  0px auto 40px auto;
+  text-align: center;
+  font-weight: bold;
+}
+
+
 
 </style>
