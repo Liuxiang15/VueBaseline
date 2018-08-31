@@ -109,6 +109,15 @@
             </el-alert>
           </el-popover>
 
+          <el-button class="btn-class" @click="visGraph" type="primary">
+            规则库可视化
+          </el-button>
+          <el-dialog title="实体属性关系Graph" :visible.sync="graph_show" @close="graphClose" width="95%">
+            <!-- <div style="width:100%; height:1000px"> -->
+              <chart style="width: 100%; height:700px" auto-resize :options="graphOptions"></chart>
+            <!-- </div> -->
+          </el-dialog>
+
         </div>
 
       </el-main>
@@ -132,6 +141,16 @@
   import {getExcelHistoryById} from '../api/rulelib'
   import {checkAllSNL} from '../api/rulelib'
   import {saveMetadata} from '../api/rulelib'
+  import {getVisDataById} from '../api/rulelib'
+
+  import ECharts from 'vue-echarts/components/ECharts'
+  import 'echarts/lib/component/tooltip'
+  import 'echarts/lib/component/title'
+  import 'echarts/lib/component/legend'
+  import 'echarts/lib/chart/graph'
+  // import 'echarts/lib/graph'
+  // require('echarts/lib/component/tooltip')
+  // require('echarts/lib/component/title')
 
   export default {
     name: 'layout',
@@ -141,9 +160,48 @@
       RuleClick,
       ContentClick,
       SnlQuery,
+      chart: ECharts,
     },
     data() {
       return {
+        graphOptions: {
+          title:{
+            text: 'Abstract',
+            subtext: 'Circular layout',
+            top: 'bottom',
+            left: 'right',
+          },
+          tooltip: {},
+          animationDurationUpdate: 1500,
+          animationEasingUpdate: 'quinticInOut',
+          series: [
+            {
+              name: 'Abstract',
+              type: 'graph',
+              layout: 'circular',
+              circular: {
+                rotateLabel: true
+              },
+              data: [],
+              links: [],
+              categories: [{name: 'Obj'}, {name: 'Prop'}],
+              roam: true,
+              label: {
+                normal: {
+                  position: 'right',
+                  formatter: '{b}'
+                }
+              },
+              lineStyle: {
+                normal: {
+                  color: 'source',
+                  curveness: 0.3
+                }
+              }
+            }
+          ]
+        },
+        graph_show: false,
         //1 current_node存储当前节点的内容，meta_data和node_data分别存储目录
         excel_history: [],
         current_node: {},
@@ -165,7 +223,6 @@
         inputVisible: false,
         inputValue: '',//都是对话框的属性
         config_keys:[],//存储config里key便于高亮
-
         key_words : [
           // other:
           ["的", ".", "。"],
@@ -232,6 +289,53 @@
       );
     },
     methods: {
+      visGraph() {
+        getVisDataById({"_id": this.$route.query.id}).then(
+          response => {
+            // console.log(response)
+            this.graph = response.data.res
+            var categories = [{name: 'Obj'}, {name: 'Prop'}]
+            console.log('in vis graph')
+            console.log(this.graph)
+            console.log("trying~~~~~~~~~~~~~~~~~~~")
+            this.graph.nodes.forEach(function (node) {
+              node.count = node.symbolSize
+              if (node.symbolSize >=1000){
+                node.symbolSize = 10
+              }
+              else if (node.symbolSize >= 500) {
+                node.symbolSize = 5
+              }
+              else if (node.symbolSize >= 200) {
+                node.symbolSize = 2
+              }
+              else {
+                node.symbolSize = 1
+              }
+              node.itemStyle = null
+              node.value = node.symbolSize
+            });
+
+
+            // this.graphOptions.data = this.graph.nodes
+            // this.graphOptions.links = this.graph.links
+            this.graphOptions.legend = [{
+              data: categories.map(function (a) {
+                return a.name
+              })
+            }]
+
+            this.graphOptions.series[0].data=this.graph.nodes
+            this.graphOptions.series[0].links=this.graph.links
+          }
+        )
+        this.graph_show = true
+      },
+
+      graphClose() {
+        this.graph_show = false
+      },
+
       showMsgFromChild(data) {
         //2 左侧树上节点被点击后触发的响应事件，data存储被点击节点的信息
         this.current_node = data;
@@ -404,32 +508,31 @@
       }
       return false;
     },
-
-      findTargetRule(arr, index){
-        //点击目录的查看规则按钮执行的函数，找相应规则
-        console.log("进入findTargetRule函数");
-        console.log(arr);
-        for(let child of arr){
-          if(child.is_rule){
-            if(this.find_rule_order == index){
-              this.$refs.snlLists.showList(child);
-              this.rule_click_show = true;
-              this.content_click_show = false;
-              this.snl_query_show = false;
-              this.find_rule_order = 0;
-              return true;
-            }
-            else{
-              this.find_rule_order++;
-            }
+    findTargetRule(arr, index){
+      //点击目录的查看规则按钮执行的函数，找相应规则
+      console.log("进入findTargetRule函数");
+      console.log(arr);
+      for(let child of arr){
+        if(child.is_rule){
+          if(this.find_rule_order == index){
+            this.$refs.snlLists.showList(child);
+            this.rule_click_show = true;
+            this.content_click_show = false;
+            this.snl_query_show = false;
+            this.find_rule_order = 0;
+            return true;
           }
           else{
-            this.findTargetRule(child.children, index);
-            return false;
+            this.find_rule_order++;
           }
         }
-        return false;
-      },
+        else{
+          this.findTargetRule(child.children, index);
+          return false;
+        }
+      }
+      return false;
+    },
 
     snlSaveFromContent(new_data){
       //目录节点的内容修改后执行的保存函数
@@ -446,15 +549,13 @@
       this.find_rule_order = 0;
       this.findTargetRule(this.current_node.children, index);
     },
-
-      showRuleByIndex(index){
-        this.find_rule_order = 0;
-        console.log("in showRuleByIndex ");
-        console.log(this.meta_data.metadata.data);
-        this.findTargetRule(this.meta_data.metadata.data, index);
+    showRuleByIndex(index){
+      this.find_rule_order = 0;
+      console.log("in showRuleByIndex ");
+      console.log(this.meta_data.metadata.data);
+      this.findTargetRule(this.meta_data.metadata.data, index);
         // this.findTargetRule(this.me.children, index);
-      },
-
+    },
     editConfig(){
       this.$router.push({
         path: '/config',

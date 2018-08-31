@@ -8,8 +8,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 import VueResource from 'vue-resource'
 import axios from 'axios'
 import store from './store'
+// import echarts from 'echarts'
 
-Vue.prototype.$ajax=axios
+Vue.prototype.$ajax = axios
+// Vue.prototype.$echarts = echarts
 Vue.use(ElementUI)
 Vue.use(VueResource)
 

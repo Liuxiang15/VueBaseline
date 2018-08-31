@@ -17,8 +17,12 @@ const CHECK_SINGLE_SNL = HOST + '/data/check_snl'
 const SAVE_METADATA_API = HOST + '/data/refresh_metadata'
 const SAVE_ALIAS_API = HOST + '/alias/refresh_alias'
 const SAVE_CONFIG_API = HOST + '/config/refresh_config'
+const GET_VIS_DATA = HOST + '/vis/test'
 
 
+export function getVisDataById(post_data, callback){
+  return axios.post(GET_VIS_DATA, post_data).then(callback);
+}
 
 export function findPublicLibList(callback){
   console.log(PUBLIC_LIB_API)
@@ -80,4 +84,3 @@ export function saveAlias(post_data, callback){
 export function saveConfig(post_data, callback){
   return axios.post(SAVE_CONFIG_API, post_data).then(callback);
 }
-

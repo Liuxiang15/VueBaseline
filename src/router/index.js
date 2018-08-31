@@ -4,6 +4,7 @@ import layout from '@/pages/layout'
 import index from '@/pages/index'
 import login from '@/pages/login'
 import store from '../store'
+import relationGraph from '@/pages/relationGraph'
 Vue.use(Router)
 // 1定义路由，每个路由应该映射一个组件
 
@@ -70,6 +71,13 @@ export default new Router({
       path: "/alias",
       name: "alias",
       component: () => import('@/components/editAlias'),
+      beforeEnter: requireAuth
+    },
+
+    {
+      path: "/vis",
+      name: "vis",
+      component: relationGraph,
       beforeEnter: requireAuth
     }
 
