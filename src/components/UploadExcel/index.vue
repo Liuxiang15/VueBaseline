@@ -92,7 +92,7 @@
         this.rawFile = rawFile
       },
 
-      upload2Server(defMap) {
+      upload2Server(defMap,rowDef) {
         // 使用then语法，或者新增callback参数
 
         if (this.rawFile == null) {
@@ -107,7 +107,7 @@
 
 
 
-        importExcel(this.rawFile, this.$route.query.metadata_id,defMap).then(result => {
+        importExcel(this.rawFile, this.$route.query.metadata_id,defMap,rowDef).then(result => {
 
           if (!!result.data.code && result.data.code === 1000) {
 
