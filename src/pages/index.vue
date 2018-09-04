@@ -145,7 +145,7 @@
       );
 
       this.$notify({
-        title: "新功能！！！",
+        title: "公告：20180904--新功能发布",
         message: "Excel导入新增动词'等于'，默认情况不用改变,选择包含即可",
         duration: 0
       });
