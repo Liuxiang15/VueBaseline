@@ -18,7 +18,16 @@ const SAVE_METADATA_API = HOST + '/data/refresh_metadata'
 const SAVE_ALIAS_API = HOST + '/alias/refresh_alias'
 const SAVE_CONFIG_API = HOST + '/config/refresh_config'
 const GET_VIS_DATA = HOST + '/vis/test'
+const CHECK_COMPLETE = HOST + '/data/check_complete'
+const CHECK_CONSISTENCY = HOST + '/data/check_consistency'
 
+export function doCheckComplete(post_data, callback){
+  return axios.post(CHECK_COMPLETE, post_data).then(callback);
+}
+
+export function doCheckConsistency(post_data, callback){
+  return axios.post(CHECK_CONSISTENCY, post_data).then(callback);
+}
 
 export function getVisDataById(post_data, callback){
   return axios.post(GET_VIS_DATA, post_data).then(callback);

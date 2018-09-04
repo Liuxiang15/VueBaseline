@@ -118,6 +118,34 @@
             <!-- </div> -->
           </el-dialog>
 
+          <el-button class="btn-class" @click="checkComplete" type="primary">
+            完整性检查
+          </el-button>
+          <el-dialog title="完整性检查结果" :visible.sync="check_complete_show" @close="checkCompleteClose" width="70%">
+            <el-alert title="" type="success" v-show="this.check_complete_consistency_result.correct"
+                      show-icon :closable="false">
+              <p v-for="line in check_complete_consistency_result.msg">{{line}}</p>
+            </el-alert>
+            <el-alert title="" type="error" v-show="!this.check_complete_consistency_result.correct"
+                      show-icon :closable="false">
+              <p v-for="line in check_complete_consistency_result.msg">{{line}}</p>
+            </el-alert>
+          </el-dialog>
+
+          <el-button class="btn-class" @click="checkConsistency" type="primary">
+            一致性检查
+          </el-button>
+          <el-dialog title="一致性检查结果" :visible.sync="check_consistency_show" @close="checkConsistencyClose" width="70%">
+            <el-alert title="" type="success" v-show="this.check_complete_consistency_result.correct"
+                      show-icon :closable="false">
+              <p v-for="line in check_complete_consistency_result.msg">{{line}}</p>
+            </el-alert>
+            <el-alert title="" type="error" v-show="!this.check_complete_consistency_result.correct"
+                      show-icon :closable="false">
+              <p v-for="line in check_complete_consistency_result.msg">{{line}}</p>
+            </el-alert>
+          </el-dialog>
+
         </div>
 
       </el-main>
@@ -142,6 +170,8 @@
   import {checkAllSNL} from '../api/rulelib'
   import {saveMetadata} from '../api/rulelib'
   import {getVisDataById} from '../api/rulelib'
+  import {doCheckComplete} from '../api/rulelib'
+  import {doCheckConsistency} from '../api/rulelib'
 
   import ECharts from 'vue-echarts/components/ECharts'
   import 'echarts/lib/component/tooltip'
@@ -206,6 +236,9 @@
         excel_history: [],
         current_node: {},
         meta_data: {},
+        check_complete_show: false,
+        check_consistency_show: false,
+        check_complete_consistency_result: {},
         rule_click_show: false,
         content_click_show: true,
         snl_query_show:false,
@@ -289,6 +322,49 @@
       );
     },
     methods: {
+      checkConsistency(){
+        doCheckConsistency({"_id": this.$route.query.id}).then(response => {
+          if (response.data.code === 200){
+            this.check_complete_consistency_result.correct = true
+            this.check_complete_consistency_result.msg = response.data.data.split('\n')
+            // console.log(response.data.data.split('\n'))
+          }
+          else if (response.data.code === 666) {
+            this.check_complete_consistency_result.correct = false
+            this.check_complete_consistency_result.msg = response.data.msg + " 请联系管理员"
+          }
+          else {
+            this.check_complete_consistency_result.correct = false
+            this.check_complete_consistency_result.msg = response.data.data.split('\n')
+            // console.log(response.data.data.split('\n'))
+          }
+          this.check_consistency_show = true
+        });
+      },
+      checkConsistencyClose() {
+        this.check_consistency_show = false
+      },
+
+      checkComplete() {
+        doCheckComplete({"_id": this.$route.query.id}).then(response => {
+          if (response.data.code === 200){
+            this.check_complete_consistency_result.correct = true
+            this.check_complete_consistency_result.msg = response.data.data.split('\n')
+          }
+          else if (response.data.code === 666) {
+            this.check_complete_consistency_result.correct = false
+            this.check_complete_consistency_result.msg = response.data.msg + " 请联系管理员"
+          }
+          else {
+            this.check_complete_consistency_result.correct = false
+            this.check_complete_consistency_result.msg = response.data.data.split('\n')
+          }
+          this.check_complete_show = true
+        });
+      },
+      checkCompleteClose(){
+        this.check_complete_show = false
+      },
       visGraph() {
         getVisDataById({"_id": this.$route.query.id}).then(
           response => {
@@ -396,8 +472,6 @@
       },
 
       handleClose(tag){
-        // console.log("要删除的标签是：");
-        // console.log(tag);
         this.tag_options.splice(this.tag_options.indexOf(tag), 1);
         this.meta_data.metadata.tags.splice(
           this.meta_data.metadata.tags.indexOf(tag), 1);
@@ -438,8 +512,6 @@
       },
 
       metadataSend() {
-        // console.log("要向传输的数据是：");
-        // console.log(this.meta_data);
         saveMetadata(JSON.stringify(this.meta_data)).then(
           response => {
               console.log(response.data);
@@ -451,8 +523,6 @@
       },
 
       downloadExcel() {
-        console.log('----=-=------')
-        // console.log(_id)
         return HOST + '/excel/download_excel_file/'
       },
 
