@@ -50,6 +50,10 @@
                              value="or"></el-option>
                 </el-select>
 
+                <el-select v-model="def.condition_verb[cond_index]">
+                  <el-option v-for="verb of verbs" :key="verb.key" :label="verb.value"
+                             :value="verb.key"></el-option>
+                </el-select>
 
                 <el-select v-model="def.condition[cond_index]" placeholder="未定义">
                   <el-option v-for="(item,head_index) of tableHeader" :key="head_index" :label="item"
@@ -57,9 +61,9 @@
                 </el-select>
                 <br/>
                 <el-button icon="el-icon-circle-plus-outline"
-                           @click="addSimple( def.condition,def.condition_connection,cond_index)"></el-button>
+                           @click="addSimple( def.condition,def.condition_connection,def.condition_verb,cond_index)"></el-button>
                 <el-button icon="el-icon-remove-outline"
-                           @click="deleteSimple( def.condition,def.condition_connection,cond_index)"
+                           @click="deleteSimple( def.condition,def.condition_connection,def.condition_verb,cond_index)"
                            v-show="def.condition.length>1"></el-button>
               </el-form-item>
 
@@ -77,6 +81,12 @@
                              value="or"></el-option>
                 </el-select>
 
+
+                <el-select v-model="def.conclusion_verb[conclusion_index]">
+                  <el-option v-for="verb of verbs" :key="verb.key" :label="verb.value"
+                             :value="verb.key"></el-option>
+                </el-select>
+
                 <el-select v-model="def.conclusion[conclusion_index]" placeholder="未定义">
                   <el-option v-for="(item,head_index) of tableHeader" :key="head_index" :label="item"
                              :value="item"></el-option>
@@ -85,9 +95,9 @@
                 <br/>
 
                 <el-button icon="el-icon-circle-plus-outline"
-                           @click="addSimple( def.conclusion,def.conclusion_connection,conclusion_index)"></el-button>
+                           @click="addSimple( def.conclusion,def.conclusion_connection,def.conclusion_verb,conclusion_index)"></el-button>
                 <el-button icon="el-icon-remove-outline"
-                           @click="deleteSimple( def.conclusion,def.conclusion_connection,conclusion_index)"
+                           @click="deleteSimple( def.conclusion,def.conclusion_connection,def.conclusion_verb,conclusion_index)"
                            v-show="def.conclusion.length>1"></el-button>
               </el-form-item>
 
@@ -161,6 +171,11 @@
           // {key: 'regex', value: '命名规范型'},
           {key: 'exists_attr', value: '属性存在型'}
         ],
+        verbs: [
+          {key: 'contains', value: '包含'},
+          {key: 'equals', value: '等于'},
+        ],
+
         showMask: {
           'if': ['subject', 'condition', 'conclusion'],
           // 'regex': ['subject', 'conclusion'],
@@ -207,19 +222,21 @@
           let def_item = this.templateDefs[index];
 
           // 过滤
-          let filtered_condition = [], filtered_condition_connection = [];
+          let filtered_condition = [], filtered_condition_connection = [], filtered_condition_verb = [];
           for (let i = 0; i < def_item['condition'].length; i++) {
             if (def_item['condition'][i] !== '' && def_item['kind'] === 'if') {
               filtered_condition.push(def_item['condition'][i])
               filtered_condition_connection.push(def_item['condition_connection'][i])
+              filtered_condition_verb.push(def_item['condition_verb'][i])
             }
           }
 
-          let filtered_conclusion = [], filtered_conclusion_connection = [];
+          let filtered_conclusion = [], filtered_conclusion_connection = [], filtered_conclusion_verb = [];
           for (let i = 0; i < def_item['conclusion'].length; i++) {
             if (def_item['conclusion'][i] !== '') {
               filtered_conclusion.push(def_item['conclusion'][i])
               filtered_conclusion_connection.push(def_item['conclusion_connection'][i])
+              filtered_conclusion_verb.push(def_item['conclusion_verb'][i])
             }
           }
 
@@ -228,7 +245,9 @@
             'condition': filtered_condition,
             'condition_connection': filtered_condition_connection,
             'conclusion': filtered_conclusion,
+            'condition_verb': filtered_condition_verb,
             'conclusion_connection': filtered_conclusion_connection,
+            'conclusion_verb': filtered_conclusion_verb,
             'classification': []
           };
 
@@ -249,14 +268,16 @@
         return !!this.tableData && this.tableData.length;
       },
 
-      addSimple(simples, relations, index) {
+      addSimple(simples, relations, vbs, index) {
         simples.splice(index + 1, 0, '');
-        relations.splice(index + 1, 0, 'and')
+        relations.splice(index + 1, 0, 'and');
+        vbs.splice(index + 1, 0, 'contains');
       },
 
-      deleteSimple(simples, relations, index) {
+      deleteSimple(simples, relations, vbs, index) {
         simples.splice(index, 1);
-        relations.splice(index, 1)
+        relations.splice(index, 1);
+        vbs.splice(index, 1);
       },
       addDef(index) {
         // index表示前一位的下标
@@ -269,8 +290,10 @@
           subject: '',
           condition: [''],
           condition_connection: ['and'],
+          condition_verb: ['contains'],
           conclusion: [''],
           conclusion_connection: ['and'],
+          conclusion_verb: ['contains'],
         });
 
         for (let ind = 0; ind < this.rowDefs.length; ind++) {
