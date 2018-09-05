@@ -211,6 +211,7 @@
         for (let ind = 0; ind < this.tableData.length; ind++) {
           this.rowDefs.push([]);
         }
+        this.templateDefs = [];
         this.addDef(-1);
 
       },
