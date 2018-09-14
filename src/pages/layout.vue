@@ -294,6 +294,7 @@
       }
     },
     created() {
+      console.log(HOST)
       getMetadataById({"_id": this.$route.query.id}).then(
         response => {
           // console.log("getMetadataById!!!!!!!!!");
@@ -370,6 +371,7 @@
           response => {
             // console.log(response)
             this.graph = response.data.res
+            // console.log(response.data.res)
             var categories = [{name: 'Obj'}, {name: 'Prop'}]
             console.log('in vis graph')
             console.log(this.graph)
