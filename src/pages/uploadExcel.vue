@@ -77,7 +77,7 @@
                   <el-option key="and" label="并且"
                              value="and"></el-option>
                   <!--v-show处理了不完整的一阶逻辑-->
-                  <el-option key="or" label="或者" v-show="def.condition.length>1"
+                  <el-option key="or" label="或者" v-show="def.kind==='if'"
                              value="or"></el-option>
                 </el-select>
 
@@ -179,7 +179,7 @@
         showMask: {
           'if': ['subject', 'condition', 'conclusion'],
           // 'regex': ['subject', 'conclusion'],
-          'exists_attr': ['subject', 'subject', 'conclusion']
+          'exists_attr': ['subject', 'condition', 'conclusion']
         },
         maxId: 1
       }
@@ -225,7 +225,9 @@
           // 过滤
           let filtered_condition = [], filtered_condition_connection = [], filtered_condition_verb = [];
           for (let i = 0; i < def_item['condition'].length; i++) {
-            if (def_item['condition'][i] !== '' && def_item['kind'] === 'if') {
+            if (def_item['condition'][i] !== ''
+            // && def_item['kind'] === 'if'
+            ) {
               filtered_condition.push(def_item['condition'][i])
               filtered_condition_connection.push(def_item['condition_connection'][i])
               filtered_condition_verb.push(def_item['condition_verb'][i])
@@ -314,7 +316,6 @@
       },
 
       showPart(kind, part) {
-        console.log(part)
         return this.showMask[kind].indexOf(part) >= 0
       },
     },
