@@ -248,7 +248,7 @@
               response => {
                 this.private_lib_names = response.data.data;
                 console.log("收到的private 信息是");
-                console.log(response.data);
+                console.log(response);
                 ;
               }
             );
